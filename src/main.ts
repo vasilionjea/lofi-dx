@@ -2,9 +2,7 @@ import './styles/style.scss';
 import { QueryTokenizer } from './tokenizer';
 
 function logTokens(query: string) {
-  console.table(
-    new QueryTokenizer(query).tokenize(), ['type', 'text']
-  );
+  console.table(new QueryTokenizer(query).tokenize(), ['type', 'text']);
 }
 
 // Terms

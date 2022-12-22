@@ -42,12 +42,12 @@ export class Token {
 }
 
 export class QueryTokenizer {
-  query: string;
+  queryText: string;
   private queryInvalidChars = /[^-a-zA-Z0-9\s"]+/g;
 
   constructor(rawQuery: string) {
     // Strip all chars except what's allowed inside a query
-    this.query = rawQuery.replace(this.queryInvalidChars, '');
+    this.queryText = rawQuery.replace(this.queryInvalidChars, '');
   }
 
   private getTokenType(matchGroup: { [key: string]: string } = {}) {
@@ -69,7 +69,7 @@ export class QueryTokenizer {
   tokenize() {
     const tokens: Token[] = [];
 
-    for (const match of this.query.matchAll(tokenizerRegex)) {
+    for (const match of this.queryText.matchAll(tokenizerRegex)) {
       if (match && match.groups) {
         const type = this.getTokenType(match.groups);
         const text = match[0] || '';

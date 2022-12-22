@@ -2,11 +2,11 @@ import './styles/style.scss';
 import { QueryParser } from './parser';
 import { QueryTokenizer } from './tokenizer';
 
-function log(query: string) {
-  const queryTokenizer = new QueryTokenizer(query);
+function log(queryText: string) {
+  const queryTokenizer = new QueryTokenizer(queryText);
   const queryParser = new QueryParser(queryTokenizer.tokenize());
 
-  console.log(`\n${query}`);
+  console.log(`\n${queryText}`);
   queryParser.parse();
 }
 

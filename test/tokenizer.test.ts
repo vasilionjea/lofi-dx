@@ -7,15 +7,15 @@ test('it should strip illegal character from query', () => {
   const tokenizer = new QueryTokenizer(
     `lorem${invalid} ipsum${invalid2} dolor${invalid3}`
   );
-  expect(tokenizer.query).not.toContain(invalid);
-  expect(tokenizer.query).not.toContain(invalid2);
-  expect(tokenizer.query).not.toContain(invalid3);
-  expect(tokenizer.query).toEqual('lorem ipsum dolor');
+  expect(tokenizer.queryText).not.toContain(invalid);
+  expect(tokenizer.queryText).not.toContain(invalid2);
+  expect(tokenizer.queryText).not.toContain(invalid3);
+  expect(tokenizer.queryText).toEqual('lorem ipsum dolor');
 });
 
 test('it should not strip legal character from query', () => {
   const tokenizer = new QueryTokenizer(`-negated term "exact term"`);
-  expect(tokenizer.query).toEqual('-negated term "exact term"');
+  expect(tokenizer.queryText).toEqual('-negated term "exact term"');
 });
 
 test('it should not create tokens for empty queries', () => {

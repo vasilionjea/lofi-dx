@@ -1,6 +1,10 @@
-import { add } from '../src/utils';
+import { isNone } from '../src/utils';
 
-test('it adds numbers', () => {
-  const value = add(2, 2, 6);
-  expect(value).toBe(10);
+test('[isNone] it returns true only when value is null or undefined', () => {
+  expect(isNone(undefined)).toBe(true);
+  expect(isNone(null)).toBe(true);
+
+  expect(isNone(false)).toBe(false);
+  expect(isNone(0)).toBe(false);
+  expect(isNone('')).toBe(false);
 });

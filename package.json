@@ -5,7 +5,7 @@
   "private": true,
   "description": "A webpack starter template for Frontend projects with typescript",
   "scripts": {
-    "start": "webpack serve --env dev --open",
+    "start": "webpack serve --env dev",
     "format": "prettier --ignore-path .eslintignore --write '**/**/*.{js,ts,tsx}'",
     "lint": "eslint --ignore-path .eslintignore './src/**/*.{js,ts,tsx}'",
     "test": "jest --verbose --watch",

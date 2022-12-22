@@ -14,6 +14,6 @@ module.exports = {
 
   // https://jestjs.io/docs/configuration#globals-object
   globals: {
-    SOME_FEATURE_FLAG: true,
+
   },
 };

@@ -1,4 +1,3 @@
-import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
@@ -66,11 +65,6 @@ export default ({ isProdMode }) => ({
   },
 
   plugins: [
-    // Feature flags example
-    new webpack.DefinePlugin({
-      SOME_FEATURE_FLAG: JSON.stringify(true),
-    }),
-
     // Extract CSS source into its own file
     new MiniCssExtractPlugin({
       filename: isProdMode ? '[name]-[contenthash].css' : '[name].css',

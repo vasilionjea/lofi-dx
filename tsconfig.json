@@ -1,0 +1,23 @@
+{
+  "extends": "@tsconfig/recommended/tsconfig.json",
+  "compilerOptions": {
+    "module": "es6",
+    "target": "es2017",
+    "allowJs": true,
+    "rootDir": "./src",
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".tmp/types",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "sourceMap": true
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    ".tmp"
+  ]
+}

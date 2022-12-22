@@ -1,0 +1,24 @@
+{
+  "extends": "@tsconfig/recommended/tsconfig.json",
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "rootDir": ".",
+    "types": [
+      "jest",
+      "node"
+    ],
+    // ensure that nobody can accidentally use this config for a build
+    "noEmit": true
+  },
+  "include": [
+    "."
+  ],
+  "files": [
+    "../src/globals.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../tsconfig.json"
+    }
+  ]
+}

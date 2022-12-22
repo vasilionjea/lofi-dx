@@ -22,7 +22,7 @@
     "@tsconfig/recommended": "^1.0.1",
     "@types/jest": "^29.2.4",
     "@typescript-eslint/eslint-plugin": "^5.46.1",
-    "@typescript-eslint/parser": "^5.46.1",
+    "@typescript-eslint/parser": "^5.47.0",
     "css-loader": "^6.7.3",
     "eslint": "^8.30.0",
     "html-loader": "^4.2.0",

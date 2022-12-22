@@ -1,21 +1,26 @@
 import './styles/style.scss';
+import { QueryParser } from './parser';
 import { QueryTokenizer } from './tokenizer';
 
-function logTokens(query: string) {
-  console.table(new QueryTokenizer(query).tokenize(), ['type', 'text']);
+function log(query: string) {
+  const queryTokenizer = new QueryTokenizer(query);
+  const queryParser = new QueryParser(queryTokenizer.tokenize());
+
+  console.log(`\n${query}`);
+  queryParser.parse();
 }
 
 // Terms
-logTokens(` Hello  world! `);
+log(` Hello  world! `);
 
 // Exact term, term
-logTokens(` "sea bass"  salmon `);
+log(` "sea bass"  salmon `);
 
 // Negated term, term, term
-logTokens(` -car jaguar speed `);
+log(` -car jaguar speed `);
 
 // Negate exact term, term, exact term
-logTokens(` -"web design"  ux  "user experience" `);
+log(` -"web design"  ux  "user  experience" `);
 
 // Term, term, negated term OR exact term, negated exact term
-logTokens(`  frontend engineer -backend  OR  "ux engineer" -"full stack"`);
+log(`  frontend engineer -backend  OR  "ux engineer" -"full stack"`);

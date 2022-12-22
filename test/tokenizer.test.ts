@@ -31,7 +31,7 @@ test('it should create tokens for simple terms', () => {
   expect(tokens.length).toBe(2);
 
   expect(tokens[0].type).toEqual(TokenType.Term);
-  expect(tokens[0].text).toEqual('Hello');
+  expect(tokens[0].text).toEqual('hello');
 
   expect(tokens[1].type).toEqual(TokenType.Term);
   expect(tokens[1].text).toEqual('world');
@@ -42,7 +42,7 @@ test('it should create tokens for exact terms', () => {
   expect(tokens.length).toBe(2);
 
   expect(tokens[0].type).toEqual(TokenType.ExactTerm);
-  expect(tokens[0].text).toEqual(`"sea bass"`);
+  expect(tokens[0].text).toEqual('sea bass');
 
   expect(tokens[1].type).toEqual(TokenType.Term);
   expect(tokens[1].text).toEqual('salmon');
@@ -53,7 +53,7 @@ test('it should create tokens for negated terms', () => {
   expect(tokens.length).toBe(3);
 
   expect(tokens[0].type).toEqual(TokenType.NegatedTerm);
-  expect(tokens[0].text).toEqual('-car');
+  expect(tokens[0].text).toEqual('car');
 
   expect(tokens[1].type).toEqual(TokenType.Term);
   expect(tokens[1].text).toEqual('jaguar');
@@ -69,13 +69,13 @@ test('it should create token for OR operator', () => {
   expect(tokens.length).toBe(3);
 
   expect(tokens[0].type).toEqual(TokenType.ExactTerm);
-  expect(tokens[0].text).toEqual(`"backend engineer"`);
+  expect(tokens[0].text).toEqual('backend engineer');
 
   expect(tokens[1].type).toEqual(TokenType.OrOperator);
-  expect(tokens[1].text).toEqual('OR');
+  expect(tokens[1].text).toEqual('or');
 
   expect(tokens[2].type).toEqual(TokenType.ExactTerm);
-  expect(tokens[2].text).toEqual(`"full stack"`);
+  expect(tokens[2].text).toEqual(`full stack`);
 });
 
 test('it should create tokens when combining terms', () => {
@@ -85,14 +85,14 @@ test('it should create tokens when combining terms', () => {
   expect(tokens.length).toBe(4);
 
   expect(tokens[0].type).toEqual(TokenType.NegatedTerm);
-  expect(tokens[0].text).toEqual(`-"web design"`);
+  expect(tokens[0].text).toEqual(`web design`);
 
   expect(tokens[1].type).toEqual(TokenType.Term);
   expect(tokens[1].text).toEqual('ux');
 
   expect(tokens[2].type).toEqual(TokenType.OrOperator);
-  expect(tokens[2].text).toEqual('OR');
+  expect(tokens[2].text).toEqual('or');
 
   expect(tokens[3].type).toEqual(TokenType.ExactTerm);
-  expect(tokens[3].text).toEqual(`"user experience"`);
+  expect(tokens[3].text).toEqual('user experience');
 });

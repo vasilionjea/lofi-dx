@@ -1,3 +1,5 @@
+import { unquote, stripModifiers } from './tokenizer-utils';
+
 export enum TokenType {
   Invalid = 'Invalid',
   NegatedTerm = 'NegatedTerm',
@@ -5,6 +7,9 @@ export enum TokenType {
   OrOperator = 'OrOperator',
   Term = 'Term',
 }
+
+const modifierTypes = [TokenType.NegatedTerm];
+const quotedTypes = [TokenType.ExactTerm, TokenType.NegatedTerm];
 
 // Test at: https://regex101.com
 const termRegexes = {
@@ -23,7 +28,17 @@ const tokenizerRegex = new RegExp(
 );
 
 export class Token {
-  constructor(public type: TokenType | undefined, public text: string) {}
+  constructor(public type: TokenType, public text: string) {
+    if (modifierTypes.includes(this.type)) {
+      this.text = stripModifiers(this.text);
+    }
+
+    if (quotedTypes.includes(this.type)) {
+      this.text = unquote(this.text);
+    }
+
+    this.text = this.text.toLowerCase().trim();
+  }
 }
 
 export class QueryTokenizer {
@@ -35,9 +50,8 @@ export class QueryTokenizer {
     this.query = rawQuery.replace(this.queryInvalidChars, '');
   }
 
-  private getTokenType(matchGroup: { [key: string]: string }) {
-    if (!matchGroup) return TokenType.Invalid;
-    let type;
+  private getTokenType(matchGroup: { [key: string]: string } = {}) {
+    let type = TokenType.Invalid;
 
     if (matchGroup.NegatedTerm) {
       type = TokenType.NegatedTerm;
@@ -54,12 +68,16 @@ export class QueryTokenizer {
 
   tokenize() {
     const tokens: Token[] = [];
+
     for (const match of this.query.matchAll(tokenizerRegex)) {
       if (match && match.groups) {
         const type = this.getTokenType(match.groups);
-        tokens.push(new Token(type, match[0]));
+        const text = match[0] || '';
+
+        tokens.push(new Token(type, text));
       }
     }
+
     return tokens;
   }
 }

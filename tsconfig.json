@@ -4,7 +4,7 @@
     "module": "es6",
     "target": "es2017",
     "allowJs": true,
-    "rootDir": "./src",
+    "rootDir": ".",
     "composite": true,
     "declaration": true,
     "declarationDir": ".tmp/types",
@@ -13,7 +13,8 @@
     "sourceMap": true
   },
   "include": [
-    "src"
+    "src",
+    "example"
   ],
   "exclude": [
     "node_modules",

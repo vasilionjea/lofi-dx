@@ -1,3 +1,4 @@
+import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 
@@ -7,7 +8,7 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
  *
  * https://webpack.js.org/configuration
  */
-export default ({ isProdMode }) => ({
+export default ({ isProdMode, __dirname }) => ({
   // The environment in which the code will run
   target: 'web',
 
@@ -16,7 +17,7 @@ export default ({ isProdMode }) => ({
 
   // The entry file(s) from where Webpack will start resolving modules
   entry: {
-    app: './src/main.ts',
+    app: './example/app.ts',
   },
 
   module: {
@@ -71,8 +72,8 @@ export default ({ isProdMode }) => ({
     }),
 
     new HtmlWebpackPlugin({
-      template: 'src/index.html',
-      favicon: 'src/favicon.ico',
+      template: 'example/index.html',
+      favicon: 'example/favicon.ico',
       inject: 'body',
     }),
   ],

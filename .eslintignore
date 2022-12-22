@@ -17,3 +17,6 @@ webpack*.js
 # tooling configs
 .eslintrc.cjs
 jest.config.cjs
+
+# other
+example

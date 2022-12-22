@@ -13,9 +13,7 @@
   "include": [
     "."
   ],
-  "files": [
-    "../src/globals.d.ts"
-  ],
+  "files": [],
   "references": [
     {
       "path": "../tsconfig.json"

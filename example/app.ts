@@ -1,6 +1,5 @@
 import './styles/style.scss';
-import { QueryParser } from './parser';
-import { QueryTokenizer } from './tokenizer';
+import { QueryTokenizer, QueryParser } from '../src/index';
 
 function log(queryText: string) {
   const queryTokenizer = new QueryTokenizer(queryText);

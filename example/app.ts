@@ -13,14 +13,14 @@ function log(queryText: string) {
 // Terms
 log(` Hello  world! `);
 
-// Exact term, term
+// Exact term, presence term
 log(` "sea bass"  +salmon `);
 
-// Negated term, term, term
-log(` -car +jaguar speed `);
+// Presence term, term, exact term, presence term
+log(` +jaguar speed "south america" -car `);
 
-// Negate exact term, term, exact term
+// Presence term, term, exact term
 log(` -"web design"  ux  "user  experience" `);
 
-// Term, term, negated term OR exact term, negated exact term
+// Mixed terms with invalid chars
 log(`  +frontend engineer [~!{%}/*) -backend  "ux  engineer "   -"full stack" `);

@@ -2,7 +2,7 @@ import './styles/style.scss';
 import { QueryTokenizer, QueryParser } from '../src/index';
 
 function log(queryText: string) {
-  const tokens = new QueryTokenizer(queryText).tokenize(); console.log(tokens);
+  const tokens = new QueryTokenizer(queryText).tokenize();
   const parser = new QueryParser(tokens);
   const query = parser.parse();
 

@@ -43,7 +43,7 @@ export class Token {
 
 export class QueryTokenizer {
   queryText: string;
-  private queryInvalidChars = /[^-a-zA-Z0-9\s"]+/g;
+  private queryInvalidChars = /[^-a-z0-9\s"]+/gi;
 
   constructor(rawQuery: string) {
     // Strip all chars except what's allowed inside a query

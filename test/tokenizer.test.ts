@@ -14,8 +14,8 @@ test('it should strip illegal character from query', () => {
 });
 
 test('it should not strip legal character from query', () => {
-  const tokenizer = new QueryTokenizer(`-negated term "exact term"`);
-  expect(tokenizer.queryText).toEqual('-negated term "exact term"');
+  const tokenizer = new QueryTokenizer(`-negated Term "eXact term"`);
+  expect(tokenizer.queryText).toEqual('-negated Term "eXact term"');
 });
 
 test('it should not create tokens for empty queries', () => {

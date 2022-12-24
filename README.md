@@ -13,6 +13,8 @@ Experiment building a client side search query parser. Parses strings like `+jag
 }
 ```
 
+This has been tested only in English and likely won't parse other alphabets correctly.
+
 ## Environments
 You must have NodeJS already installed on your machine, then run `npm install` before running any other commands.
 

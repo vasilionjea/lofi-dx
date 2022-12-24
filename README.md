@@ -1,6 +1,18 @@
 # About
 [![Build Status](https://github.com/vasilionjea/webpack-frontend-template/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/vasilionjea/webpack-frontend-template/actions/workflows/unit-tests.yml)
 
+Experiment building a client side search query parser. Parses strings like `+jaguar speed "south america" -car` to a query object:
+```js
+{
+  "parts": [
+    {"term": "jaguar", "negate": false, "require": true }, // term must appear in search results
+    {"term": "speed", "negate": false, "require": false }, // term may appear 
+    {"term": "south america", "negate": false, "require": false }, // term may appear but exactly as "south america"
+    {"term": "car", "negate": true, "require": false } // term must NOT appear in search results
+  ]
+}
+```
+
 ## Environments
 You must have NodeJS already installed on your machine, then run `npm install` before running any other commands.
 

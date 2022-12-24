@@ -2,20 +2,18 @@ import { TokenType, QueryTokenizer } from '../src/tokenizer';
 
 test('it should strip illegal character from query', () => {
   const invalid = '@(,<=\\*#>';
-  const invalid2 = '$^.]_|+.&';
+  const invalid2 = '$^.]_|.&';
   const invalid3 = "[~`!{%}/*)';";
   const tokenizer = new QueryTokenizer(
     `lorem${invalid} ipsum${invalid2} dolor${invalid3}`
   );
-  expect(tokenizer.queryText).not.toContain(invalid);
-  expect(tokenizer.queryText).not.toContain(invalid2);
-  expect(tokenizer.queryText).not.toContain(invalid3);
+
   expect(tokenizer.queryText).toEqual('lorem ipsum dolor');
 });
 
 test('it should not strip legal character from query', () => {
-  const tokenizer = new QueryTokenizer(`-negated Term "eXact term"`);
-  expect(tokenizer.queryText).toEqual('-negated Term "eXact term"');
+  const tokenizer = new QueryTokenizer(`-negated +Term "eXact term"`);
+  expect(tokenizer.queryText).toEqual('-negated +Term "eXact term"');
 });
 
 test('it should not create tokens for empty queries', () => {
@@ -31,7 +29,7 @@ test('it should create tokens for simple terms', () => {
   expect(tokens.length).toBe(2);
 
   expect(tokens[0].type).toEqual(TokenType.Term);
-  expect(tokens[0].text).toEqual('hello');
+  expect(tokens[0].text).toEqual('Hello');
 
   expect(tokens[1].type).toEqual(TokenType.Term);
   expect(tokens[1].text).toEqual('world');
@@ -42,57 +40,41 @@ test('it should create tokens for exact terms', () => {
   expect(tokens.length).toBe(2);
 
   expect(tokens[0].type).toEqual(TokenType.ExactTerm);
-  expect(tokens[0].text).toEqual('sea bass');
+  expect(tokens[0].text).toEqual(`"sea bass"`);
 
   expect(tokens[1].type).toEqual(TokenType.Term);
   expect(tokens[1].text).toEqual('salmon');
 });
 
-test('it should create tokens for negated terms', () => {
-  const tokens = new QueryTokenizer(` -car jaguar speed `).tokenize();
+test('it should create tokens for presence terms', () => {
+  const tokens = new QueryTokenizer(` -car +jaguar speed `).tokenize();
   expect(tokens.length).toBe(3);
 
-  expect(tokens[0].type).toEqual(TokenType.NegatedTerm);
-  expect(tokens[0].text).toEqual('car');
+  expect(tokens[0].type).toEqual(TokenType.PresenceTerm);
+  expect(tokens[0].text).toEqual('-car');
 
-  expect(tokens[1].type).toEqual(TokenType.Term);
-  expect(tokens[1].text).toEqual('jaguar');
+  expect(tokens[1].type).toEqual(TokenType.PresenceTerm);
+  expect(tokens[1].text).toEqual('+jaguar');
 
   expect(tokens[2].type).toEqual(TokenType.Term);
   expect(tokens[2].text).toEqual('speed');
 });
 
-test('it should create token for OR operator', () => {
-  const tokens = new QueryTokenizer(
-    ` "backend engineer"  OR  "full stack" `
-  ).tokenize();
-  expect(tokens.length).toBe(3);
-
-  expect(tokens[0].type).toEqual(TokenType.ExactTerm);
-  expect(tokens[0].text).toEqual('backend engineer');
-
-  expect(tokens[1].type).toEqual(TokenType.OrOperator);
-  expect(tokens[1].text).toEqual('or');
-
-  expect(tokens[2].type).toEqual(TokenType.ExactTerm);
-  expect(tokens[2].text).toEqual(`full stack`);
-});
-
 test('it should create tokens when combining terms', () => {
   const tokens = new QueryTokenizer(
-    ` -"web design"  ux OR  "user experience"  `
+    ` -"web design"  ux  +"user experience"  "2022" `
   ).tokenize();
   expect(tokens.length).toBe(4);
 
-  expect(tokens[0].type).toEqual(TokenType.NegatedTerm);
-  expect(tokens[0].text).toEqual(`web design`);
+  expect(tokens[0].type).toEqual(TokenType.PresenceTerm);
+  expect(tokens[0].text).toEqual(`-"web design"`);
 
   expect(tokens[1].type).toEqual(TokenType.Term);
   expect(tokens[1].text).toEqual('ux');
 
-  expect(tokens[2].type).toEqual(TokenType.OrOperator);
-  expect(tokens[2].text).toEqual('or');
+  expect(tokens[2].type).toEqual(TokenType.PresenceTerm);
+  expect(tokens[2].text).toEqual(`+"user experience"`);
 
   expect(tokens[3].type).toEqual(TokenType.ExactTerm);
-  expect(tokens[3].text).toEqual('user experience');
+  expect(tokens[3].text).toEqual(`"2022"`);
 });

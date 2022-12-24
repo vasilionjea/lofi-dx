@@ -1,49 +1,31 @@
-import { unquote, stripModifiers } from './tokenizer-utils';
-
 export enum TokenType {
   Invalid = 'Invalid',
-  NegatedTerm = 'NegatedTerm',
+  PresenceTerm = 'PresenceTerm',
   ExactTerm = 'ExactTerm',
-  OrOperator = 'OrOperator',
   Term = 'Term',
 }
 
-const modifierTypes = [TokenType.NegatedTerm];
-const quotedTypes = [TokenType.ExactTerm, TokenType.NegatedTerm];
-
 // Test at: https://regex101.com
 const termRegexes = {
-  [TokenType.NegatedTerm]: /(?<NegatedTerm>-(\w{2,}|"(?:[\s\w]+)"))/, // unquoted or quoted
+  [TokenType.PresenceTerm]: /(?<PresenceTerm>(-|\+)(\w{2,}|"(?:[\s\w]+)"))/, // unquoted or quoted
   [TokenType.ExactTerm]: /(?<ExactTerm>("(?:[\s\w]+)"))/, // quoted
-  [TokenType.OrOperator]: /(?<OrOperator>OR)/,
   [TokenType.Term]: /(?<Term>\w+)/, // unquoted
 };
 
 const tokenizerRegex = new RegExp(
-  `${termRegexes[TokenType.NegatedTerm].source}|` +
+  `${termRegexes[TokenType.PresenceTerm].source}|` +
     `${termRegexes[TokenType.ExactTerm].source}|` +
-    `${termRegexes[TokenType.OrOperator].source}|` +
     `${termRegexes[TokenType.Term].source}`,
   'g'
 );
 
 export class Token {
-  constructor(public type: TokenType, public text: string) {
-    if (modifierTypes.includes(this.type)) {
-      this.text = stripModifiers(this.text);
-    }
-
-    if (quotedTypes.includes(this.type)) {
-      this.text = unquote(this.text);
-    }
-
-    this.text = this.text.toLowerCase().trim();
-  }
+  constructor(public type: TokenType, public text: string) {}
 }
 
 export class QueryTokenizer {
-  queryText: string;
-  private queryInvalidChars = /[^-a-z0-9\s"]+/gi;
+  readonly queryText: string;
+  private queryInvalidChars = /(?:[^-+a-z0-9\s"]+)/gi;
 
   constructor(rawQuery: string) {
     // Strip all chars except what's allowed inside a query
@@ -53,12 +35,10 @@ export class QueryTokenizer {
   private getTokenType(matchGroup: { [key: string]: string } = {}) {
     let type = TokenType.Invalid;
 
-    if (matchGroup.NegatedTerm) {
-      type = TokenType.NegatedTerm;
+    if (matchGroup.PresenceTerm) {
+      type = TokenType.PresenceTerm;
     } else if (matchGroup.ExactTerm) {
       type = TokenType.ExactTerm;
-    } else if (matchGroup.OrOperator) {
-      type = TokenType.OrOperator;
     } else if (matchGroup.Term) {
       type = TokenType.Term;
     }

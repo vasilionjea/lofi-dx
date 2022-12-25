@@ -1,26 +1,20 @@
 import './styles/style.scss';
-import { QueryTokenizer, QueryParser } from '../src/index';
+import { QueryTokenizer, QueryParser, Query, Token } from '../src/index';
 
 function log(queryText: string) {
-  const tokens = new QueryTokenizer(queryText).tokenize();
-  const parser = new QueryParser(tokens);
-  const query = parser.parse();
+  const tokens: Token[] = new QueryTokenizer(queryText).tokenize();
+  const query: Query = new QueryParser(tokens).parse();
 
   console.log(`\n${queryText}`);
+  console.log(tokens);
   console.log(query);
 }
 
-// Terms
-log(` Hello  world! `);
+// Term & ExactTerm
+log(` word apostophe's [not_okay] the  "exactly this"  "exactly, that!"  12-word-34 "#!^$%&" `);
 
-// Exact term, presence term
-log(` "sea bass"  +salmon `);
+// PresenceTerm
+log(` -negated  it is  -"also negated"  -"also, this one's"   +required  +"also required"  + `);
 
-// Presence term, term, exact term, presence term
-log(` +jaguar speed "south america" -car `);
-
-// Presence term, term, exact term
-log(` -"web design"  ux  "user  experience" `);
-
-// Mixed terms with invalid chars
-log(`  +frontend engineer [~!{%}/*) -backend  "ux  engineer "   -"full stack" `);
+// Mixed with invalid chars
+log(` @#* +required notrequired  ~!} 10.5% /(  "10% off"  -negated  "exact,  term "   -"also, negated's." `);

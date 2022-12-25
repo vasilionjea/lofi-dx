@@ -1,11 +1,9 @@
 import { TokenType, QueryTokenizer } from '../src/tokenizer';
 
 test('it should strip illegal character from query', () => {
-  const invalid = '@(,<=\\*#>';
-  const invalid2 = '$^.]_|.&';
-  const invalid3 = "[~`!{%}/*)';";
+  const invalid = '^*()_}][{>\\<|/`~}';
   const tokenizer = new QueryTokenizer(
-    `lorem${invalid} ipsum${invalid2} dolor${invalid3}`
+    `lorem${invalid} ipsum${invalid} dolor${invalid}`
   );
 
   expect(tokenizer.queryText).toEqual('lorem ipsum dolor');
@@ -32,7 +30,7 @@ test('it should create tokens for simple terms', () => {
   expect(tokens[0].text).toEqual('Hello');
 
   expect(tokens[1].type).toEqual(TokenType.Term);
-  expect(tokens[1].text).toEqual('world');
+  expect(tokens[1].text).toEqual('world!');
 });
 
 test('it should create tokens for exact terms', () => {
@@ -47,7 +45,7 @@ test('it should create tokens for exact terms', () => {
 });
 
 test('it should create tokens for presence terms', () => {
-  const tokens = new QueryTokenizer(` -car +jaguar speed `).tokenize();
+  const tokens = new QueryTokenizer(` -car +jaguar speed`).tokenize();
   expect(tokens.length).toBe(3);
 
   expect(tokens[0].type).toEqual(TokenType.PresenceTerm);
@@ -77,4 +75,9 @@ test('it should create tokens when combining terms', () => {
 
   expect(tokens[3].type).toEqual(TokenType.ExactTerm);
   expect(tokens[3].text).toEqual(`"2022"`);
+});
+
+test('it should not create tokens for stopwords', () => {
+  const tokens = new QueryTokenizer(`it is @#$% the me was what`).tokenize();
+  expect(tokens.length).toBe(0);
 });

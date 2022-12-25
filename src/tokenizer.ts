@@ -1,3 +1,5 @@
+import { isStopWord } from './utils';
+
 export enum TokenType {
   Invalid = 'Invalid',
   PresenceTerm = 'PresenceTerm',
@@ -7,9 +9,10 @@ export enum TokenType {
 
 // Test at: https://regex101.com
 const termRegexes = {
-  [TokenType.PresenceTerm]: /(?<PresenceTerm>(-|\+)(\w{2,}|"(?:[\s\w]+)"))/, // unquoted or quoted
-  [TokenType.ExactTerm]: /(?<ExactTerm>("(?:[\s\w]+)"))/, // quoted
-  [TokenType.Term]: /(?<Term>\w+)/, // unquoted
+  [TokenType.PresenceTerm]:
+    /(?<PresenceTerm>(?:(\s+)?([-+]))((\w{2,})|"(?:[^"]+)"))/, // unquoted or quoted
+  [TokenType.ExactTerm]: /(?<ExactTerm>("(?:[^"]+)"))/, // quoted
+  [TokenType.Term]: /(?<Term>[^ ]+)/, // unquoted
 };
 
 const tokenizerRegex = new RegExp(
@@ -25,10 +28,9 @@ export class Token {
 
 export class QueryTokenizer {
   readonly queryText: string;
-  private queryInvalidChars = /(?:[^-+a-z0-9\s"]+)/gi;
+  private queryInvalidChars = /(?:[\^*()_}\]\\[{>\\<|\\/`~}]+)/gi;
 
   constructor(rawQuery: string) {
-    // Strip all chars except what's allowed inside a query
     this.queryText = rawQuery.replace(this.queryInvalidChars, '');
   }
 
@@ -52,9 +54,11 @@ export class QueryTokenizer {
     for (const match of this.queryText.matchAll(tokenizerRegex)) {
       if (match && match.groups) {
         const type = this.getTokenType(match.groups);
-        const text = match[0] || '';
+        const text = (match[0] || '').trim();
 
-        tokens.push(new Token(type, text));
+        if (text && !isStopWord(text)) {
+          tokens.push(new Token(type, text));
+        }
       }
     }
 

@@ -1,10 +1,12 @@
 import {
   hasOwnProperty,
   isNone,
+  typeOf,
+  objectIntersection,
   unquote,
   stripModifiers,
-  stripWhitespace,
-  objectIntersection,
+  collapseWhitespace,
+  isBlank,
   isStopWord,
 } from '../src/utils';
 
@@ -21,6 +23,55 @@ test('[isNone] it returns true only when value is null or undefined', () => {
   expect(isNone(false)).toBe(false);
   expect(isNone(0)).toBe(false);
   expect(isNone('')).toBe(false);
+});
+
+test(`[typeOf] it should return an object's JavaScript type`, () => {
+  expect(typeOf(null)).toBe('null');
+  expect(typeOf(undefined)).toBe('undefined');
+  expect(typeOf(false)).toBe('boolean');
+  expect(typeOf(true)).toBe('boolean');
+  expect(typeOf('foo bar')).toBe('string');
+  expect(typeOf(10)).toBe('number');
+
+  expect(typeOf([])).toBe('array');
+  expect(typeOf(new Set())).toBe('set');
+
+  expect(typeOf({})).toBe('object');
+  expect(typeOf(new Map())).toBe('map');
+
+  const fn = () => 0;
+  expect(typeOf(fn)).toBe('function');
+
+  expect(typeOf(new Date())).toBe('date');
+  expect(typeOf(new RegExp(''))).toBe('regexp');
+  expect(typeOf(/./g)).toBe('regexp');
+  expect(typeOf(Symbol('id'))).toBe('symbol');
+  expect(typeOf(new Error('oh no'))).toBe('error');
+});
+
+test('[objectIntersection] it should return values that intersect', () => {
+  const first = { foo: 'foo', bar: 'bar' };
+  const second = { biz: 'biz', bar: 'bar' };
+  const intersection = objectIntersection(first, second);
+  const intersectionKeys = Object.keys(intersection);
+
+  expect(intersectionKeys.length).toBe(1);
+  expect(intersectionKeys[0]).toBe('bar');
+  expect(intersection).toMatchObject({ bar: 'bar' });
+});
+
+test('[isBlank] it should return true when string is empty or only whitespace', () => {
+  expect(isBlank('')).toBe(true);
+  expect(isBlank(' ')).toBe(true);
+  expect(isBlank('   ')).toBe(true);
+  expect(isBlank('foo')).toBe(false);
+  expect(isBlank('  foo  ')).toBe(false);
+});
+
+test('[isStopWord] it should return true for stopwords or non-word characters', () => {
+  expect(isStopWord('the')).toBe(true);
+  expect(isStopWord('is')).toBe(true);
+  expect(isStopWord('@&$^%*')).toBe(true);
 });
 
 test('[unquote] it removes quotes from text', () => {
@@ -41,27 +92,10 @@ test('[stripModifiers] it removes quotes from text', () => {
   expect(stripModifiers('++"quoted thing"')).toEqual('"quoted thing"');
 });
 
-test('[stripWhitespace] it removes quotes from text', () => {
-  expect(stripWhitespace(' +modifier')).toEqual('+modifier');
-  expect(stripWhitespace('  "thing" ')).toEqual(`"thing"`);
-  expect(stripWhitespace(`  -"quoted   modifier" `)).toEqual(
+test('[collapseWhitespace] it removes quotes from text', () => {
+  expect(collapseWhitespace(' +modifier')).toEqual('+modifier');
+  expect(collapseWhitespace('  "thing" ')).toEqual(`"thing"`);
+  expect(collapseWhitespace(`  -"quoted   modifier" `)).toEqual(
     `-"quoted modifier"`
   );
-});
-
-test('[objectIntersection] it should return values that intersect', () => {
-  const first = { foo: 'foo', bar: 'bar' };
-  const second = { biz: 'biz', bar: 'bar' };
-  const intersection = objectIntersection(first, second);
-  const intersectionKeys = Object.keys(intersection);
-
-  expect(intersectionKeys.length).toBe(1);
-  expect(intersectionKeys[0]).toBe('bar');
-  expect(intersection).toMatchObject({ bar: 'bar' });
-});
-
-test('[isStopWord] it should return true for stopwords or non-word characters', () => {
-  expect(isStopWord('the')).toBe(true);
-  expect(isStopWord('is')).toBe(true);
-  expect(isStopWord('@&$^%*')).toBe(true);
 });

@@ -1,20 +1,33 @@
 import './styles/style.scss';
-import { QueryTokenizer, QueryParser, Query, Token } from '../src/index';
+import { QueryTokenizer, QueryParser, Query, Token, Search } from '../src/index';
 
-function log(queryText: string) {
+// Add documents to the index
+const people = new Search({ uidKey: 'id' }).addDocuments([
+  { id: 11, name: 'Alice Smith', title: 'Product Designer' },
+  { id: 32, name: 'Joe Brown', title: 'Senior Software Engineer' },
+  { id: 7, name: 'Jay Doe', title: 'Senior Product Designer' },
+  { id: 55, name: 'Mary', title: 'Senior Product Designer' },
+  { id: 49, name: 'Helen Queen', title: 'Senior Staff Software Engineer' },
+]).index('title');
+
+function searchPeople(queryText: string) {
   const tokens: Token[] = new QueryTokenizer(queryText).tokenize();
   const query: Query = new QueryParser(tokens).parse();
 
-  console.log(`\n${queryText}`);
-  console.log(tokens);
+  const results = people.search(query);
+
+
   console.log(query);
+  console.log(results);
 }
 
+searchPeople('Engineer');
+
 // Term & ExactTerm
-log(` word apostophe's [not_okay] the  "exactly this"  "exactly, that!"  12-word-34 "#!^$%&" `);
+// ` word apostophe's [not_okay] the  "exactly this"  "exactly, that!"  12-word-34 "#!^$%&" `
 
 // PresenceTerm
-log(` -negated  it is  -"also negated"  -"also, this one's"   +required  +"also required"  + `);
+// ` -negated  it is  -"also negated"  -"also, this one's"   +required  +"also required"  + `
 
 // Mixed with invalid chars
-log(` @#* +required notrequired  ~!} 10.5% /(  "10% off"  -negated  "exact,  term "   -"also, negated's." `);
+// ` @#* +required notrequired  ~!} 10.5% /(  "10% off"  -negated  "exact,  term "   -"also, negated's." `

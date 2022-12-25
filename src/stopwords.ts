@@ -1,4 +1,4 @@
-export const STOPWORDS = [
+const STOPWORDS = [
   'a',
   'able',
   'about',

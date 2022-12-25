@@ -1,5 +1,5 @@
 import { Token, TokenType } from './tokenizer';
-import { unquote, stripModifiers, stripWhitespace } from './utils';
+import { unquote, stripModifiers, collapseWhitespace } from './utils';
 
 export interface QueryPart {
   term: string;
@@ -19,7 +19,7 @@ export class QueryParser {
   constructor(public readonly tokens: Token[]) {}
 
   private parsePresence(part: QueryPart) {
-    const term = unquote(part.term).trim();
+    const term = collapseWhitespace(unquote(part.term));
 
     if (term.startsWith('-')) {
       part.negate = true;
@@ -30,12 +30,19 @@ export class QueryParser {
     part.term = stripModifiers(term);
   }
 
+  private parseExact(part: QueryPart) {
+    part.term = collapseWhitespace(unquote(part.term));
+  }
+
   parse() {
     const query = new Query();
 
     for (const token of this.tokens) {
-      const term = stripWhitespace(token.text.toLocaleLowerCase());
-      const part: QueryPart = { term, negate: false, require: false };
+      const part: QueryPart = {
+        term: token.text.toLocaleLowerCase(),
+        negate: false,
+        require: false,
+      };
 
       switch (token.type) {
         case TokenType.PresenceTerm:
@@ -43,7 +50,7 @@ export class QueryParser {
           break;
 
         case TokenType.ExactTerm:
-          part.term = unquote(part.term).trim();
+          this.parseExact(part);
           break;
       }
 

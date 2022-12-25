@@ -43,6 +43,7 @@ export class Search {
     this.searchFields =
       opts.searchFields || Search.defaultSearchFields.concat();
 
+    // Documents haven't been added yet :(
     // this.searchFields.forEach(field => this.index(field));
   }
 
@@ -85,7 +86,7 @@ export class Search {
   search(query: Query) {
     let result = {};
     const size = query.parts.length;
-    console.log(this.indexTable);
+
     for (let i = 0; i < size; i++) {
       const part = query.parts[i];
       const tokenTable = this.indexTable[part.term];

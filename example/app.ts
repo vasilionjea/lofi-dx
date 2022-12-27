@@ -1,27 +1,31 @@
 import './styles/style.scss';
 import { QueryTokenizer, QueryParser, Query, Token, Search } from '../src/index';
 
-// Add documents to the index
-const people = new Search({ uidKey: 'id' }).addDocuments([
-  { id: 11, name: 'Alice Smith', title: 'Product Designer' },
-  { id: 32, name: 'Joe Brown', title: 'Senior Software Engineer' },
-  { id: 7, name: 'Jay Doe', title: 'Senior Product Designer' },
-  { id: 55, name: 'Mary', title: 'Senior Product Designer' },
-  { id: 49, name: 'Helen Queen', title: 'Senior Staff Software Engineer' },
-]).index('title');
+// Create and add docs to the index
+const people = new Search({
+  uidKey: 'id',
+  searchFields: ['title'],
+});
 
+people.addDocuments([
+  { id: 11, name: 'Alice Smith', title: 'UX Designer' },
+  { id: 32, name: 'Joe Brown', title: 'Senior Software Engineer' },
+  { id: 7, name: 'Jay Doe', title: 'Product Designer' },
+  { id: 55, name: 'Mary', title: 'Senior Product Designer' },
+  { id: 49, name: 'Helen Queen', title: 'Staff Software Engineer Engineer' },
+]);
+
+// Example search
 function searchPeople(queryText: string) {
   const tokens: Token[] = new QueryTokenizer(queryText).tokenize();
   const query: Query = new QueryParser(tokens).parse();
 
   const results = people.search(query);
 
-
-  console.log(query);
-  console.log(results);
+  console.log('query:', query);
 }
 
-searchPeople('Engineer');
+searchPeople('+ux designer -engineer "exactly this"');
 
 // Term & ExactTerm
 // ` word apostophe's [not_okay] the  "exactly this"  "exactly, that!"  12-word-34 "#!^$%&" `

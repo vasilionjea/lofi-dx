@@ -1,11 +1,5 @@
-import {
-  collapseWhitespace,
-  isNone,
-  isBlank,
-  objectIntersection,
-  typeOf,
-} from './utils';
-import { Query } from './parser';
+import { collapseWhitespace, isNone, isBlank } from './utils';
+import { Query, QueryPart } from './parser';
 
 interface SearchOptions {
   uidKey: string;
@@ -16,10 +10,21 @@ interface Doc {
   [key: string]: unknown;
 }
 
+interface DocTable {
+  [key: string]: Doc;
+}
+
 interface IndexTable {
   [key: string]: {
-    [key: string]: Doc;
+    // token
+    [key: string]: number; // uid: frequency
   };
+}
+
+interface PartGroups {
+  required: QueryPart[];
+  negated: QueryPart[];
+  rest: QueryPart[];
 }
 
 const DEFAULT_UID_KEY = 'id';
@@ -35,19 +40,17 @@ export class Search {
 
   private readonly uidKey: string;
 
-  private readonly documents: Doc[] = [];
+  private readonly documentsTable: DocTable = {};
   private readonly indexTable: IndexTable = {};
 
   constructor(opts: SearchOptions) {
     this.uidKey = opts.uidKey || DEFAULT_UID_KEY;
-    this.searchFields =
-      opts.searchFields || Search.defaultSearchFields.concat();
-
-    // Documents haven't been added yet :(
-    // this.searchFields.forEach(field => this.index(field));
+    this.searchFields = (
+      opts.searchFields || Search.defaultSearchFields
+    ).concat();
   }
 
-  private tokenizeField(value: string) {
+  private tokenizeFieldValue(value: string) {
     return collapseWhitespace(value)
       .toLocaleLowerCase()
       .split(DOCUMENT_SPLITTER);
@@ -55,56 +58,76 @@ export class Search {
 
   index(field: string) {
     if (isNone(field) || isBlank(field)) return this;
-    if (typeOf(field) !== 'string') return this;
-
-    for (const doc of this.documents) {
-      const uid = doc[this.uidKey] as string;
-      this.indexDocument(field, { uid, doc });
+    for (const doc of Object.values(this.documentsTable)) {
+      this.indexDocument(field, doc);
     }
-
     return this;
   }
 
-  private indexDocument(field: string, obj: { uid: string; doc: Doc }) {
-    const { uid, doc } = obj;
+  private indexDocument(field: string, doc: Doc) {
+    const uid = doc[this.uidKey] as string;
     if (isNone(uid)) return;
 
-    for (const token of this.tokenizeField(doc[field] as string)) {
-      if (typeOf(this.indexTable[token]) !== 'object') {
-        this.indexTable[token] = {};
-      }
-      this.indexTable[token][uid] = doc;
+    for (const token of this.tokenizeFieldValue(doc[field] as string)) {
+      if (!this.indexTable[token]) this.indexTable[token] = {};
+      let frequency = this.indexTable[token][uid] || 0;
+      this.indexTable[token][uid] = ++frequency;
     }
   }
 
   addDocuments(docs: Doc[]) {
     if (isNone(docs) || !Array.isArray(docs)) return this;
-    this.documents.push(...docs);
+
+    for (const doc of docs) {
+      const uid = doc[this.uidKey] as string;
+      this.documentsTable[uid] = doc;
+    }
+
+    // Re-index search fields after adding docs
+    this.searchFields.forEach((field) => this.index(field));
     return this;
   }
 
-  search(query: Query) {
-    let result = {};
-    const size = query.parts.length;
+  private getMatchesForParts(parts: QueryPart[]) {
+    const matches = {};
 
-    for (let i = 0; i < size; i++) {
-      const part = query.parts[i];
-      const tokenTable = this.indexTable[part.term];
-
-      // Currently search works only for single terms like: 'designer'
-      //
-      // (TODO) Implement all search matchers:
-      // 1. Exact terms: "product designer"
-      // 2. Presence terms: -designer +engineer
-
-      // eslint-disable-next-line no-debugger
-      // debugger;
-
-      if (tokenTable) {
-        result = i === 0 ? tokenTable : objectIntersection(result, tokenTable);
-      }
+    for (const part of parts) {
+      const tokenTable = this.indexTable[part.term] || {};
+      Object.assign(matches, tokenTable);
     }
 
-    return Object.values(result);
+    return matches;
+  }
+
+  private getGroupedParts(parts: QueryPart[]): PartGroups {
+    const groups = {
+      required: [],
+      negated: [],
+      rest: [],
+    } as PartGroups;
+
+    return parts.reduce((groups, part) => {
+      if (part.require) {
+        groups.required.push(part);
+      } else if (part.negate) {
+        groups.negated.push(part);
+      } else {
+        groups.rest.push(part);
+      }
+      return groups;
+    }, groups);
+  }
+
+  search(query: Query) {
+    const groupedParts = this.getGroupedParts(query.parts);
+    const matches = {
+      required: this.getMatchesForParts(groupedParts.required),
+      negated: this.getMatchesForParts(groupedParts.negated),
+      rest: this.getMatchesForParts(groupedParts.rest),
+    };
+
+    console.log('matches:', matches.rest);
+    console.log('negated matches:', matches.negated);
+    console.log('required matches:', matches.required);
   }
 }

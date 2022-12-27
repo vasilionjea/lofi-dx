@@ -15,9 +15,10 @@ interface DocTable {
 }
 
 interface IndexTable {
+  // token
   [key: string]: {
-    // token
-    [key: string]: number; // uid: frequency
+    // uid: frequency
+    [key: string]: number;
   };
 }
 
@@ -107,9 +108,9 @@ export class Search {
     } as PartGroups;
 
     return parts.reduce((groups, part) => {
-      if (part.require) {
+      if (part.required) {
         groups.required.push(part);
-      } else if (part.negate) {
+      } else if (part.negated) {
         groups.negated.push(part);
       } else {
         groups.rest.push(part);

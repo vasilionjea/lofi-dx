@@ -3,8 +3,8 @@ import { unquote, stripModifiers, collapseWhitespace } from './utils';
 
 export interface QueryPart {
   term: string;
-  negate: boolean;
-  require: boolean;
+  negated: boolean;
+  required: boolean;
 }
 
 export class Query {
@@ -22,9 +22,9 @@ export class QueryParser {
     const term = collapseWhitespace(unquote(part.term));
 
     if (term.startsWith('-')) {
-      part.negate = true;
+      part.negated = true;
     } else if (term.startsWith('+')) {
-      part.require = true;
+      part.required = true;
     }
 
     part.term = stripModifiers(term);
@@ -40,8 +40,8 @@ export class QueryParser {
     for (const token of this.tokens) {
       const part: QueryPart = {
         term: token.text.toLocaleLowerCase(),
-        negate: false,
-        require: false,
+        negated: false,
+        required: false,
       };
 
       switch (token.type) {

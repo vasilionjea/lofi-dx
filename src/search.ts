@@ -101,13 +101,9 @@ export class Search {
   }
 
   private getGroupedParts(parts: QueryPart[]): PartGroups {
-    const groups = {
-      required: [],
-      negated: [],
-      rest: [],
-    } as PartGroups;
+    const groups = { required: [], negated: [], rest: [] } as PartGroups;
 
-    return parts.reduce((groups, part) => {
+    for (const part of parts) {
       if (part.required) {
         groups.required.push(part);
       } else if (part.negated) {
@@ -115,8 +111,9 @@ export class Search {
       } else {
         groups.rest.push(part);
       }
-      return groups;
-    }, groups);
+    }
+
+    return groups;
   }
 
   search(query: Query) {

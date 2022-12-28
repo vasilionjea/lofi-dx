@@ -168,4 +168,12 @@ export class Search {
   getIndexTable() {
     return { ...this.indexTable };
   }
+
+  toJSON() {
+    return {
+      searchFields: this.searchFields.concat(),
+      documents: this.getDocumentsTable(),
+      index: this.getIndexTable(),
+    };
+  }
 }

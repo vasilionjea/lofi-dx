@@ -10,7 +10,7 @@ const people = new Search({
 people.addDocuments([
   { id: 11, name: 'Alice Smith', title: 'UX Designer' },
   { id: 32, name: 'Joe Brown', title: 'Senior Software Engineer' },
-  { id: 7, name: 'Jay Doe', title: 'Product Designer' },
+  { id: 7, name: 'Jay Doe', title: 'UX Product Manager' },
   { id: 55, name: 'Mary', title: 'Senior Product Designer' },
   { id: 49, name: 'Helen Queen', title: 'Staff Software Engineer Engineer' },
 ]);
@@ -23,9 +23,10 @@ function searchPeople(queryText: string) {
   const results = people.search(query);
 
   console.log('query:', query);
+  console.log('results:', results);
 }
 
-searchPeople('+ux designer -engineer "exactly this"');
+searchPeople('software -staff');
 
 // Term & ExactTerm
 // ` word apostophe's [not_okay] the  "exactly this"  "exactly, that!"  12-word-34 "#!^$%&" `

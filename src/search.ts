@@ -1,4 +1,11 @@
-import { collapseWhitespace, isNone, isBlank } from './utils';
+import {
+  collapseWhitespace,
+  isNone,
+  isBlank,
+  hasOwnProperty,
+  objectIntersection,
+  objectDifference,
+} from './utils';
 import { Query, QueryPart } from './parser';
 
 interface SearchOptions {
@@ -14,12 +21,14 @@ interface DocTable {
   [key: string]: Doc;
 }
 
+interface IndexTokenTable {
+  // doc uid: frequency
+  [key: string]: number;
+}
+
 interface IndexTable {
   // token
-  [key: string]: {
-    // uid: frequency
-    [key: string]: number;
-  };
+  [key: string]: IndexTokenTable;
 }
 
 interface PartGroups {
@@ -89,18 +98,7 @@ export class Search {
     return this;
   }
 
-  private getMatchesForParts(parts: QueryPart[]) {
-    const matches = {};
-
-    for (const part of parts) {
-      const tokenTable = this.indexTable[part.term] || {};
-      Object.assign(matches, tokenTable);
-    }
-
-    return matches;
-  }
-
-  private getGroupedParts(parts: QueryPart[]): PartGroups {
+  private groupParts(parts: QueryPart[]): PartGroups {
     const groups = { required: [], negated: [], rest: [] } as PartGroups;
 
     for (const part of parts) {
@@ -116,16 +114,50 @@ export class Search {
     return groups;
   }
 
-  search(query: Query) {
-    const groupedParts = this.getGroupedParts(query.parts);
-    const matches = {
-      required: this.getMatchesForParts(groupedParts.required),
-      negated: this.getMatchesForParts(groupedParts.negated),
-      rest: this.getMatchesForParts(groupedParts.rest),
-    };
+  private getMatches(parts: QueryPart[]) {
+    const matches = {};
 
-    console.log('matches:', matches.rest);
-    console.log('negated matches:', matches.negated);
-    console.log('required matches:', matches.required);
+    for (const part of parts) {
+      const tokenTable = this.indexTable[part.term] || {};
+      Object.assign(matches, tokenTable);
+    }
+
+    return matches;
+  }
+
+  private getMatchesForRequired(parts: QueryPart[]) {
+    let matches = {};
+
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+      const tokenTable = this.indexTable[part.term];
+
+      if (tokenTable) {
+        // Multiple required terms are a logical AND, e.g. `+foo +bar` means "foo" AND "bar"
+        matches =
+          i === 0 ? tokenTable : objectIntersection(matches, tokenTable);
+      }
+    }
+
+    return Object.keys(matches as IndexTokenTable);
+  }
+
+  search(query: Query) {
+    const groupedParts = this.groupParts(query.parts);
+
+    const negatedMatches = this.getMatches(groupedParts.negated);
+    const restOfMatches = this.getMatches(groupedParts.rest);
+
+    // Stop early if we have required terms
+    if (groupedParts.required.length) {
+      return this.getMatchesForRequired(groupedParts.required)
+        .filter((uid) => !hasOwnProperty(negatedMatches, uid))
+        .map((uid) => this.documentsTable[uid]);
+    }
+
+    // Return matches without the ones from negated terms
+    return Object.keys(objectDifference(restOfMatches, negatedMatches)).map(
+      (uid) => this.documentsTable[uid]
+    );
   }
 }

@@ -44,13 +44,21 @@ export function objectIntersection(
   second: Record<string, unknown>
 ) {
   const result: Record<string, unknown> = {};
-
   for (const key of Object.keys(first)) {
-    if (hasOwnProperty(second, key)) {
-      result[key] = first[key];
-    }
+    if (hasOwnProperty(second, key)) result[key] = first[key];
   }
+  return result;
+}
 
+// Returns a result object with keys that aren't in the second object
+export function objectDifference(
+  first: Record<string, unknown>,
+  second: Record<string, unknown>
+) {
+  const result: Record<string, unknown> = {};
+  for (const key of Object.keys(first)) {
+    if (!hasOwnProperty(second, key)) result[key] = first[key];
+  }
   return result;
 }
 

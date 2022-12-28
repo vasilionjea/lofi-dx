@@ -80,6 +80,7 @@ export class Search {
 
     for (const token of this.tokenizeFieldValue(doc[field] as string)) {
       if (!this.indexTable[token]) this.indexTable[token] = {};
+
       let frequency = this.indexTable[token][uid] || 0;
       this.indexTable[token][uid] = ++frequency;
     }
@@ -158,5 +159,13 @@ export class Search {
     return Object.keys(objectDifference(restOfMatches, negatedMatches)).map(
       (uid) => this.documentsTable[uid]
     );
+  }
+
+  getDocumentsTable() {
+    return { ...this.documentsTable };
+  }
+
+  getIndexTable() {
+    return { ...this.indexTable };
   }
 }

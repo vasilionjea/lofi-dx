@@ -21,9 +21,11 @@ function searchPeople(queryText: string) {
   const query: Query = new QueryParser(tokens).parse();
 
   const results = people.search(query);
+  console.log('documents:', people.getDocumentsTable());
+  console.log('index:', people.getIndexTable());
 
   console.log('query:', query);
-  console.log('results:', results);
+  console.log('results =>', results);
 }
 
 searchPeople('software -staff');

@@ -144,9 +144,7 @@ export class Search {
 
   search(query: Query) {
     const groupedParts = this.groupParts(query.parts);
-
     const negatedMatches = this.getMatches(groupedParts.negated);
-    const restOfMatches = this.getMatches(groupedParts.rest);
 
     // Stop early if we have required terms
     if (groupedParts.required.length) {
@@ -156,6 +154,7 @@ export class Search {
     }
 
     // Return matches without the ones from negated terms
+    const restOfMatches = this.getMatches(groupedParts.rest);
     return Object.keys(objectDifference(restOfMatches, negatedMatches)).map(
       (uid) => this.documentsTable[uid]
     );

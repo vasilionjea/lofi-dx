@@ -2,7 +2,6 @@ import {
   collapseWhitespace,
   isNone,
   isBlank,
-  hasOwnProperty,
   objectIntersection,
   objectDifference,
 } from './utils';

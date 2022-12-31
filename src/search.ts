@@ -127,7 +127,11 @@ export class Search {
   }
 
   private groupParts(parts: QueryPart[]): PartGroups {
-    const groups = { required: [], negated: [], simple: [] } as PartGroups;
+    const groups = {
+      required: [],
+      negated: [],
+      simple: [],
+    } as PartGroups;
 
     for (const part of parts) {
       switch (part.type) {

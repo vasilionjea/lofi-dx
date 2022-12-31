@@ -13,7 +13,5 @@ module.exports = {
   resetMocks: true,
 
   // https://jestjs.io/docs/configuration#globals-object
-  globals: {
-
-  },
+  globals: {},
 };

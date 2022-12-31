@@ -1,10 +1,16 @@
 import { Token, TokenType } from './tokenizer';
 import { unquote, stripModifiers, collapseWhitespace } from './utils';
 
+export enum QueryPartType {
+  Simple,
+  Negated,
+  Required,
+}
+
 export interface QueryPart {
   term: string;
-  negated: boolean;
-  required: boolean;
+  type: QueryPartType;
+  isPhrase: boolean;
 }
 
 export class Query {
@@ -19,18 +25,25 @@ export class QueryParser {
   constructor(public readonly tokens: Token[]) {}
 
   private parsePresence(part: QueryPart) {
-    const term = collapseWhitespace(unquote(part.term));
+    let term = collapseWhitespace(part.term).trim();
 
     if (term.startsWith('-')) {
-      part.negated = true;
+      part.type = QueryPartType.Negated;
     } else if (term.startsWith('+')) {
-      part.required = true;
+      part.type = QueryPartType.Required;
     }
 
-    part.term = stripModifiers(term);
+    term = stripModifiers(term);
+
+    if (term.startsWith('"')) {
+      part.isPhrase = true;
+    }
+
+    part.term = unquote(term).trim();
   }
 
   private parseExact(part: QueryPart) {
+    part.isPhrase = true;
     part.term = collapseWhitespace(unquote(part.term));
   }
 
@@ -40,8 +53,8 @@ export class QueryParser {
     for (const token of this.tokens) {
       const part: QueryPart = {
         term: token.text.toLocaleLowerCase(),
-        negated: false,
-        required: false,
+        isPhrase: false,
+        type: QueryPartType.Simple,
       };
 
       switch (token.type) {

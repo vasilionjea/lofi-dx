@@ -4,15 +4,18 @@ import { QueryTokenizer, QueryParser, Query, Token, Search } from '../src/index'
 // Create and add docs to the index
 const people = new Search({
   uidKey: 'id',
-  searchFields: ['title', 'name'],
+  searchFields: ['title'],
 });
 
 people.addDocuments([
-  { id: 11, name: 'Alice Smith', title: 'UX Designer' },
-  { id: 32, name: 'Joe Brown', title: 'Senior Software Engineer' },
-  { id: 7, name: 'Jay Doe', title: 'UX Product Manager' },
-  { id: 55, name: 'Mary', title: 'Queen Senior Product Designer' },
-  { id: 49, name: 'Helen Queen', title: 'Staff Software Engineer Engineer' },
+  { id: 3, name: 'Mike', title: 'Chief Forward Impact Engineer 3 Foo' },
+  { id: 7, name: 'Joe Doe', title: 'Chief Interactions Liason' },
+  { id: 11, name: 'Alice Smith', title: 'UX Designer Bar Baz' },
+  { id: 21, name: 'Jamie Black', title: 'Foo Graphic Designer Biz' },
+  { id: 32, name: 'Joe Brown', title: 'Senior Software Engineer Barfoo' },
+  { id: 49, name: 'Helen Queen', title: 'Staff Dynamic Resonance Orchestrator Foo' },
+  { id: 55, name: 'Mary', title: 'Queen Product Program Executive Manager Foo' },
+  { id: 101, name: 'Alan Smith', title: 'Bar Senior Staff Software Engineer 3 Foobar' },
 ]);
 
 console.log('toJSON:', people.toJSON());
@@ -23,12 +26,18 @@ function searchPeople(queryText: string) {
   const query: Query = new QueryParser(tokens).parse();
 
   const results = people.search(query);
-
-  console.log('query:', query);
-  console.log('results =>', results);
+  console.log('results:', Object.values(results).map(obj => obj.id));
 }
 
-searchPeople('queen -engineer +ux');
+searchPeople(` +senior +"software engineer" +staff `); //=> [101]
+searchPeople(` +senior +"software engineer" +staff -"engineer 3" `); //=> []
+searchPeople(`+engineer -staff`); //=> [3, 32]
+searchPeople(` +"engineer 3" +"software engineer" `); //=> [101]
+searchPeople(`+senior +software +engineer`); //=> [32, 101]
+searchPeople(`+senior +software +engineer -"senior staff"`); //=> [32]
+searchPeople(`"software engineer" designer -graphic`); //=> [11, 32, 101]
+searchPeople(`"software engineer" ux designer -"engineer 3"`); //=> [11, 21, 32]
+searchPeople(`+"software engineer" -"engineer 3"`); //=> [32]
 
 // Term & ExactTerm
 // ` word apostophe's [not_okay] the  "exactly this"  "exactly, that!"  12-word-34 "#!^$%&" `

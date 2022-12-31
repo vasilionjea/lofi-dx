@@ -6,7 +6,7 @@ import {
   objectIntersection,
   objectDifference,
 } from './utils';
-import { Query, QueryPart } from './parser';
+import { Query, QueryPart, QueryPartType } from './parser';
 
 interface SearchOptions {
   uidKey: string;
@@ -22,8 +22,11 @@ interface DocTable {
 }
 
 interface IndexTokenTable {
-  // doc uid: frequency
-  [key: string]: number;
+  // doc uid: token metadata
+  [key: string]: {
+    frequency: number;
+    postings: number[];
+  };
 }
 
 interface IndexTable {
@@ -34,7 +37,7 @@ interface IndexTable {
 interface PartGroups {
   required: QueryPart[];
   negated: QueryPart[];
-  rest: QueryPart[];
+  simple: QueryPart[];
 }
 
 const DEFAULT_UID_KEY = 'id';
@@ -60,10 +63,23 @@ export class Search {
     ).concat();
   }
 
-  private tokenizeFieldValue(value: string) {
-    return collapseWhitespace(value)
+  private tokenizeText(text: string) {
+    return collapseWhitespace(text)
       .toLocaleLowerCase()
       .split(DOCUMENT_SPLITTER);
+  }
+
+  private tokensWithPostings(tokens: string[]) {
+    const result: Array<{ value: string; posting: number }> = [];
+
+    let start = 0;
+
+    for (const token of tokens) {
+      result.push({ value: token, posting: start });
+      start += token.length + 1;
+    }
+
+    return result;
   }
 
   index(field: string) {
@@ -78,11 +94,22 @@ export class Search {
     const uid = doc[this.uidKey] as string;
     if (isNone(uid)) return;
 
-    for (const token of this.tokenizeFieldValue(doc[field] as string)) {
-      if (!this.indexTable[token]) this.indexTable[token] = {};
+    const tokens = this.tokensWithPostings(
+      this.tokenizeText(doc[field] as string)
+    );
 
-      let frequency = this.indexTable[token][uid] || 0;
-      this.indexTable[token][uid] = ++frequency;
+    for (const token of tokens) {
+      if (!this.indexTable[token.value]) this.indexTable[token.value] = {};
+
+      const entry = this.indexTable[token.value][uid];
+
+      // Existing postings & frequency
+      const postings = (entry && entry.postings) || [];
+      postings.push(token.posting);
+      let freq = (entry && entry.frequency) || 0;
+
+      // Add to index
+      this.indexTable[token.value][uid] = { frequency: ++freq, postings };
     }
   }
 
@@ -96,51 +123,111 @@ export class Search {
 
     // Re-index search fields after adding docs
     this.searchFields.forEach((field) => this.index(field));
+
     return this;
   }
 
   private groupParts(parts: QueryPart[]): PartGroups {
-    const groups = { required: [], negated: [], rest: [] } as PartGroups;
+    const groups = { required: [], negated: [], simple: [] } as PartGroups;
 
     for (const part of parts) {
-      if (part.required) {
-        groups.required.push(part);
-      } else if (part.negated) {
-        groups.negated.push(part);
-      } else {
-        groups.rest.push(part);
+      switch (part.type) {
+        case QueryPartType.Required:
+          groups.required.push(part);
+          break;
+        case QueryPartType.Negated:
+          groups.negated.push(part);
+          break;
+        case QueryPartType.Simple:
+          groups.simple.push(part);
+          break;
       }
     }
 
     return groups;
   }
 
-  private getMatches(parts: QueryPart[]) {
-    const matches = {};
+  private getSimpleMatches(part: QueryPart) {
+    const tokenTable = (part && this.indexTable[part.term]) || {};
+    return { ...tokenTable };
+  }
 
-    for (const part of parts) {
-      const tokenTable = this.indexTable[part.term] || {};
-      Object.assign(matches, tokenTable);
+  private getRequiredMatches(parts: QueryPart[]) {
+    let matches = {};
+
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+      const tokenTable = part.isPhrase
+        ? this.getPhraseMatches(part)
+        : this.getSimpleMatches(part);
+
+      if (tokenTable) {
+        matches =
+          i === 0 ? tokenTable : objectIntersection(matches, tokenTable);
+      } else {
+        matches = {};
+        break;
+      }
     }
 
     return matches;
   }
 
-  private getMatchesForRequired(parts: QueryPart[]) {
-    let matches = {};
+  private getPhraseMatches(part: QueryPart) {
+    const result: { [key: string]: unknown } = {};
+    const terms = part.term.split(DOCUMENT_SPLITTER);
 
-    for (let i = 0; i < parts.length; i++) {
-      const part = parts[i];
-      const tokenTable = this.indexTable[part.term];
+    // Retrieve docs that have all the terms
+    const matches = this.getRequiredMatches(
+      terms.map((term) => ({ term, isPhrase: false } as QueryPart))
+    );
 
-      if (tokenTable) {
-        // Multiple required terms are a logical AND, e.g. `+foo +bar` means "foo" AND "bar"
-        matches =
-          i === 0 ? tokenTable : objectIntersection(matches, tokenTable);
+    // Now check them for a phrase
+    // TODO: flatten this?
+    for (const uid of Object.keys(matches)) {
+      for (let i = 0; i < terms.length; i++) {
+        const term = terms[i];
+        const nextTerm = terms[i + 1];
+
+        if (isNone(nextTerm)) break; // no more terms
+
+        const currentDoc = this.indexTable[term][uid];
+        const nextTermTable = this.indexTable[nextTerm];
+
+        // If there is a next term but it's not in the index,
+        // it means no documents have that term anywhere
+        if (isNone(nextTermTable)) {
+          // Delete the happy path as it's now invalid
+          delete result[uid];
+          return result;
+        }
+
+        const nextDoc = nextTermTable[uid];
+
+        for (const pos of currentDoc.postings) {
+          if (nextDoc.postings.includes(pos + term.length + 1)) {
+            result[uid] = currentDoc;
+            break;
+          }
+        }
       }
     }
 
-    return Object.keys(matches as IndexTokenTable);
+    return result;
+  }
+
+  private getMatches(parts: QueryPart[]) {
+    const matches = {};
+
+    for (const part of parts) {
+      if (part.isPhrase) {
+        Object.assign(matches, this.getPhraseMatches(part));
+      } else {
+        Object.assign(matches, this.getSimpleMatches(part));
+      }
+    }
+
+    return matches;
   }
 
   search(query: Query) {
@@ -149,14 +236,15 @@ export class Search {
 
     // Stop early if we have required terms
     if (groupedParts.required.length) {
-      return this.getMatchesForRequired(groupedParts.required)
-        .filter((uid) => !hasOwnProperty(negatedMatches, uid))
-        .map((uid) => this.documentsTable[uid]);
+      const requiredMatches = this.getRequiredMatches(groupedParts.required);
+      return Object.keys(objectDifference(requiredMatches, negatedMatches)).map(
+        (uid) => this.documentsTable[uid]
+      );
     }
 
     // Return matches without the ones from negated terms
-    const restOfMatches = this.getMatches(groupedParts.rest);
-    return Object.keys(objectDifference(restOfMatches, negatedMatches)).map(
+    const simpleMatches = this.getMatches(groupedParts.simple);
+    return Object.keys(objectDifference(simpleMatches, negatedMatches)).map(
       (uid) => this.documentsTable[uid]
     );
   }

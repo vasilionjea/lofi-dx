@@ -2,7 +2,6 @@ import { STOPWORDS_MAP } from './stopwords';
 
 /**
  * Object utils
- * -------------
  */
 export function hasOwnProperty(obj: object, key: string) {
   return Object.prototype.hasOwnProperty.call(obj, key);
@@ -12,10 +11,6 @@ export function isNone(obj: unknown): boolean {
   return obj === null || obj === undefined;
 }
 
-/**
- * JS type utils
- * --------------
- */
 const JsTypes = new Map<string, string>([
   ['[object Undefined]', 'undefined'],
   ['[object Null]', 'null'],
@@ -64,7 +59,6 @@ export function objectDifference(
 
 /**
  * String utils
- * -------------
  */
 export function unquote(text = '') {
   return text.replace(/["]/g, '');

@@ -69,16 +69,14 @@ export class Search {
   }
 
   private tokensWithPostings(tokens: string[]) {
-    const result: Array<{ value: string; posting: number }> = [];
-
     let start = 0;
 
-    for (const token of tokens) {
-      result.push({ value: token, posting: start });
+    return tokens.map((token) => {
+      const mapped = { text: token, posting: start };
       start += token.length + 1;
-    }
 
-    return result;
+      return mapped;
+    });
   }
 
   index(field: string) {
@@ -98,9 +96,9 @@ export class Search {
     );
 
     for (const token of tokens) {
-      if (!this.indexTable[token.value]) this.indexTable[token.value] = {};
+      if (!this.indexTable[token.text]) this.indexTable[token.text] = {};
 
-      const entry = this.indexTable[token.value][uid];
+      const entry = this.indexTable[token.text][uid];
 
       // Existing postings & frequency
       const postings = (entry && entry.postings) || [];
@@ -108,7 +106,7 @@ export class Search {
       let freq = (entry && entry.frequency) || 0;
 
       // Add to index
-      this.indexTable[token.value][uid] = { frequency: ++freq, postings };
+      this.indexTable[token.text][uid] = { frequency: ++freq, postings };
     }
   }
 
@@ -138,9 +136,11 @@ export class Search {
         case QueryPartType.Required:
           groups.required.push(part);
           break;
+
         case QueryPartType.Negated:
           groups.negated.push(part);
           break;
+
         case QueryPartType.Simple:
           groups.simple.push(part);
           break;

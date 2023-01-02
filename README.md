@@ -46,10 +46,10 @@ For the query `+jaguar speed "south america" -car`, it results in tokens:
 From the tokens above, it results in the following query parts:
 ```js
 [
-  { "term": "jaguar", "isPhrase": false, "type": 2 }, // QueryPartType.Required
-  { "term": "speed", "isPhrase": false, "type": 0 }, // QueryPartType.Simple
-  { "term": "south america", "isPhrase": true, "type": 0 }, // QueryPartType.Simple
-  { "term": "car", "isPhrase": false, "type": 1 } // QueryPartType.Negated
+  { "term": "jaguar", "isPhrase": false, "type": 2 }, // Required
+  { "term": "speed", "isPhrase": false, "type": 0 }, // Simple
+  { "term": "south america", "isPhrase": true, "type": 0 }, // Simple
+  { "term": "car", "isPhrase": false, "type": 1 } // Negated
 ]
 ```
 

@@ -1,7 +1,7 @@
 # About
 [![Build Status](https://github.com/vasilionjea/webpack-frontend-template/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/vasilionjea/webpack-frontend-template/actions/workflows/unit-tests.yml)
 
-Experiment building a client side search query tokenizer/parser and inverted index. 
+Experiment building a client side search query tokenizer/parser and [inverted index](https://en.wikipedia.org/wiki/Inverted_index). 
 
 Example:
 ```js

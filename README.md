@@ -1,11 +1,14 @@
 # About
 [![Build Status](https://github.com/vasilionjea/webpack-frontend-template/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/vasilionjea/webpack-frontend-template/actions/workflows/unit-tests.yml)
 
-Experiment building a client side search query tokenizer/parser and [inverted index](https://en.wikipedia.org/wiki/Inverted_index). 
+(_experimental/in progress_) A client side query tokenizer, parser, and [inverted index](https://en.wikipedia.org/wiki/Inverted_index). Stopwords (_the, it, is_ etc) are filtered out from search queries. 
 
-Example:
+## Example
+Create instance and add documents to the index:
 ```js
-const people = new Search({ uidKey: 'id', searchFields: ['title'] }).addDocuments([
+const people = new Search({ uidKey: 'id', searchFields: ['title'] });
+
+people.addDocuments([
   { id: 3, name: 'Mike', title: 'Chief Forward Impact Engineer 3 Foo' },
   { id: 7, name: 'Joe Doe', title: 'Chief Interactions Liason' },
   { id: 11, name: 'Alice Smith', title: 'UX Designer Bar Baz' },
@@ -16,17 +19,17 @@ const people = new Search({ uidKey: 'id', searchFields: ['title'] }).addDocument
   { id: 101, name: 'Alan Smith', title: 'Bar Senior Staff Software Engineer 3 Foobar' },
 ]);
 ```
-Search results:
+Search the index:
 ```js
 const results = people.search(`"software engineer" ux designer -"engineer 3"`);
 console.log(results);
-
-// Results: 
-// [
-//   { "id": 11, "name": "Alice Smith", "title": "UX Designer Bar Baz" },
-//   { "id": 21, "name": "Jamie Black", "title": "Foo Graphic Designer Biz"},
-//   { "id": 32, "name": "Joe Brown", "title": "Senior Software Engineer Barfoo" }
-// ]
+```
+```js 
+[
+  { "id": 11, "name": "Alice Smith", "title": "UX Designer Bar Baz" },
+  { "id": 21, "name": "Jamie Black", "title": "Foo Graphic Designer Biz"},
+  { "id": 32, "name": "Joe Brown", "title": "Senior Software Engineer Barfoo" }
+]
 ```
 
 ## Tokenizer 

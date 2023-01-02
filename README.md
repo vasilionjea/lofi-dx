@@ -1,15 +1,42 @@
 # About
 [![Build Status](https://github.com/vasilionjea/webpack-frontend-template/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/vasilionjea/webpack-frontend-template/actions/workflows/unit-tests.yml)
 
-Experiment building a client side search query parser. Parses strings like `+jaguar speed "south america" -car` to a query object:
+Experiment building a client side search query tokenizer/parser and inverted index. 
+
+## Tokenizer 
+For the query `+jaguar speed "south america" -car`, it results in tokens:
+```js
+[
+  { "type": "PresenceTerm", "text": "+jaguar" },
+  { "type": "Term", "text": "speed" },
+  { "type": "ExactTerm", "text": "\"south america\"" },
+  { "type": "PresenceTerm", "text": "-car" }
+]
+```
+## Parser
+From the tokens above, it results in the following query parts:
+```js
+[
+  { "term": "jaguar", "isPhrase": false, "type": 2 }, // QueryPartType.Required
+  { "term": "speed", "isPhrase": false, "type": 0 }, // QueryPartType.Simple
+  { "term": "south america", "isPhrase": true, "type": 0 }, // QueryPartType.Simple
+  { "term": "car", "isPhrase": false, "type": 1 } // QueryPartType.Negated
+]
+```
+
+## Inverted Index
 ```js
 {
-  "parts": [
-    {"term": "jaguar", "negate": false, "require": true }, // term must appear in search results
-    {"term": "speed", "negate": false, "require": false }, // term may appear 
-    {"term": "south america", "negate": false, "require": false }, // term may appear but exactly as "south america"
-    {"term": "car", "negate": true, "require": false } // term must NOT appear in search results
-  ]
+  // word
+  "jaguar": {
+    // doc uid -> doc metadata
+    "3": { "frequency": 1, "postings": [2] },
+    "7": { "frequency": 1, "postings": [5, 17] }
+  },
+  
+  "america": {...},
+  
+  // ...
 }
 ```
 

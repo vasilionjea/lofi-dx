@@ -81,6 +81,11 @@ export class Search {
 
   index(field: string) {
     if (isNone(field) || isBlank(field)) return this;
+
+    if (!this.searchFields.includes(field)) {
+      this.searchFields.push(field);
+    }
+
     for (const doc of Object.values(this.documentsTable)) {
       this.indexDocument(field, doc);
     }
@@ -194,7 +199,7 @@ export class Search {
 
         if (isNone(nextTerm)) break; // no more terms
 
-        const currentDoc = this.indexTable[term][uid];
+        const currentRef = this.indexTable[term][uid];
         const nextTermTable = this.indexTable[nextTerm];
 
         // If there is a next term but it's not in the index,
@@ -205,11 +210,11 @@ export class Search {
           return result;
         }
 
-        const nextDoc = nextTermTable[uid];
+        const nextRef = nextTermTable[uid];
 
-        for (const pos of currentDoc.postings) {
-          if (nextDoc.postings.includes(pos + term.length + 1)) {
-            result[uid] = currentDoc;
+        for (const pos of currentRef.postings) {
+          if (nextRef.postings.includes(pos + term.length + 1)) {
+            result[uid] = currentRef;
             break;
           }
         }

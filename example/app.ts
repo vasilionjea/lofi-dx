@@ -25,19 +25,23 @@ function searchPeople(queryText: string) {
   const tokens: Token[] = new QueryTokenizer(queryText).tokenize();
   const query: Query = new QueryParser(tokens).parse();
 
+  // console.log(tokens);
+  // console.log(query.parts);
+
   const results = people.search(query);
+  // console.log(results);
   console.log('results:', Object.values(results).map(obj => obj.id));
 }
 
-searchPeople(` +senior +"software engineer" +staff `); //=> [101]
-searchPeople(` +senior +"software engineer" +staff -"engineer 3" `); //=> []
-searchPeople(`+engineer -staff`); //=> [3, 32]
-searchPeople(` +"engineer 3" +"software engineer" `); //=> [101]
-searchPeople(`+senior +software +engineer`); //=> [32, 101]
-searchPeople(`+senior +software +engineer -"senior staff"`); //=> [32]
-searchPeople(`"software engineer" designer -graphic`); //=> [11, 32, 101]
 searchPeople(`"software engineer" ux designer -"engineer 3"`); //=> [11, 21, 32]
-searchPeople(`+"software engineer" -"engineer 3"`); //=> [32]
+// searchPeople(`+senior +software +engineer`); //=> [32, 101]
+// searchPeople(` +senior +"software engineer" +staff `); //=> [101]
+// searchPeople(` +senior +"software engineer" +staff -"engineer 3" `); //=> []
+// searchPeople(`+engineer -staff`); //=> [3, 32]
+// searchPeople(` +"engineer 3" +"software engineer" `); //=> [101]
+// searchPeople(`+senior +software +engineer -"senior staff"`); //=> [32]
+// searchPeople(`"software engineer" designer -graphic`); //=> [11, 32, 101]
+// searchPeople(`+"software engineer" -"engineer 3"`); //=> [32]
 
 // Term & ExactTerm
 // ` word apostophe's [not_okay] the  "exactly this"  "exactly, that!"  12-word-34 "#!^$%&" `

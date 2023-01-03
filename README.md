@@ -1,7 +1,12 @@
 # About
 [![Build Status](https://github.com/vasilionjea/webpack-frontend-template/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/vasilionjea/webpack-frontend-template/actions/workflows/unit-tests.yml)
 
-(_experimental/in progress_) A client side query tokenizer, parser, and [inverted index](https://en.wikipedia.org/wiki/Inverted_index). Stopwords (_the, it, is_ etc) are filtered out from search queries. 
+(_experimental/in progress_) A client side query tokenizer, parser, and [inverted index](https://en.wikipedia.org/wiki/Inverted_index). Stopwords like _an, the, it, is_ etc. are filtered out from search queries. The purpose of this is to allow making queries like `+jaguar speed "south america" -car` in a client side application (think offline PWA).
+
+* A `+` indicates that a term is required (e.g. `+jaguar`), and it will result only in documents that have that term, but may also have other terms indicated by your query. 
+* A `-` indicates exclusion (e.g. `-car`), and it will result in documents that don't have that term. 
+* A quoted term such as `"south america"` indicates an exact phrase. A `+` or `-` can be added in front of such terms: `+"ux designer"`
+* Simple terms like `software engineer` will result in documents that may have either or both terms.
 
 ## Example
 Create instance and add documents to the index:

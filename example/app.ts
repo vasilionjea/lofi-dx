@@ -11,7 +11,7 @@ people.addDocuments([
   { id: 3, name: 'Mike', title: 'Chief Forward Impact Engineer 3 Foo' },
   { id: 7, name: 'Joe Doe', title: 'Chief Interactions Liason' },
   { id: 11, name: 'Alice Smith', title: 'UX Designer Bar Baz' },
-  { id: 21, name: 'Jamie Black', title: 'Foo Graphic Designer Biz' },
+  { id: 21, name: 'Jamie Black', title: 'Foo UX Designer Bar Graphic Designer Biz' },
   { id: 32, name: 'Joe Brown', title: 'Senior Software Engineer Barfoo' },
   { id: 49, name: 'Helen Queen', title: 'Staff Dynamic Resonance Orchestrator Foo' },
   { id: 55, name: 'Mary', title: 'Queen Product Program Executive Manager Foo' },
@@ -33,7 +33,8 @@ function searchPeople(queryText: string) {
   console.log('results:', Object.values(results).map(obj => obj.id));
 }
 
-searchPeople(`"software engineer" ux designer -"engineer 3"`); //=> [11, 21, 32]
+searchPeople(`+"ux designer" -"graphic designer"`); //=> [11]
+// searchPeople(`"software engineer" ux designer -"engineer 3"`); //=> [11, 21, 32]
 // searchPeople(`+senior +software +engineer`); //=> [32, 101]
 // searchPeople(` +senior +"software engineer" +staff `); //=> [101]
 // searchPeople(` +senior +"software engineer" +staff -"engineer 3" `); //=> []

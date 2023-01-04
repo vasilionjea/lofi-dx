@@ -65,7 +65,7 @@ From the tokens above, it results in the following query parts:
   "jaguar": {
     // doc uid -> doc metadata
     "3": { "frequency": 1, "postings": [2] },
-    "7": { "frequency": 1, "postings": [5, 17] }
+    "7": { "frequency": 2, "postings": [5, 17] }
   },
   
   "america": {...},

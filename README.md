@@ -5,8 +5,8 @@
 
 * A `+` indicates that a term is required (e.g. `+jaguar`), and it will result only in documents that have that term, but may also have other terms indicated by your query. 
 * A `-` indicates exclusion (e.g. `-car`), and it will result in documents that don't have that term. 
-* A quoted term such as `"south america"` indicates an exact phrase. A `+` or `-` can be added in front of such terms: `+"ux designer"`
-* Simple terms like `software engineer` will result in documents that may have either or both terms.
+* A quoted term such as `"south america"` indicates an exact phrase. A `+` or `-` can be added in front of phrases: e.g. `+"ux designer"` or `-"graphic designer"`
+* Simple terms like `software engineer` will result in documents that may have either one or both terms, but not necessarily as a phrase.
 
 ## Example
 Create instance and add documents to the index:

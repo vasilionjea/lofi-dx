@@ -59,6 +59,7 @@ From the tokens above, it results in the following query parts:
 ```
 
 ## Inverted Index
+An inverted index is an index of words and which documents those words occur in. The inverted index reverses the logic by using the words to find the documents, instead of linearly scanning every document looking for words. Positions of every occurrence of a term are included in the index to support phrase queries. 
 ```js
 {
   // word
@@ -74,7 +75,7 @@ From the tokens above, it results in the following query parts:
 }
 ```
 
-This has been tested only in English and likely won't parse other alphabets correctly.
+**Note:** Currently there isn't any support for document ranking (_see [TF-IDF](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) or [BM25](https://en.wikipedia.org/wiki/Okapi_BM25)_). This has been tested only in English and likely won't work with other alphabets.
 
 ## Environments
 You must have NodeJS already installed on your machine, then run `npm install` before running any other commands.

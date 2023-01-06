@@ -10,7 +10,7 @@ import { Query, QueryPart, QueryPartType } from './parser';
 
 interface SearchOptions {
   uidKey: string;
-  searchFields?: string[];
+  searchFields?: string[] | Set<string>;
 }
 
 interface Doc {
@@ -48,8 +48,8 @@ const DOCUMENT_SPLITTER = /\s+/g;
  * and allows searching them.
  */
 export class Search {
-  public static defaultSearchFields: string[] = [];
-  readonly searchFields: string[];
+  public static defaultSearchFields: Set<string> = new Set();
+  readonly searchFields: Set<string>;
 
   private readonly uidKey: string;
 
@@ -58,9 +58,8 @@ export class Search {
 
   constructor(opts: SearchOptions) {
     this.uidKey = opts.uidKey || DEFAULT_UID_KEY;
-    this.searchFields = (
-      opts.searchFields || Search.defaultSearchFields
-    ).concat();
+    const fields = opts.searchFields || Search.defaultSearchFields;
+    this.searchFields = new Set([...fields]);
   }
 
   private tokenizeText(text: string) {
@@ -88,9 +87,7 @@ export class Search {
   index(field: string) {
     if (isNone(field) || isBlank(field)) return this;
 
-    if (!this.searchFields.includes(field)) {
-      this.searchFields.push(field);
-    }
+    this.searchFields.add(field);
 
     for (const doc of Object.values(this.documentsTable)) {
       this.indexDocument(field, doc);
@@ -273,7 +270,7 @@ export class Search {
 
   toJSON() {
     return {
-      searchFields: this.searchFields.concat(),
+      searchFields: [...this.searchFields],
       documents: this.getDocumentsTable(),
       index: this.getIndexTable(),
     };

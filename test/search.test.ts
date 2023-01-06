@@ -66,8 +66,8 @@ test('it should create the index from the document search fields', () => {
   instance.addDocuments(docs);
 
   const indexTable = instance.getIndexTable();
-  expect(instance.searchFields.length).toBe(1);
-  expect(instance.searchFields[0]).toBe('name');
+  expect(instance.searchFields.size).toBe(1);
+  expect(instance.searchFields.has('name')).toBe(true);
 
   expect(indexTable['mike']).toBeDefined();
   expect(indexTable['mike']['3']).toBeDefined();
@@ -105,8 +105,8 @@ test('it should index additional fields', () => {
   }).addDocuments(docs);
 
   let indexTable = instance.getIndexTable();
-  expect(instance.searchFields.length).toBe(1);
-  expect(instance.searchFields[0]).toBe('name');
+  expect(instance.searchFields.size).toBe(1);
+  expect(instance.searchFields.has('name')).toBe(true);
 
   expect(indexTable['mike']).toBeDefined();
   expect(indexTable['mike']['3']).toBeDefined();
@@ -119,9 +119,10 @@ test('it should index additional fields', () => {
   instance.index('title');
   indexTable = instance.getIndexTable();
 
-  expect(instance.searchFields.length).toBe(2);
-  expect(instance.searchFields[0]).toBe('name');
-  expect(instance.searchFields[1]).toBe('title');
+  expect(instance.searchFields.size).toBe(2);
+  expect(instance.searchFields.has('name')).toBe(true);
+  expect(instance.searchFields.has('title')).toBe(true);
+
   expect(indexTable['engineer']).toBeDefined();
   expect(indexTable['designer']).toBeDefined();
 });

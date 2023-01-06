@@ -3,7 +3,7 @@
 
 (_experimental/in progress_) A client side query tokenizer, parser, and [inverted index](https://en.wikipedia.org/wiki/Inverted_index). Stopwords like _an, the, it, is_ etc. are filtered out from search queries and the index. The purpose of this is to allow making queries like `+jaguar speed "south america" -car` in a client side application (think offline PWA).
 
-* A `+` indicates that a term is required (e.g. `+jaguar`), and it will result only in documents that have that term, but may also have other terms indicated by your query. 
+* A `+` indicates a required term (e.g. `+jaguar`), and it will result only in documents which have that term but may also contain other terms indicated by your query. 
 * A `-` indicates exclusion (e.g. `-car`), and it will result in documents that don't have that term. 
 * A quoted term such as `"south america"` indicates an exact phrase. A `+` or `-` can be added in front of phrases: e.g. `+"ux designer"` or `-"graphic designer"`
 * Simple terms like `software engineer` will result in documents that may have either one or both terms, but not necessarily as a phrase.

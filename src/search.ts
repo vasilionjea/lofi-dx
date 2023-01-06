@@ -2,6 +2,7 @@ import {
   collapseWhitespace,
   isNone,
   isBlank,
+  isStopWord,
   objectIntersection,
   objectDifference,
 } from './utils';
@@ -69,14 +70,19 @@ export class Search {
   }
 
   private tokensWithPostings(tokens: string[]) {
+    const result = [];
     let start = 0;
 
-    return tokens.map((token) => {
-      const mapped = { text: token, posting: start };
-      start += token.length + 1;
+    for (const text of tokens) {
+      if (!isStopWord(text)) {
+        const token = { text, posting: start };
+        start += text.length + 1;
 
-      return mapped;
-    });
+        result.push(token);
+      }
+    }
+
+    return result;
   }
 
   index(field: string) {

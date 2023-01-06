@@ -8,11 +8,11 @@ const people = new Search({
 });
 
 people.addDocuments([
-  { id: 3, name: 'Mike', title: 'Chief Forward Impact Engineer 3 Foo' },
-  { id: 7, name: 'Joe Doe', title: 'Chief Interactions Liason' },
+  { id: 3, name: 'Mike', title: 'The Chief Forward Impact Engineer 3 Foo' },
+  { id: 7, name: 'Joe Doe', title: 'A Chief Interactions Liason' },
   { id: 11, name: 'Alice Smith', title: 'UX Designer Bar Baz' },
-  { id: 21, name: 'Jamie Black', title: 'Foo UX Designer Bar Graphic Designer Biz' },
-  { id: 32, name: 'Joe Brown', title: 'Senior Software Engineer Barfoo' },
+  { id: 21, name: 'Jamie Black', title: 'Foo UX Designer Bar Graphic Designer Biz not' },
+  { id: 32, name: 'Joe Brown', title: 'Senior Software Engineer Barfoo is them' },
   { id: 49, name: 'Helen Queen', title: 'Staff Dynamic Resonance Orchestrator Foo' },
   { id: 55, name: 'Mary', title: 'Queen Product Program Executive Manager Foo' },
   { id: 101, name: 'Alan Smith', title: 'Bar Senior Staff Software Engineer 3 Foobar' },
@@ -30,7 +30,7 @@ function searchPeople(queryText: string) {
 
   const results = people.search(query);
   // console.log(results);
-  console.log('results:', Object.values(results).map(obj => obj.id));
+  console.log('result IDs:', Object.values(results).map(obj => obj.id));
 }
 
 searchPeople(`+"ux designer" -"graphic designer"`); //=> [11]

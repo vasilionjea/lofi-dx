@@ -2,14 +2,36 @@ import { Query, QueryPartType } from '../src/parser';
 import { Search } from '../src/search';
 
 let docs: Array<{ [key: string]: unknown }>;
+const stopwords = {
+  a: 'a',
+  it: 'it',
+  is: 'is',
+  the: 'the',
+};
 
 beforeEach(() => {
   docs = [
-    { id: 3, name: 'Mike', title: 'Chief Forward Impact Engineer 3 Foo' },
-    { id: 7, name: 'Joe Doe', title: 'Chief Interactions Liason' },
-    { id: 11, name: 'Alice Smith', title: 'UX Designer Bar Baz' },
-    { id: 21, name: 'Jamie Black', title: 'Foo Graphic Designer Biz' },
-    { id: 32, name: 'Joe Brown', title: 'Senior Software Engineer Barfoo' },
+    {
+      id: 3,
+      name: 'Mike',
+      title: `${stopwords['the']} Chief Forward Impact Engineer 3 ${stopwords['is']} Foo ${stopwords['a']}`,
+    },
+    {
+      id: 7,
+      name: 'Joe Doe',
+      title: `${stopwords['a']} Chief Interactions Liason ${stopwords['it']}`,
+    },
+    {
+      id: 11,
+      name: 'Alice Smith',
+      title: `UX Designer Bar Baz ${stopwords['it']}`,
+    },
+    { id: 21, name: 'Jamie Black', title: 'Foo What Graphic Designer Biz' },
+    {
+      id: 32,
+      name: 'Joe Brown',
+      title: `Senior Software Engineer Barfoo ${stopwords['the']}`,
+    },
     {
       id: 49,
       name: 'Helen Queen',
@@ -53,6 +75,17 @@ test('it should create the index from the document search fields', () => {
 
   expect(indexTable['joe']['7']).toBeDefined();
   expect(indexTable['joe']['32']).toBeDefined();
+});
+
+test('it should not add stopwords to the index', () => {
+  const instance = new Search({ uidKey: 'id', searchFields: ['title'] });
+  instance.addDocuments(docs);
+
+  const indexTable = instance.getIndexTable();
+  expect(indexTable[stopwords['a']]).not.toBeDefined();
+  expect(indexTable[stopwords['it']]).not.toBeDefined();
+  expect(indexTable[stopwords['is']]).not.toBeDefined();
+  expect(indexTable[stopwords['the']]).not.toBeDefined();
 });
 
 test('it should index documents with frequency and postings', () => {

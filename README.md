@@ -1,4 +1,4 @@
-# Search Query
+# search-query
 [![Build Status](https://github.com/vasilionjea/webpack-frontend-template/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/vasilionjea/webpack-frontend-template/actions/workflows/unit-tests.yml)
 
 (_experimental/in progress_) A client side query tokenizer, parser, and [inverted index](https://en.wikipedia.org/wiki/Inverted_index). Stopwords like _an, the, it, is_ etc. are filtered out from search queries and the index. The purpose of this is to allow making queries like `+jaguar speed "south america" -car` in a client side application (think offline PWA).

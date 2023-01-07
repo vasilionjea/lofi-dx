@@ -1,9 +1,9 @@
-import path from 'path';
-import url from 'url';
+import path from 'node:path';
+import url from 'node:url';
 import { merge } from 'webpack-merge';
-import baseConfig from './webpack/base.js';
-import devConfig from './webpack/dev.js';
-import prodConfig from './webpack/prod.js';
+import baseConfig from './scripts/webpack.base.js';
+import devConfig from './scripts/webpack.dev.js';
+import prodConfig from './scripts/webpack.prod.js';
 
 // Project default settings
 const defaults = {

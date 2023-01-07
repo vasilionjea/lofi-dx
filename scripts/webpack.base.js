@@ -1,6 +1,7 @@
-import path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import GenerateDataPlugin from './generate-data-plugin.js';
+import { getExampleData } from './data.js';
 
 /**
  * This is the base webpack config and not meant to be used by itself. It's
@@ -8,7 +9,7 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
  *
  * https://webpack.js.org/configuration
  */
-export default ({ isProdMode, __dirname }) => ({
+export default ({ isProdMode }) => ({
   // The environment in which the code will run
   target: 'web',
 
@@ -75,6 +76,11 @@ export default ({ isProdMode, __dirname }) => ({
       template: 'example/index.html',
       favicon: 'example/favicon.ico',
       inject: 'body',
+    }),
+
+    new GenerateDataPlugin({
+      filename: 'data.json',
+      dataPromise: getExampleData(),
     }),
   ],
 });

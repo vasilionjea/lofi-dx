@@ -10,3 +10,22 @@ body {
   color: $primary-dark-color;
   background-color: $body-background-color;
 }
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+article {
+  padding: 2rem 0;
+  max-width: 70vw;
+  border-bottom: 1px solid lightgray;
+}
+
+pre {
+  margin-top: 2%;
+  padding: .125rem .325rem;
+  background: hsl(34deg 78% 91% / 79%);
+  border: 1px solid #d3bca659;
+}

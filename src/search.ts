@@ -11,6 +11,7 @@ import { Query, QueryPart, QueryPartType } from './parser';
 interface SearchOptions {
   uidKey: string;
   searchFields?: string[] | Set<string>;
+  splitter?: RegExp;
 }
 
 interface Doc {
@@ -41,7 +42,7 @@ interface PartGroups {
 }
 
 const DEFAULT_UID_KEY = 'id';
-const DOCUMENT_SPLITTER = /\s+/g;
+const DEFAULT_DOCUMENT_SPLITTER = /\s+/g;
 
 /**
  * Search class contains both the index table, the documents,
@@ -53,19 +54,23 @@ export class Search {
 
   private readonly uidKey: string;
 
+  private readonly documentSplitter: RegExp;
+
   private readonly documentsTable: DocTable = {};
   private readonly indexTable: IndexTable = {};
 
   constructor(opts: SearchOptions) {
     this.uidKey = opts.uidKey || DEFAULT_UID_KEY;
-    const fields = opts.searchFields || Search.defaultSearchFields;
-    this.searchFields = new Set([...fields]);
+    this.searchFields = new Set([
+      ...(opts.searchFields || Search.defaultSearchFields),
+    ]);
+    this.documentSplitter = opts.splitter || DEFAULT_DOCUMENT_SPLITTER;
   }
 
   private tokenizeText(text: string) {
     return collapseWhitespace(text)
       .toLocaleLowerCase()
-      .split(DOCUMENT_SPLITTER);
+      .split(this.documentSplitter);
   }
 
   private tokensWithPostings(tokens: string[]) {
@@ -186,7 +191,7 @@ export class Search {
 
   private getPhraseMatches(part: QueryPart) {
     const result: { [key: string]: unknown } = {};
-    const terms = part.term.split(DOCUMENT_SPLITTER);
+    const terms = part.term.split(this.documentSplitter);
 
     // Retrieve docs that have all the terms
     const matches = this.getRequiredMatches(

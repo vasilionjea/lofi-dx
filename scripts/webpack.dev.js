@@ -17,7 +17,7 @@ export default ({ distFolderPath, devServerPort }) => ({
   devServer: {
     static: distFolderPath,
     port: devServerPort,
-    watchFiles: ['example/*.html'],
+    watchFiles: ['example/*.html', 'example/assets/*.txt'],
   },
 
   optimization: {

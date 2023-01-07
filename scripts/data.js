@@ -7,7 +7,7 @@ import { readdir } from 'node:fs/promises';
 import * as readline from 'node:readline/promises';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-const assetsDir = path.normalize(path.join(__dirname, '..', 'example/assets'));
+const assetsDir = path.normalize(path.join(__dirname, '..', 'example', 'assets'));
 
 let uid = 0;
 

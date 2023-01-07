@@ -80,3 +80,14 @@ export function isBlank(text: string) {
 export function isStopWord(word: string) {
   return Boolean(STOPWORDS_MAP[word]) || !word.match(/(\w+)/g);
 }
+
+export function stripStopWords(text: string) {
+  const result = [];
+
+  for (const word of text.split(/\s+/g)) {
+    if (isStopWord(word)) continue;
+    result.push(word);
+  }
+
+  return result.join(' ');
+}

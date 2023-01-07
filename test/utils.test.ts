@@ -8,6 +8,7 @@ import {
   collapseWhitespace,
   isBlank,
   isStopWord,
+  stripStopWords,
 } from '../src/utils';
 
 test('[hasOwnProperty] it returns true for own props otherwise false', () => {
@@ -72,6 +73,11 @@ test('[isStopWord] it should return true for stopwords or non-word characters', 
   expect(isStopWord('the')).toBe(true);
   expect(isStopWord('is')).toBe(true);
   expect(isStopWord('@&$^%*')).toBe(true);
+});
+
+test('[stripStopWords] it removes stopwords from text', () => {
+  expect(stripStopWords('it is the thing')).toEqual('thing');
+  expect(stripStopWords('the thing it is')).toEqual('thing');
 });
 
 test('[unquote] it removes quotes from text', () => {

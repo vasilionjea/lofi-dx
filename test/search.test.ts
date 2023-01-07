@@ -45,7 +45,7 @@ beforeEach(() => {
     {
       id: 101,
       name: 'Alan Smith',
-      title: 'Bar Senior Staff Software Engineer 3 Foobar',
+      title: 'Bar Senior The Staff Software Engineer 3 Foobar',
     },
   ];
 });
@@ -160,6 +160,26 @@ test('it should search simple phrases', () => {
   expect(results[0]['id']).toBe(101);
 });
 
+test('it should search simple phrases even with a single term', () => {
+  const instance = new Search({
+    uidKey: 'id',
+    searchFields: ['title'],
+  }).addDocuments(docs);
+
+  const query = new Query();
+  query.add({
+    term: 'engineer',
+    type: QueryPartType.Simple,
+    isPhrase: true,
+  });
+  const results = instance.search(query);
+
+  expect(results.length).toBe(3);
+  expect(results[0]['id']).toBe(3);
+  expect(results[1]['id']).toBe(32);
+  expect(results[2]['id']).toBe(101);
+});
+
 test('it should search required fields', () => {
   const instance = new Search({
     uidKey: 'id',
@@ -209,6 +229,25 @@ test('it should search required phrases', () => {
   expect(results[0]['id']).toBe(101);
 });
 
+test('it should search required phrases even with a single term', () => {
+  const instance = new Search({
+    uidKey: 'id',
+    searchFields: ['title'],
+  }).addDocuments(docs);
+
+  const query = new Query();
+  query.add({
+    term: 'software',
+    type: QueryPartType.Required,
+    isPhrase: true,
+  });
+  query.add({ term: 'barfoo', type: QueryPartType.Negated, isPhrase: false });
+  const results = instance.search(query);
+
+  expect(results.length).toBe(1);
+  expect(results[0]['id']).toBe(101);
+});
+
 test('it should search negated phrases', () => {
   const instance = new Search({
     uidKey: 'id',
@@ -219,6 +258,26 @@ test('it should search negated phrases', () => {
   query.add({ term: 'engineer', type: QueryPartType.Simple, isPhrase: false });
   query.add({
     term: 'senior staff',
+    type: QueryPartType.Negated,
+    isPhrase: true,
+  });
+  const results = instance.search(query);
+
+  expect(results.length).toBe(2);
+  expect(results[0]['id']).toBe(3);
+  expect(results[1]['id']).toBe(32);
+});
+
+test('it should search negated phrases even with a single term', () => {
+  const instance = new Search({
+    uidKey: 'id',
+    searchFields: ['title'],
+  }).addDocuments(docs);
+
+  const query = new Query();
+  query.add({ term: 'engineer', type: QueryPartType.Simple, isPhrase: false });
+  query.add({
+    term: 'staff',
     type: QueryPartType.Negated,
     isPhrase: true,
   });

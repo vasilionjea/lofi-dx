@@ -1,5 +1,10 @@
 import { Token, TokenType } from './tokenizer';
-import { unquote, stripModifiers, collapseWhitespace } from './utils';
+import {
+  unquote,
+  stripModifiers,
+  collapseWhitespace,
+  stripStopWords,
+} from './utils';
 
 export enum QueryPartType {
   Simple,
@@ -40,11 +45,13 @@ export class QueryParser {
     }
 
     part.term = unquote(term).trim();
+    part.term = stripStopWords(part.term);
   }
 
   private parseExact(part: QueryPart) {
     part.isPhrase = true;
     part.term = collapseWhitespace(unquote(part.term));
+    part.term = stripStopWords(part.term);
   }
 
   parse() {

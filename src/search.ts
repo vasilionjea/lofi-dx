@@ -198,6 +198,9 @@ export class Search {
       terms.map((term) => ({ term, isPhrase: false } as QueryPart))
     );
 
+    // Stop here if query part contains a single term for this phrase
+    if (terms.length === 1) return matches;
+
     // Now check them for a phrase
     // TODO: flatten this?
     for (const uid of Object.keys(matches)) {

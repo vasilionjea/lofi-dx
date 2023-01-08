@@ -73,7 +73,7 @@ The index's internal word map is structured compactly as follows:
   "other": {}
 }
 ```
-The compact strucure reduces the index size and the JS memory allocation by about 50% as compared to the expanded structure below. When a document is indexed, or during a phrase match, an index entry is parsed and momentarily expanded to the following structure:
+The compact strucure reduces the index size and JS memory allocation by about 50% as compared to the expanded structure below. When a document is indexed, or during a phrase match, an index entry is parsed and momentarily expanded to the following structure:
 ```js
 {
   "national": {

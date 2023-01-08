@@ -8,8 +8,8 @@ const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
 function logStats(label = '', data = {}) {
   const stats = {
-    size: prettyBytes(Buffer.byteLength(data)),
-    memory: prettyBytes(sizeof(data))
+    'file size': prettyBytes(Buffer.byteLength(data)),
+    'object memory': prettyBytes(sizeof(JSON.parse(data)))
   };
 
   console.log('\n', label);

@@ -38,7 +38,7 @@ class App {
 const app = new App();
 
 app.start().then(() => {
-  const queryText = `"national park located in southwestern"`;
+  const queryText = `"national park located in southwestern Utah"`;
   const results = app.search(queryText);
   const element = document.querySelector('main');
 

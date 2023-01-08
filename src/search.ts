@@ -22,20 +22,19 @@ interface DocTable {
   [key: string]: Doc;
 }
 
-interface DocParsedMetadata {
-  // metadata
-  frequency: number;
-  postings: number[];
-}
-
-interface IndexDocEntry {
-  // doc uid: metadata
+interface DocEntry {
+  // uid: metadata
   [key: string]: string;
 }
 
 interface IndexTable {
-  // token
-  [key: string]: IndexDocEntry;
+  // word: doc entry
+  [key: string]: DocEntry;
+}
+
+interface DocEntryParsedMetadata {
+  frequency: number;
+  postings: number[];
 }
 
 interface PartGroups {
@@ -92,7 +91,7 @@ export class Search {
     return result;
   }
 
-  parseDocMetadata(meta: string) {
+  parseDocMetadata(meta: string): DocEntryParsedMetadata {
     if (!meta) return { frequency: 0, postings: [] };
 
     const [frequencyStr, postingsStr] = meta.split('/');
@@ -103,8 +102,8 @@ export class Search {
     };
   }
 
-  stringifyDocMetadata(parsedMeta: DocParsedMetadata): string {
-    return `${parsedMeta.frequency}/${parsedMeta.postings.join(',')}`;
+  stringifyDocMetadata(meta: DocEntryParsedMetadata): string {
+    return `${meta.frequency}/${meta.postings.join(',')}`;
   }
 
   index(field: string) {
@@ -129,15 +128,14 @@ export class Search {
     for (const token of tokens) {
       if (!this.indexTable[token.text]) this.indexTable[token.text] = {};
 
-      const entry = this.indexTable[token.text][uid];
-      const parsed = this.parseDocMetadata(entry);
+      const meta = this.parseDocMetadata(this.indexTable[token.text][uid]);
 
       // Postings & frequency
-      parsed.postings.push(token.posting);
-      parsed.frequency += 1;
+      meta.postings.push(token.posting);
+      meta.frequency += 1;
 
       // Add to index
-      this.indexTable[token.text][uid] = this.stringifyDocMetadata(parsed);
+      this.indexTable[token.text][uid] = this.stringifyDocMetadata(meta);
     }
   }
 

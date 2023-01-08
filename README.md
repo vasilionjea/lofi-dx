@@ -60,18 +60,38 @@ From the tokens above, it results in the following query parts:
 
 ## Inverted Index
 An inverted index is an index of words and which documents those words occur in. The inverted index reverses the logic by using the words to find the documents, instead of linearly scanning every document looking for words. Positions of every occurrence of a term are included in the index to support phrase queries. 
+
+The index's internal word map is structured compactly as follows:
 ```js
 {
-  // word
-  "jaguar": {
-    // doc uid -> doc metadata
-    "3": { "frequency": 1, "postings": [2] },
-    "7": { "frequency": 2, "postings": [5, 17] }
+  "national": {
+    "1": "7/9,32,1039,1078,1189,1276,1310",
+    "2": "7/9,23,530,574,611,761,830",
+    "3": "9/15,42,426,492,659,717,813,855,1008",
   },
-  
-  "america": {...},
-  
-  // ...
+
+  "other": {}
+}
+```
+The compact strucure reduces the index size and the JS memory allocation by about 50% as compared to the expanded structure below. When a document is indexed, or during a phrase match, an index entry is parsed and momentarily expanded to the following structure:
+```js
+{
+  "national": {
+    "1": {
+      "frequency": 7,
+      "postings": [9,32,1039,1078,1189,1276,1310]
+    },
+    "2": {
+      "frequency": 7,
+      "postings": [9,23,530,574,611,761,830]
+    },
+    "3": {
+      "frequency": 9,
+      "postings": [15,42,426,492,659,717,813,855,1008]
+    }
+  },
+
+  "other": {}
 }
 ```
 

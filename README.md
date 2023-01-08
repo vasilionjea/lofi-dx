@@ -73,7 +73,7 @@ The index's internal word map is structured compactly as follows:
   "other": {}
 }
 ```
-The compact strucure reduces the index size and JS memory allocation by about 50% as compared to the expanded structure below. When a document is indexed, or during a phrase match, an index entry is parsed and momentarily expanded to the following structure:
+The compact strucure reduces the index size and JS memory allocation by about 50% as compared to the expanded structure below. When a document is indexed, or during a phrase match, an index entry is parsed and **momentarily** expanded to the following structure:
 ```js
 {
   "national": {
@@ -94,6 +94,7 @@ The compact strucure reduces the index size and JS memory allocation by about 50
   "other": {}
 }
 ```
+Once documents have entered the index or a phrase match completes, the expanded structure above gets garbage-collected by the JS engine. See [scripts/check-index.js](https://github.com/vasilionjea/search-query/blob/main/scripts/check-index.js) for size and memory of these structures.
 
 **Note:** Currently there isn't any support for document ranking (_see [TF-IDF](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) or [BM25](https://en.wikipedia.org/wiki/Okapi_BM25)_). This has been tested only in English and likely won't work with other alphabets.
 

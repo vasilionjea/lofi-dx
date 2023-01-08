@@ -93,9 +93,7 @@ export class Search {
   }
 
   parseDocMetadata(meta: string) {
-    if (!meta) {
-      return { frequency: 0, postings: [] };
-    }
+    if (!meta) return { frequency: 0, postings: [] };
 
     const [frequencyStr, postingsStr] = meta.split('/');
 

@@ -8,7 +8,7 @@ class App {
   private readonly searchIndex = new Search({
     uidKey: 'id',
     searchFields: ['body'],
-    splitter: /\W+/g,
+    splitter: /\W+|\d+/g, // splits on non-words and digits
   });
 
   async start() {
@@ -38,15 +38,19 @@ class App {
 const app = new App();
 
 app.start().then(() => {
-  const queryText = `"southwestern utah"`;
+  const queryText = `"national park located in southwestern"`;
   const results = app.search(queryText);
   const element = document.querySelector('main');
 
   if (!element) return;
   element.innerHTML += `<pre>Query text:${queryText}</pre>`;
 
-  for (const document of results) {
-    element.innerHTML += `<article>${document.title}${document.body}</article>`;
+  if (!results.length) {
+    element.innerHTML += `<article>No results found...</article>`;
+  } else {
+    for (const document of results) {
+      element.innerHTML += `<article>${document.title}${document.body}</article>`;
+    }
   }
 
   console.log('Search results:', results);

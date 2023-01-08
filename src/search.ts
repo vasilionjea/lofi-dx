@@ -22,17 +22,20 @@ interface DocTable {
   [key: string]: Doc;
 }
 
-interface IndexTokenTable {
-  // doc uid: token metadata
-  [key: string]: {
-    frequency: number;
-    postings: number[];
-  };
+interface DocParsedMetadata {
+  // metadata
+  frequency: number;
+  postings: number[];
+}
+
+interface IndexDocEntry {
+  // doc uid: metadata
+  [key: string]: string;
 }
 
 interface IndexTable {
   // token
-  [key: string]: IndexTokenTable;
+  [key: string]: IndexDocEntry;
 }
 
 interface PartGroups {
@@ -89,6 +92,23 @@ export class Search {
     return result;
   }
 
+  parseDocMetadata(meta: string) {
+    if (!meta) {
+      return { frequency: 0, postings: [] };
+    }
+
+    const [frequencyStr, postingsStr] = meta.split('/');
+
+    return {
+      frequency: Number(frequencyStr),
+      postings: postingsStr.split(',').map(Number),
+    };
+  }
+
+  stringifyDocMetadata(parsedMeta: DocParsedMetadata): string {
+    return `${parsedMeta.frequency}/${parsedMeta.postings.join(',')}`;
+  }
+
   index(field: string) {
     if (isNone(field) || isBlank(field)) return this;
 
@@ -112,14 +132,14 @@ export class Search {
       if (!this.indexTable[token.text]) this.indexTable[token.text] = {};
 
       const entry = this.indexTable[token.text][uid];
+      const parsed = this.parseDocMetadata(entry);
 
-      // Existing postings & frequency
-      const postings = (entry && entry.postings) || [];
-      postings.push(token.posting);
-      let freq = (entry && entry.frequency) || 0;
+      // Postings & frequency
+      parsed.postings.push(token.posting);
+      parsed.frequency += 1;
 
       // Add to index
-      this.indexTable[token.text][uid] = { frequency: ++freq, postings };
+      this.indexTable[token.text][uid] = this.stringifyDocMetadata(parsed);
     }
   }
 
@@ -202,7 +222,6 @@ export class Search {
     if (terms.length === 1) return matches;
 
     // Now check them for a phrase
-    // TODO: flatten this?
     for (const uid of Object.keys(matches)) {
       for (let i = 0; i < terms.length; i++) {
         const term = terms[i];
@@ -210,22 +229,16 @@ export class Search {
 
         if (isNone(nextTerm)) break; // no more terms
 
-        const currentRef = this.indexTable[term][uid];
-        const nextTermTable = this.indexTable[nextTerm];
-
-        // If there is a next term but it's not in the index,
-        // it means no documents have that term anywhere
-        if (isNone(nextTermTable)) {
-          // Delete the happy path as it's now invalid
-          delete result[uid];
-          return result;
-        }
-
-        const nextRef = nextTermTable[uid];
+        const currentRef = this.parseDocMetadata(this.indexTable[term][uid]);
+        const nextRef = this.parseDocMetadata(this.indexTable[nextTerm][uid]);
 
         for (const pos of currentRef.postings) {
           if (nextRef.postings.includes(pos + term.length + 1)) {
             result[uid] = currentRef;
+            break;
+          } else {
+            // Delete the happy path as it's now invalid
+            delete result[uid];
             break;
           }
         }

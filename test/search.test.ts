@@ -47,6 +47,18 @@ beforeEach(() => {
       name: 'Alan Smith',
       title: 'Bar Senior The Staff Software Engineer 3 Foobar',
     },
+    {
+      id: 200,
+      name: 'Foo Bar',
+      title:
+        'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
+    },
+    {
+      id: 300,
+      name: 'national park',
+      title:
+        'A national park located along the mid-section of the Maine coast, southwest of Bar Harbor.',
+    },
   ];
 });
 
@@ -71,7 +83,7 @@ test('it should create the index from the document search fields', () => {
 
   expect(indexTable['mike']).toBeDefined();
   expect(indexTable['mike']['3']).toBeDefined();
-  expect(indexTable['mike']['3']).toBeInstanceOf(Object);
+  expect(typeof indexTable['mike']['3']).toBe('string');
 
   expect(indexTable['joe']['7']).toBeDefined();
   expect(indexTable['joe']['32']).toBeDefined();
@@ -93,9 +105,13 @@ test('it should index documents with frequency and postings', () => {
   instance.addDocuments(docs);
 
   const indexTable = instance.getIndexTable();
-  expect(indexTable['joe']['7'].frequency).toBe(1);
-  expect(indexTable['joe']['7'].postings).toContain(0);
-  expect(indexTable['doe']['7'].postings).toContain(4);
+  const metadata = instance.parseDocMetadata(indexTable['joe']['7']);
+
+  expect(metadata.frequency).toBe(1);
+  expect(metadata.postings).toContain(0);
+  expect(instance.parseDocMetadata(indexTable['doe']['7']).postings).toContain(
+    4
+  );
 });
 
 test('it should index additional fields', () => {
@@ -158,6 +174,41 @@ test('it should search simple phrases', () => {
 
   expect(results.length).toBe(1);
   expect(results[0]['id']).toBe(101);
+});
+
+test('it should search simple phrases even if stopwords appear in between', () => {
+  const instance = new Search({
+    uidKey: 'id',
+    searchFields: ['title'],
+  }).addDocuments(docs);
+
+  const query = new Query();
+  query.add({
+    term: 'dummy text printing typesetting industry',
+    type: QueryPartType.Simple,
+    isPhrase: true,
+  });
+  const results = instance.search(query);
+
+  expect(results.length).toBe(1);
+  expect(results[0]['id']).toBe(200);
+});
+
+test('it should return empty results when all the words appear in document but not as a phrase', () => {
+  const instance = new Search({
+    uidKey: 'id',
+    searchFields: ['title'],
+  }).addDocuments(docs);
+
+  const query = new Query();
+  query.add({
+    term: 'national park located southwest', // document contains "southwestern" as last word in phrase
+    type: QueryPartType.Simple,
+    isPhrase: true,
+  });
+  const results = instance.search(query);
+
+  expect(results.length).toBe(0);
 });
 
 test('it should search simple phrases even with a single term', () => {

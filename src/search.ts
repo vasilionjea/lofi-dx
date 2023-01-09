@@ -32,7 +32,7 @@ interface IndexTable {
   [key: string]: DocEntry;
 }
 
-interface DocEntryParsedMetadata {
+interface DocParsedMetadata {
   frequency: number;
   postings: number[];
 }
@@ -91,7 +91,7 @@ export class Search {
     return result;
   }
 
-  parseDocMetadata(meta: string): DocEntryParsedMetadata {
+  parseDocMetadata(meta: string): DocParsedMetadata {
     if (!meta) return { frequency: 0, postings: [] };
 
     const [frequencyStr, postingsStr] = meta.split('/');
@@ -102,7 +102,7 @@ export class Search {
     };
   }
 
-  stringifyDocMetadata(meta: DocEntryParsedMetadata): string {
+  stringifyDocMetadata(meta: DocParsedMetadata): string {
     return `${meta.frequency}/${meta.postings.join(',')}`;
   }
 
@@ -205,43 +205,59 @@ export class Search {
     return matches;
   }
 
-  private getPhraseMatches(part: QueryPart) {
+  private imperfectPhraseSearch({
+    uids,
+    terms,
+  }: {
+    uids: string[];
+    terms: string[];
+  }) {
     const result: { [key: string]: unknown } = {};
-    const terms = part.term.split(this.documentSplitter);
+    const lookup: { [key: string]: number[] } = {};
 
-    // Retrieve docs that have all the terms
-    const matches = this.getRequiredMatches(
-      terms.map((term) => ({ term, isPhrase: false } as QueryPart))
-    );
+    for (const uid of uids) {
+      for (const term of terms) {
+        const meta = this.parseDocMetadata(this.indexTable[term][uid]);
+        lookup[term] = meta.postings;
+      }
 
-    // Stop here if query part contains a single term for this phrase
-    if (terms.length === 1) return matches;
+      let t = 0;
+      while (lookup[terms[t]].length) {
+        if (isNone(terms[t + 1])) break; // no more terms
 
-    // Now check them for a phrase
-    for (const uid of Object.keys(matches)) {
-      for (let i = 0; i < terms.length; i++) {
-        const term = terms[i];
-        const nextTerm = terms[i + 1];
+        const pos = lookup[terms[t]].shift() || 0;
 
-        if (isNone(nextTerm)) break; // no more terms
+        if (lookup[terms[t + 1]].includes(pos + terms[t].length + 1)) {
+          result[uid] = true;
+          t++;
+        } else {
+          delete result[uid];
 
-        const currentRef = this.parseDocMetadata(this.indexTable[term][uid]);
-        const nextRef = this.parseDocMetadata(this.indexTable[nextTerm][uid]);
-
-        for (const pos of currentRef.postings) {
-          if (nextRef.postings.includes(pos + term.length + 1)) {
-            result[uid] = currentRef;
-            break;
-          } else {
-            // Delete the happy path as it's now invalid
-            delete result[uid];
-            break;
+          if (lookup[terms[0]].length) {
+            t = 0;
           }
         }
       }
     }
 
     return result;
+  }
+
+  private getPhraseMatches(part: QueryPart) {
+    const subterms = part.term.split(this.documentSplitter);
+
+    // Retrieve docs that contain all subterms (phrase or not)
+    const matches = this.getRequiredMatches(
+      subterms.map((term) => ({ term, isPhrase: false } as QueryPart))
+    );
+
+    // We're done if query part contains only a single term
+    if (subterms.length === 1) return matches;
+
+    return this.imperfectPhraseSearch({
+      terms: subterms,
+      uids: Object.keys(matches),
+    });
   }
 
   private getMatches(parts: QueryPart[]) {

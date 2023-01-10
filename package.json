@@ -10,6 +10,7 @@
     "lint": "eslint --ignore-path .eslintignore './src/**/*.{js,ts,tsx}'",
     "test": "jest --verbose --watch",
     "test:ci": "jest --verbose --forceExit",
+    "index-stats": "node ./scripts/index-stats.js",
     "preversion": "npm-run-all format lint",
     "postversion": "git push && git push --tags",
     "prod": "webpack --env prod",

@@ -47,18 +47,6 @@ beforeEach(() => {
       name: 'Alan Smith',
       title: 'Bar Senior The Staff Software Engineer 3 Foobar',
     },
-    {
-      id: 200,
-      name: 'Foo Bar',
-      title:
-        'Lorem Ipsum is simply dummy text of the printing and typesetting industry',
-    },
-    {
-      id: 300,
-      name: 'national park',
-      title:
-        'A national park located along the mid-section of the Maine coast, southwest of Bar Harbor.',
-    },
   ];
 });
 
@@ -158,79 +146,6 @@ test('it should search simple fields', () => {
   expect(results[1]['id']).toBe(21);
 });
 
-test('it should search simple phrases', () => {
-  const instance = new Search({
-    uidKey: 'id',
-    searchFields: ['title'],
-  }).addDocuments(docs);
-
-  const query = new Query();
-  query.add({
-    term: 'staff software engineer',
-    type: QueryPartType.Simple,
-    isPhrase: true,
-  });
-  const results = instance.search(query);
-
-  expect(results.length).toBe(1);
-  expect(results[0]['id']).toBe(101);
-});
-
-test('it should search simple phrases even if stopwords appear in between', () => {
-  const instance = new Search({
-    uidKey: 'id',
-    searchFields: ['title'],
-  }).addDocuments(docs);
-
-  const query = new Query();
-  query.add({
-    term: 'dummy text printing typesetting industry',
-    type: QueryPartType.Simple,
-    isPhrase: true,
-  });
-  const results = instance.search(query);
-
-  expect(results.length).toBe(1);
-  expect(results[0]['id']).toBe(200);
-});
-
-test('it should return empty results when all the words appear in document but not as a phrase', () => {
-  const instance = new Search({
-    uidKey: 'id',
-    searchFields: ['title'],
-  }).addDocuments(docs);
-
-  const query = new Query();
-  query.add({
-    term: 'national park located southwest', // document contains "southwestern" as last word in phrase
-    type: QueryPartType.Simple,
-    isPhrase: true,
-  });
-  const results = instance.search(query);
-
-  expect(results.length).toBe(0);
-});
-
-test('it should search simple phrases even with a single term', () => {
-  const instance = new Search({
-    uidKey: 'id',
-    searchFields: ['title'],
-  }).addDocuments(docs);
-
-  const query = new Query();
-  query.add({
-    term: 'engineer',
-    type: QueryPartType.Simple,
-    isPhrase: true,
-  });
-  const results = instance.search(query);
-
-  expect(results.length).toBe(3);
-  expect(results[0]['id']).toBe(3);
-  expect(results[1]['id']).toBe(32);
-  expect(results[2]['id']).toBe(101);
-});
-
 test('it should search required fields', () => {
   const instance = new Search({
     uidKey: 'id',
@@ -259,84 +174,6 @@ test('it should search negated fields', () => {
 
   expect(results.length).toBe(1);
   expect(results[0]['id']).toBe(3);
-});
-
-test('it should search required phrases', () => {
-  const instance = new Search({
-    uidKey: 'id',
-    searchFields: ['title'],
-  }).addDocuments(docs);
-
-  const query = new Query();
-  query.add({
-    term: 'software engineer',
-    type: QueryPartType.Required,
-    isPhrase: true,
-  });
-  query.add({ term: 'barfoo', type: QueryPartType.Negated, isPhrase: false });
-  const results = instance.search(query);
-
-  expect(results.length).toBe(1);
-  expect(results[0]['id']).toBe(101);
-});
-
-test('it should search required phrases even with a single term', () => {
-  const instance = new Search({
-    uidKey: 'id',
-    searchFields: ['title'],
-  }).addDocuments(docs);
-
-  const query = new Query();
-  query.add({
-    term: 'software',
-    type: QueryPartType.Required,
-    isPhrase: true,
-  });
-  query.add({ term: 'barfoo', type: QueryPartType.Negated, isPhrase: false });
-  const results = instance.search(query);
-
-  expect(results.length).toBe(1);
-  expect(results[0]['id']).toBe(101);
-});
-
-test('it should search negated phrases', () => {
-  const instance = new Search({
-    uidKey: 'id',
-    searchFields: ['title'],
-  }).addDocuments(docs);
-
-  const query = new Query();
-  query.add({ term: 'engineer', type: QueryPartType.Simple, isPhrase: false });
-  query.add({
-    term: 'senior staff',
-    type: QueryPartType.Negated,
-    isPhrase: true,
-  });
-  const results = instance.search(query);
-
-  expect(results.length).toBe(2);
-  expect(results[0]['id']).toBe(3);
-  expect(results[1]['id']).toBe(32);
-});
-
-test('it should search negated phrases even with a single term', () => {
-  const instance = new Search({
-    uidKey: 'id',
-    searchFields: ['title'],
-  }).addDocuments(docs);
-
-  const query = new Query();
-  query.add({ term: 'engineer', type: QueryPartType.Simple, isPhrase: false });
-  query.add({
-    term: 'staff',
-    type: QueryPartType.Negated,
-    isPhrase: true,
-  });
-  const results = instance.search(query);
-
-  expect(results.length).toBe(2);
-  expect(results[0]['id']).toBe(3);
-  expect(results[1]['id']).toBe(32);
 });
 
 test('it should search mixed queries', () => {

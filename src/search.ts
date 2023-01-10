@@ -205,35 +205,36 @@ export class Search {
     return matches;
   }
 
-  private imperfectPhraseSearch({
-    uids,
-    terms,
-  }: {
-    uids: string[];
-    terms: string[];
-  }) {
+  private doPhraseSearch({ uids, terms }: { uids: string[]; terms: string[] }) {
     const result: { [key: string]: unknown } = {};
-    const lookup: { [key: string]: number[] } = {};
+    const postingsMap: { [key: string]: number[] } = {};
 
     for (const uid of uids) {
+      let maxLen = 0;
+
+      // Lookup map for later
       for (const term of terms) {
         const meta = this.parseDocMetadata(this.indexTable[term][uid]);
-        lookup[term] = meta.postings;
+        postingsMap[term] = meta.postings;
+        maxLen = Math.max(maxLen, meta.postings.length);
       }
 
-      let t = 0;
-      while (lookup[terms[t]].length) {
+      // Evenly size arrays to minimize false positives
+      for (const arr of Object.values(postingsMap)) arr.length = maxLen;
+
+      let t = 0; // Check terms for a phrase
+      while (postingsMap[terms[t]].length) {
         if (isNone(terms[t + 1])) break; // no more terms
 
-        const pos = lookup[terms[t]].shift() || 0;
+        const pos = postingsMap[terms[t]].shift() || 0;
 
-        if (lookup[terms[t + 1]].includes(pos + terms[t].length + 1)) {
-          result[uid] = true;
+        if (postingsMap[terms[t + 1]].includes(pos + terms[t].length + 1)) {
+          result[uid] = true; // valid path so far
           t++;
         } else {
-          delete result[uid];
+          delete result[uid]; // now invalid path
 
-          if (lookup[terms[0]].length) {
+          if (postingsMap[terms[0]].length) {
             t = 0;
           }
         }
@@ -254,7 +255,7 @@ export class Search {
     // We're done if query part contains only a single term
     if (subterms.length === 1) return matches;
 
-    return this.imperfectPhraseSearch({
+    return this.doPhraseSearch({
       terms: subterms,
       uids: Object.keys(matches),
     });

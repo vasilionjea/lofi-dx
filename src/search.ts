@@ -201,7 +201,7 @@ export class Search {
     return matches;
   }
 
-  private doPhraseSearch({ uids, terms }: { uids: string[]; terms: string[] }) {
+  private phraseSearch({ uids, terms }: { uids: string[]; terms: string[] }) {
     const result: { [key: string]: unknown } = {};
     const postingsMap: { [key: string]: number[] } = {};
 
@@ -251,7 +251,7 @@ export class Search {
     // We're done if query part contains only a single term
     if (subterms.length === 1) return matches;
 
-    return this.doPhraseSearch({
+    return this.phraseSearch({
       terms: subterms,
       uids: Object.keys(matches),
     });

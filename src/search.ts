@@ -243,13 +243,15 @@ export class Search {
   private getPhraseMatches(part: QueryPart) {
     const subterms = part.term.split(this.documentSplitter);
 
+    // We're done if query part contains only a single term
+    if (subterms.length === 1) {
+      return this.getSimpleMatches(part);
+    }
+
     // Retrieve docs that contain all subterms (phrase or not)
     const matches = this.getRequiredMatches(
       subterms.map((term) => ({ term, isPhrase: false } as QueryPart))
     );
-
-    // We're done if query part contains only a single term
-    if (subterms.length === 1) return matches;
 
     return this.phraseSearch({
       terms: subterms,

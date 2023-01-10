@@ -1,6 +1,6 @@
 {
   "type": "module",
-  "name": "webpack-frontend-template",
+  "name": "search-query",
   "version": "1.2.2",
   "private": true,
   "description": "A webpack starter template for Frontend projects with typescript",

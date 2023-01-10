@@ -153,7 +153,7 @@ export class Search {
     return this;
   }
 
-  private groupParts(parts: QueryPart[]): PartGroups {
+  private groupQueryParts(parts: QueryPart[]): PartGroups {
     const groups = {
       required: [],
       negated: [],
@@ -276,7 +276,7 @@ export class Search {
   }
 
   search(query: Query) {
-    const groupedParts = this.groupParts(query.parts);
+    const groupedParts = this.groupQueryParts(query.parts);
     const negatedMatches = this.getMatches(groupedParts.negated);
 
     // Stop early if we have required terms

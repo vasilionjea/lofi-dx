@@ -206,17 +206,17 @@ export class Search {
     const postingsMap: { [key: string]: number[] } = {};
 
     for (const uid of uids) {
-      let maxLen = 0;
+      let evenLen = 0;
 
       // Lookup map for later
       for (const term of terms) {
         const meta = this.parseDocMetadata(this.indexTable[term][uid]);
         postingsMap[term] = meta.postings;
-        maxLen = Math.max(maxLen, meta.postings.length);
+        evenLen = Math.max(evenLen, meta.postings.length);
       }
 
       // Evenly size arrays to minimize false positives
-      for (const arr of Object.values(postingsMap)) arr.length = maxLen;
+      for (const arr of Object.values(postingsMap)) arr.length = evenLen;
 
       let t = 0; // Check terms for a phrase
       while (postingsMap[terms[t]].length) {

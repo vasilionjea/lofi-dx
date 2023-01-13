@@ -233,7 +233,7 @@ export class Search {
           stack.length = 0;
 
           const firstNext = postings[terms[0]].shift();
-          if (firstNext) stack.push(firstNext);
+          if (!isNone(firstNext)) stack.push(firstNext);
         }
       }
 

@@ -100,7 +100,7 @@ test('it should NOT find phrase even when terms appear multiple times', () => {
       id: 72,
       name: 'one two three',
       title:
-        'hello one two lorem ipsum three dolor three one two foobar two three',
+        'one one two lorem ipsum two three dolor three one one two two foobar two three',
     },
   ]);
   const query = new Query();

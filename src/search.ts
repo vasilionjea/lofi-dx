@@ -5,6 +5,7 @@ import {
   isStopWord,
   objectIntersection,
   objectDifference,
+  findInPlace,
 } from './utils';
 import { Query, QueryPart, QueryPartType } from './parser';
 
@@ -202,39 +203,41 @@ export class Search {
   }
 
   private phraseSearch({ uids, terms }: { uids: string[]; terms: string[] }) {
-    const result: { [key: string]: unknown } = {};
-    const postingsMap: { [key: string]: number[] } = {};
+    const result: { [key: string]: number } = {};
+    const totalTerms = terms.length;
+    const postings: { [key: string]: number[] } = {};
 
     for (const uid of uids) {
-      let evenLen = 0;
-
-      // Lookup map for later
       for (const term of terms) {
         const meta = this.parseDocMetadata(this.indexTable[term][uid]);
-        postingsMap[term] = meta.postings;
-        evenLen = Math.max(evenLen, meta.postings.length);
+        postings[term] = meta.postings;
       }
 
-      // Evenly size arrays to minimize false positives
-      for (const arr of Object.values(postingsMap)) arr.length = evenLen;
+      let t = 0;
+      const stack = [postings[terms[0]].shift()];
 
-      let t = 0; // Check terms for a phrase
-      while (postingsMap[terms[t]].length) {
-        if (isNone(terms[t + 1])) break; // no more terms
+      while (stack.length) {
+        if (isNone(terms[t + 1]) || result[uid] === totalTerms) break;
+        if (t === 0) result[uid] = 1;
 
-        const pos = postingsMap[terms[t]].shift() || 0;
+        const currentPos = stack[stack.length - 1] as number;
+        const nextExpected = currentPos + terms[t].length + 1;
+        const nextPos = findInPlace(postings[terms[t + 1]], nextExpected);
 
-        if (postingsMap[terms[t + 1]].includes(pos + terms[t].length + 1)) {
-          result[uid] = true; // valid path so far
+        if (!isNone(nextPos)) {
+          stack.push(nextPos as number);
+          result[uid] += 1;
           t++;
         } else {
-          delete result[uid]; // now invalid path
+          t = 0;
+          stack.length = 0;
 
-          if (postingsMap[terms[0]].length) {
-            t = 0;
-          }
+          const firstNext = postings[terms[0]].shift();
+          if (firstNext) stack.push(firstNext);
         }
       }
+
+      if (result[uid] !== totalTerms) delete result[uid];
     }
 
     return result;

@@ -58,6 +58,22 @@ export function objectDifference(
 }
 
 /**
+ * Array utils
+ */
+export function findInPlace(arr: unknown[], val: unknown) {
+  let found;
+
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] === val) {
+      found = arr.splice(i, 1)[0];
+      break;
+    }
+  }
+
+  return found;
+}
+
+/**
  * String utils
  */
 export function unquote(text = '') {

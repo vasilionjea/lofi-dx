@@ -75,7 +75,7 @@ export function findInPlace(arr: unknown[], val: unknown) {
 
 export function deltaEncode(value: number[]) {
   const nums = value.concat();
-  if (!Array.isArray(nums) || !nums.length) return nums;
+  if (!nums.length) return nums;
 
   let prev = nums.shift() as number;
   const result = [prev];
@@ -90,7 +90,7 @@ export function deltaEncode(value: number[]) {
 
 export function deltaDecode(value: number[]) {
   const nums = value.concat();
-  if (!Array.isArray(nums) || !nums.length) return nums;
+  if (!nums.length) return nums;
 
   let prev = nums.shift() as number;
   const result = [prev];

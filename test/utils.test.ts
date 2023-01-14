@@ -9,6 +9,9 @@ import {
   isBlank,
   isStopWord,
   stripStopWords,
+  findInPlace,
+  deltaEncode,
+  deltaDecode,
 } from '../src/utils';
 
 test('[hasOwnProperty] it returns true for own props otherwise false', () => {
@@ -104,4 +107,26 @@ test('[collapseWhitespace] it removes quotes from text', () => {
   expect(collapseWhitespace(`  -"quoted   modifier" `)).toEqual(
     `-"quoted modifier"`
   );
+});
+
+test('[findInPlace] it should find and return an array item, modifying existing array', () => {
+  const arr = [1, 2, 3, 4, 5];
+  const item = findInPlace(arr, 4);
+  expect(item).toBe(4);
+  expect(arr.length).toBe(4);
+  expect(arr.indexOf(4)).toBe(-1);
+});
+
+test('[deltaEncode] it should encode sorted numbers to their deltas', () => {
+  const original = [18, 41, 105, 444, 1048, 1087, 1285, 1290, 1319, 1396, 1886];
+  const encoded = [18, 23, 64, 339, 604, 39, 198, 5, 29, 77, 490];
+  expect(deltaEncode(original)).toEqual(encoded);
+  expect(original).toBe(original); // it didn't modify array
+});
+
+test('[deltaDecode] it should decode deltas to the original sorted numbers', () => {
+  const encoded = [18, 23, 64, 339, 604, 39, 198, 5, 29, 77, 490];
+  const original = [18, 41, 105, 444, 1048, 1087, 1285, 1290, 1319, 1396, 1886];
+  expect(deltaDecode(encoded)).toEqual(original);
+  expect(encoded).toBe(encoded); // it didn't modify array
 });

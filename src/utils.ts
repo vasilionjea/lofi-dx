@@ -73,6 +73,37 @@ export function findInPlace(arr: unknown[], val: unknown) {
   return found;
 }
 
+export function deltaEncode(value: number[]) {
+  const nums = value.concat();
+  if (!Array.isArray(nums) || !nums.length) return nums;
+
+  let prev = nums.shift() as number;
+  const result = [prev];
+
+  for (const current of nums) {
+    result.push(current - prev);
+    prev = current;
+  }
+
+  return result;
+}
+
+export function deltaDecode(value: number[]) {
+  const nums = value.concat();
+  if (!Array.isArray(nums) || !nums.length) return nums;
+
+  let prev = nums.shift() as number;
+  const result = [prev];
+
+  for (const current of nums) {
+    const n = prev + current;
+    result.push(n);
+    prev = n;
+  }
+
+  return result;
+}
+
 /**
  * String utils
  */

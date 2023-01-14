@@ -73,21 +73,15 @@ The index's internal word map is structured compactly as follows:
   "other": {}
 }
 ```
-The compact strucure reduces the index size and JS memory allocation by about 50% as compared to the expanded structure below. When a document is indexed, or during a phrase match, an index entry is parsed and **momentarily** expanded to the following structure:
+This compact strucure reduces the index byte size and JS memory allocation for it by about 50% as compared to the expanded structure below. The term position lists are also encoded using [delta encoding](https://en.wikipedia.org/wiki/Delta_encoding). 
+
+When a document is indexed, or during a phrase match, an index entry is parsed and **momentarily** expanded to the following structure:
 ```js
 {
   "national": {
     "1": {
       "frequency": 7,
       "postings": [9,32,1039,1078,1189,1276,1310]
-    },
-    "2": {
-      "frequency": 7,
-      "postings": [9,23,530,574,611,761,830]
-    },
-    "3": {
-      "frequency": 9,
-      "postings": [15,42,426,492,659,717,813,855,1008]
     }
   },
 

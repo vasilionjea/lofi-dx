@@ -202,7 +202,7 @@ export class Search {
     return matches;
   }
 
-  private phraseSearch({ uids, terms }: { uids: string[]; terms: string[] }) {
+  private searchPhrase({ uids, terms }: { uids: string[]; terms: string[] }) {
     const result: { [key: string]: number } = {};
     const totalTerms = terms.length;
     const postings: { [key: string]: number[] } = {};
@@ -256,7 +256,7 @@ export class Search {
       subterms.map((term) => ({ term, isPhrase: false } as QueryPart))
     );
 
-    return this.phraseSearch({
+    return this.searchPhrase({
       terms: subterms,
       uids: Object.keys(matches),
     });

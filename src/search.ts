@@ -6,6 +6,8 @@ import {
   objectIntersection,
   objectDifference,
   findInPlace,
+  deltaEncode,
+  deltaDecode,
 } from './utils';
 import { Query, QueryPart, QueryPartType } from './parser';
 
@@ -99,12 +101,12 @@ export class Search {
 
     return {
       frequency: Number(frequencyStr),
-      postings: postingsStr.split(',').map(Number),
+      postings: deltaDecode(postingsStr.split(',').map(Number)),
     };
   }
 
   stringifyDocMetadata(meta: DocParsedMetadata): string {
-    return `${meta.frequency}/${meta.postings.join(',')}`;
+    return `${meta.frequency}/${deltaEncode(meta.postings).join(',')}`;
   }
 
   index(field: string) {

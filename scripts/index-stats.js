@@ -21,7 +21,7 @@ function logStats(label = '', data = {}) {
 async function runStats() {
   const files = [
     { label: 'Index parsed:', name: 'index-parsed.json' },
-    { label: 'Index stringified:', name: 'index-stringified.json' },
+    { label: 'Index minified:', name: 'index-minified.json' },
     { label: 'Index encoded:', name: 'index-encoded.json' },
   ];
 

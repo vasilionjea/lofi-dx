@@ -3,7 +3,7 @@
 
 (_in progress_) A client side query tokenizer, parser, and [inverted index](https://en.wikipedia.org/wiki/Inverted_index). Stopwords like _an, the, it, is_ are filtered out from search queries and the index. The purpose of this is to allow making queries like `+jaguar speed "south america" -car` in a client side application (think offline PWA).
 
-* A `+` indicates a required term and it will result only in documents which have that term but may also contain other terms indicated by your query. 
+* A `+` indicates a required term and it will result only in documents which have that term but may also contain other terms indicated in your query. 
 * A `-` indicates term exclusion and it will result in documents that don't have that term. 
 * A quoted string such as `"south america"` indicates an exact phrase. A `+` or `-` can be added in front of phrases: `+"foo bar"` `-"biz baz"`
 * Simple terms like `software engineer` will result in documents that may have either one or both terms, but not necessarily as a phrase.
@@ -104,7 +104,7 @@ You must have NodeJS already installed on your machine, then run `npm install` b
 * `npm run test` to run tests in watch mode, or `npm run test:ci` to run tests once.
 
 ### Production
-There are only _devDependencies_ listed in _package.json_. There are a couple example TS files, styles, and tests that can be deleted but otherwise there are no production _dependencies_ here. Feel free to write vanilla TS or bring in other libraries.
+There are only _devDependencies_ listed in _package.json_. There are a couple example TS files, styles, and tests that can be deleted but otherwise there are no production _dependencies_.
 
 1. Run `npm run build` to build project.
 2. Then deploy the generated `dist/` directory.

@@ -77,17 +77,11 @@ The index's internal word map is structured compactly as follows:
 ```
 This compact strucure reduces the index byte size and JS memory allocation for it by about 50% as compared to the expanded structure below. The term position lists are also encoded using [delta encoding](https://en.wikipedia.org/wiki/Delta_encoding). 
 
-At runtime, when documents are indexed or during a phrase match, a document entry is **momentarily** parsed to the following structure:
+At runtime, when documents are indexed or during a phrase match, a document's metadata entry is **momentarily** parsed to the following structure:
 ```js
-{
-  // word
-  "yosemite": {
-    // document UID: metadata
-    "1": {
-      "frequency": 7,
-      "postings": [9,32,1039,1078,1189,1276,1310]
-    }
-  }
+{ // metadata
+  "frequency": 7,
+  "postings": [9,32,1039,1078,1189,1276,1310]
 }
 ```
 Once documents have entered the index or a phrase match completes, the expanded structure above gets garbage-collected by the JS engine. See [scripts/index-stats.js](https://github.com/vasilionjea/search-query/blob/main/scripts/index-stats.js) for size and memory of these structures or run `npm run index-stats`.

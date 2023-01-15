@@ -37,7 +37,8 @@ console.log(results);
 ]
 ```
 
-## Tokenizer 
+## Query 
+### Tokenizer 
 For the query `+jaguar speed "south america" -car`, it results in tokens:
 ```js
 [
@@ -47,7 +48,7 @@ For the query `+jaguar speed "south america" -car`, it results in tokens:
   { "type": "PresenceTerm", "text": "-car" }
 ]
 ```
-## Parser
+### Parser
 From the tokens above, it results in the following query parts:
 ```js
 [

@@ -5,7 +5,7 @@ import {
   isStopWord,
   objectIntersection,
   objectDifference,
-  findInPlace,
+  spliceItem,
   deltaEncode,
   deltaDecode,
 } from './utils';
@@ -224,10 +224,10 @@ export class Search {
 
         const currentPos = stack[stack.length - 1] as number;
         const nextExpected = currentPos + terms[t].length + 1;
-        const nextPos = findInPlace(postings[terms[t + 1]], nextExpected);
+        const nextPos = spliceItem(postings[terms[t + 1]], nextExpected);
 
         if (!isNone(nextPos)) {
-          stack.push(nextPos as number);
+          stack.push(nextPos);
           result[uid] += 1;
           t++;
         } else {

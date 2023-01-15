@@ -9,7 +9,7 @@ import {
   isBlank,
   isStopWord,
   stripStopWords,
-  findInPlace,
+  spliceItem,
   deltaEncode,
   deltaDecode,
 } from '../src/utils';
@@ -109,9 +109,9 @@ test('[collapseWhitespace] it removes quotes from text', () => {
   );
 });
 
-test('[findInPlace] it should find and return an array item, modifying existing array', () => {
+test('[spliceItem] it should find and return an array item, mutating existing array', () => {
   const arr = [1, 2, 3, 4, 5];
-  const item = findInPlace(arr, 4);
+  const item = spliceItem(arr, 4);
   expect(item).toBe(4);
   expect(arr.length).toBe(4);
   expect(arr.indexOf(4)).toBe(-1);

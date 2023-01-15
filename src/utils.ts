@@ -60,7 +60,7 @@ export function objectDifference(
 /**
  * Array utils
  */
-export function findInPlace(arr: unknown[], val: unknown) {
+export function spliceItem<T = unknown>(arr: T[], val: T): T | undefined {
   let found;
 
   for (let i = 0; i < arr.length; i++) {

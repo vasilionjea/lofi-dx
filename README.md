@@ -59,12 +59,14 @@ From the tokens above, it results in the following query parts:
 ```
 
 ## Inverted Index
-An inverted index is an index of words and which documents those words occur in. The inverted index reverses the logic by using the words to find the documents, instead of linearly scanning every document looking for words. Positions of every occurrence of a term are included in the index to support phrase queries. 
+An inverted index is an index of words and which documents those words occur in. Instead of linearly scanning every document looking for words, the inverted index reverses the logic by using the words to find the documents. Positions of every term occurrence are included in the index to support phrase queries. 
 
 The index's internal word map is structured compactly as follows:
 ```js
 {
-  "national": {
+  // word
+  "yosemite": { 
+    // document UID: metadata
     "1": "7/9,32,1039,1078,1189,1276,1310",
     "2": "7/9,23,530,574,611,761,830",
     "3": "9/15,42,426,492,659,717,813,855,1008",
@@ -75,17 +77,17 @@ The index's internal word map is structured compactly as follows:
 ```
 This compact strucure reduces the index byte size and JS memory allocation for it by about 50% as compared to the expanded structure below. The term position lists are also encoded using [delta encoding](https://en.wikipedia.org/wiki/Delta_encoding). 
 
-When a document is indexed, or during a phrase match, an index entry is parsed and **momentarily** expanded to the following structure:
+At runtime, when documents are indexed or during a phrase match, a document entry is **momentarily** parsed to the following structure:
 ```js
 {
-  "national": {
+  // word
+  "yosemite": {
+    // document UID: metadata
     "1": {
       "frequency": 7,
       "postings": [9,32,1039,1078,1189,1276,1310]
     }
-  },
-
-  "other": {}
+  }
 }
 ```
 Once documents have entered the index or a phrase match completes, the expanded structure above gets garbage-collected by the JS engine. See [scripts/index-stats.js](https://github.com/vasilionjea/search-query/blob/main/scripts/index-stats.js) for size and memory of these structures or run `npm run index-stats`.

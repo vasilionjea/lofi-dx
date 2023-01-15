@@ -84,7 +84,7 @@ At runtime, when documents are indexed or during a phrase match, a document's me
   "postings": [9,32,1039,1078,1189,1276,1310]
 }
 ```
-Once documents have entered the index or a phrase match completes, the expanded structure above gets garbage-collected by the JS engine. See [scripts/index-stats.js](https://github.com/vasilionjea/search-query/blob/main/scripts/index-stats.js) for size and memory of these structures or run `npm run index-stats`.
+Once documents have entered the index or a phrase match completes, the expanded structure above gets garbage-collected by the JS engine. See [scripts/index-stats.js](https://github.com/vasilionjea/search-query/blob/main/scripts/index-stats.js) for size and memory details or run `npm run index-stats`.
 
 **Note:** Currently there isn't any support for document ranking (_see [TF-IDF](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) or [BM25](https://en.wikipedia.org/wiki/Okapi_BM25)_). This has been tested only in English and likely won't work with other alphabets.
 

@@ -5,7 +5,7 @@ import SearchInput from './components/search-input';
 import SearchResults from './components/search-results';
 
 /**
- * Example
+ * Example app
  */
 class App {
   private readonly searchIndex = new Search({
@@ -29,7 +29,7 @@ class App {
     try {
       await this.loadDocuments();
     } catch (err) {
-      console.error(err);
+      return console.error(err);
     }
 
     this.$header.prepend(this.searchInput.render().element);

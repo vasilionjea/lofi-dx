@@ -51,7 +51,7 @@ class App {
   private dispatchDefaultInputValue() {
     this.searchInput.dispatchEvent(
       new CustomEvent('input:value', {
-        detail: { value: 'southwestern Utah' }
+        detail: { value: `"southwestern Utah"` }
       })
     );
   }

@@ -14,7 +14,7 @@ const defaults = {
   },
 
   get distFolderPath() {
-    return path.resolve(this.__dirname, 'dist');
+    return path.resolve(this.__dirname, 'public');
   },
 };
 

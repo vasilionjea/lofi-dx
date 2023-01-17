@@ -9,11 +9,11 @@ export default class SearchResults extends CoreComponent {
     return ['search-results'];
   }
 
-  resultsTemplate(data: any[]): string {
+  private resultsTemplate(data: any[]): string {
     return data.reduce((str, o) => str + `<article>${o.title}${o.body}</article>`, '');
   }
 
-  noResultsTemplate() {
+  private noResultsTemplate() {
     return '<p>No results found</p>';
   }
 

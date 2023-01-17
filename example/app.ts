@@ -32,18 +32,28 @@ class App {
       console.error(err);
     }
 
-    this.$header.append(this.searchInput.render().element);
+    this.$header.prepend(this.searchInput.render().element);
     this.$main.append(this.searchResults.element);
 
     this.searchInput.addEventListener('input:value', this);
     this.searchInput.addEventListener('input:clear', this);
     this.state.addEventListener('statechange', this);
+
+    this.dispatchDefaultInputValue();
   }
 
   private async loadDocuments() {
     const response = await fetch('./data.json');
     const { data } = await response.json();
     this.searchIndex.addDocuments(data);
+  }
+
+  private dispatchDefaultInputValue() {
+    this.searchInput.dispatchEvent(
+      new CustomEvent('input:value', {
+        detail: { value: 'southwestern Utah' }
+      })
+    );
   }
 
   handleEvent(event: Event) {
@@ -58,7 +68,7 @@ class App {
     if (event.type === 'statechange') {
       const { results } = (event as StateEvent).state;
       this.searchResults.render(results);
-      this.$stats!.textContent = results ? `Total documents found: ${results.length}` : '';
+      this.$stats!.textContent = results ? `Total results: ${results.length}` : '';
     }
   }
 

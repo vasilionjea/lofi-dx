@@ -46,7 +46,7 @@ class App {
     const response = await fetch('./data.json');
     const { data } = await response.json();
     this.searchIndex.addDocuments(data);
-    console.log(this.searchIndex.toJSON());
+    window.SEARCH_INDEX = this.searchIndex.toJSON();
   }
 
   private dispatchDefaultInputValue() {

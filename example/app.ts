@@ -1,57 +1,78 @@
 import './styles/style.scss';
 import { QueryTokenizer, QueryParser, Query, Token, Search } from '../src/index';
+import { $, debounce, StateEvent, State } from './utils';
+import SearchInput from './components/search-input';
+import SearchResults from './components/search-results';
 
 /**
- * Example application.
+ * Example
  */
 class App {
   private readonly searchIndex = new Search({
     uidKey: 'id',
     searchFields: ['body'],
-    splitter: /\W+|\d+/g, // splits on non-words and digits
+    splitter: /\W+|\d+/g, // non-words or digits
   });
+
+  private readonly state = new State();
+
+  private readonly $header = $('header')!;
+  private readonly $main = $('main')!;
+  private readonly $stats = $('.search-stats');
+
+  private readonly searchInput = new SearchInput();
+  private readonly searchResults = new SearchResults();
+
+  private readonly debouncedSearch = debounce(this.search, 100, this);
 
   async start() {
     try {
-      const result = await this.fetchData();
-      this.searchIndex.addDocuments(result.data);
-    } catch (error) {
-      console.error(error);
+      await this.loadDocuments();
+    } catch (err) {
+      console.error(err);
     }
 
-    console.log(this.searchIndex.toJSON());
-    console.log('Index size:', Object.keys(this.searchIndex.getIndexTable()).length);
+    this.$header.append(this.searchInput.render().element);
+    this.$main.append(this.searchResults.element);
+
+    this.searchInput.addEventListener('input:value', this);
+    this.searchInput.addEventListener('input:clear', this);
+    this.state.addEventListener('statechange', this);
   }
 
-  async fetchData() {
-    const result = await fetch('./data.json');
-    return result.json();
+  private async loadDocuments() {
+    const response = await fetch('./data.json');
+    const { data } = await response.json();
+    this.searchIndex.addDocuments(data);
   }
 
-  search(queryText: string) {
+  handleEvent(event: Event) {
+    if (event.type === 'input:value') {
+      return this.debouncedSearch((event as CustomEvent).detail.value);
+    }
+
+    if (event.type === 'input:clear') {
+      return this.state.set({ results: null });
+    }
+
+    if (event.type === 'statechange') {
+      const { results } = (event as StateEvent).state;
+      this.searchResults.render(results);
+      this.$stats!.textContent = results ? `Total documents found: ${results.length}` : '';
+    }
+  }
+
+  search(queryText = '') {
+    if (queryText.length <= 1) return;
+
     const tokens: Token[] = new QueryTokenizer(queryText).tokenize();
     const query: Query = new QueryParser(tokens).parse();
-    return this.searchIndex.search(query);
+
+    this.state.set({
+      results: this.searchIndex.search(query)
+    });
   }
 }
 
 const app = new App();
-
-app.start().then(() => {
-  const queryText = `"national park located in southwestern Utah"`;
-  const results = app.search(queryText);
-  const element = document.querySelector('main');
-
-  if (!element) return;
-  element.innerHTML += `<pre>Query text:${queryText}</pre>`;
-
-  if (!results.length) {
-    element.innerHTML += `<article>No results found...</article>`;
-  } else {
-    for (const document of results) {
-      element.innerHTML += `<article>${document.title}${document.body}</article>`;
-    }
-  }
-
-  console.log('Search results:', results);
-});
+app.start();

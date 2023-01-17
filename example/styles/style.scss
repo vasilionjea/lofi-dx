@@ -11,6 +11,7 @@ body {
   background-color: $body-background-color;
 }
 
+header,
 main {
   display: flex;
   flex-direction: column;
@@ -23,9 +24,21 @@ article {
   border-bottom: 1px solid lightgray;
 }
 
-pre {
-  margin-top: 2%;
-  padding: .125rem .325rem;
-  background: hsl(34deg 78% 91% / 79%);
-  border: 1px solid #d3bca659;
+.search-input {
+  margin-top: 2rem;
+
+  &,
+  input {
+    width: 100%;
+    max-width: 70vw;
+  }
+
+  input {
+    padding: 1rem;
+    font-size: 96%;
+  }
+}
+
+.search-results {
+  padding: 1rem;
 }

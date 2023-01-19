@@ -30,7 +30,7 @@ function lineBuilder(obj) {
     if (!line.length || isWhitespace(line)) return;
 
     if (lineIndex === 0) {
-      obj.title = `<h3>${line}</h3>`;
+      obj.title = `<h3><span>${line}</span></h3>`;
     } else {
       obj.body += `<p>${line}</p>`;
     }

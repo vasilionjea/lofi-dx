@@ -14,7 +14,7 @@ export default class SearchResults extends CoreComponent {
   }
 
   private noResultsTemplate() {
-    return '<p>No results found</p>';
+    return '<p class="no-results">No results found :(</p>';
   }
 
   render(data: pojo[] | null = []) {

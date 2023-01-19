@@ -51,6 +51,11 @@ h3 {
 
 .page-title {
   margin-bottom: 2rem;
+
+  span {
+    background-color: $secondary-accent-color;
+    padding: 0 0.15em;
+  }
 }
 
 header {
@@ -74,8 +79,9 @@ article {
     padding: 1rem;
     font-size: 96%;
     line-height: 1.15;
-    border: 2px solid #a8a8af;
-    border-radius: 3px;
+    border: 2px solid hsl(0deg 1% 64% / 80%);
+    border-radius: 4px;
+    box-shadow: 0px 0 3px hsl(198deg 7% 93% / 80%);
   }
 }
 
@@ -89,14 +95,30 @@ article {
     display: none;
   }
 
-  margin: .5rem 0 0 0;
-  font-size: .75rem;
+  display: inline-block;
+  margin-top: .125rem;
+  padding: .125em 1.125em;
+  font-size: .725rem;
   font-family: monospace;
-  color: #464646;
+  line-height: 1.15;
+  color: #444;
+  background-color: hsl(0deg 0% 94% / 66%);
+  border-radius: 2px;
 }
 
 .search-results {
   &:empty {
     display: none;
   }
+
+  h3 span {
+    padding-bottom: 4px;
+    border-bottom: 3px solid $secondary-accent-color;
+  }
+}
+
+.no-results {
+  text-align: center;
+  padding: 4rem;
+  font-weight: 300;
 }

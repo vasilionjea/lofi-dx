@@ -73,30 +73,36 @@ export function spliceItem<T = unknown>(arr: T[], val: T): T | undefined {
   return found;
 }
 
-export function deltaEncode(value: number[]) {
-  const nums = value.concat();
-  if (!nums.length) return nums;
+export function encodePostings(arr: number[]): string[] {
+  const nums = arr.concat();
+  if (!nums.length) return [];
 
-  let prev = nums.shift() as number;
-  const result = [prev];
+  const result: string[] = [];
 
-  for (const current of nums) {
-    result.push(current - prev);
-    prev = current;
+  for (let i = 0; i < nums.length; i++) {
+    const prev = nums[i - 1];
+    const current = nums[i];
+
+    if (i === 0) {
+      result.push(current.toString(36));
+    } else {
+      const delta = current - prev;
+      result.push(delta.toString(36));
+    }
   }
 
   return result;
 }
 
-export function deltaDecode(value: number[]) {
-  const nums = value.concat();
-  if (!nums.length) return nums;
+export function decodePostings(arr: string[]): number[] {
+  const nums = arr.concat();
+  if (!nums.length) return [];
 
-  let prev = nums.shift() as number;
+  let prev = parseInt(nums.shift() as string, 36);
   const result = [prev];
 
   for (const current of nums) {
-    const n = prev + current;
+    const n = prev + parseInt(current, 36);
     result.push(n);
     prev = n;
   }

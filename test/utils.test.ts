@@ -10,8 +10,8 @@ import {
   isStopWord,
   stripStopWords,
   spliceItem,
-  deltaEncode,
-  deltaDecode,
+  encodePostings,
+  decodePostings,
 } from '../src/utils';
 
 test('[hasOwnProperty] it returns true for own props otherwise false', () => {
@@ -117,16 +117,40 @@ test('[spliceItem] it should find and return an array item, mutating existing ar
   expect(arr.indexOf(4)).toBe(-1);
 });
 
-test('[deltaEncode] it should encode sorted numbers to their deltas', () => {
+test('[encodePostings] it should encode sorted numbers to their deltas', () => {
   const original = [18, 41, 105, 444, 1048, 1087, 1285, 1290, 1319, 1396, 1886];
-  const encoded = [18, 23, 64, 339, 604, 39, 198, 5, 29, 77, 490];
-  expect(deltaEncode(original)).toEqual(encoded);
+  const encoded = [
+    'i',
+    'n',
+    '1s',
+    '9f',
+    'gs',
+    '13',
+    '5i',
+    '5',
+    't',
+    '25',
+    'dm',
+  ];
+  expect(encodePostings(original)).toEqual(encoded);
   expect(original).toBe(original); // it didn't modify array
 });
 
-test('[deltaDecode] it should decode deltas to the original sorted numbers', () => {
-  const encoded = [18, 23, 64, 339, 604, 39, 198, 5, 29, 77, 490];
+test('[decodePostings] it should decode deltas to the original sorted numbers', () => {
+  const encoded = [
+    'i',
+    'n',
+    '1s',
+    '9f',
+    'gs',
+    '13',
+    '5i',
+    '5',
+    't',
+    '25',
+    'dm',
+  ];
   const original = [18, 41, 105, 444, 1048, 1087, 1285, 1290, 1319, 1396, 1886];
-  expect(deltaDecode(encoded)).toEqual(original);
+  expect(decodePostings(encoded)).toEqual(original);
   expect(encoded).toBe(encoded); // it didn't modify array
 });

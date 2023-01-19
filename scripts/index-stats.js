@@ -20,14 +20,19 @@ function logStats(label = '', data = {}) {
 
 async function runStats() {
   const files = [
-    { label: 'Index parsed:', name: 'index-parsed.json' },
-    { label: 'Index minified:', name: 'index-minified.json' },
-    { label: 'Index encoded:', name: 'index-encoded.json' },
+    { label: 'Parsed', name: 'parsed.json' },
+    { label: 'Stringified', name: 'stringified.json' },
+    { label: 'Delta encoded', name: 'delta-encoded.json' },
+    { label: 'Base36 encoded', name: 'base36-encoded.json' },
   ];
 
+  console.log('Index Stats\n___________');
+
   for (const file of files) {
-    const data = await readFile(path.join(__dirname, file.name), { encoding: 'utf-8' });
-    logStats(file.label, data);
+    try {
+      const data = await readFile(path.join(__dirname, 'index', file.name), { encoding: 'utf-8' });
+      logStats(file.label, data);
+    } catch (err) { }
   }
 }
 

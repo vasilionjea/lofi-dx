@@ -80,7 +80,7 @@ This compact strucure reduces the index byte size by ~56% and memory allocation 
 
 At runtime, when documents are indexed or during a phrase match, a document's metadata entry is **momentarily** parsed to the expanded structure, which looks as follows:
 ```js
-{ // metadata
+{ // metadata for document UID: 1
   "frequency": 7,
   "postings": [9,32,1039,1078,1189,1276,1310]
 }

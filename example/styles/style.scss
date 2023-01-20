@@ -49,6 +49,10 @@ h3 {
   font-size: 1.5rem;
 }
 
+header {
+  margin-bottom: 1rem;
+}
+
 .page-title {
   margin-bottom: 2rem;
 
@@ -56,14 +60,6 @@ h3 {
     background-color: $secondary-accent-color;
     padding: 0 0.15em;
   }
-}
-
-header {
-  margin-bottom: 1rem;
-}
-
-article {
-  margin-bottom: 3rem;
 }
 
 .search-input {
@@ -80,14 +76,9 @@ article {
     font-size: 96%;
     line-height: 1.15;
     border: 2px solid hsl(0deg 1% 64% / 80%);
-    border-radius: 4px;
+    border-radius: 5px;
     box-shadow: 0px 0 3px hsl(198deg 7% 93% / 80%);
   }
-}
-
-.search-stats,
-.search-results {
-  padding: 0.125rem 0.325rem;
 }
 
 .search-stats {
@@ -111,14 +102,30 @@ article {
     display: none;
   }
 
+  h3 {
+    margin-top: 0.5rem;
+  }
+
   h3 span {
-    padding-bottom: 4px;
+    padding-bottom: 5px;
     border-bottom: 3px solid $secondary-accent-color;
   }
-}
 
-.no-results {
-  text-align: center;
-  padding: 4rem;
-  font-weight: 300;
+  article,
+  .no-results {
+    margin-bottom: 2.5rem;
+    box-shadow: 0 2px 3px rgb(0 0 0 / 6%);
+    border: 1px solid #e5e5e5;
+    border-radius: 5px;
+  }
+
+  article {
+    padding: 1rem 1.5rem;
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 4rem;
+    font-weight: 300;
+  }
 }

@@ -78,7 +78,7 @@ The index's internal word map is structured compactly as follows:
 ```
 This compact strucure reduces the index byte size by ~56% and memory allocation by about 65% as compared to the expanded structure below (_based on the index from the demo page_). To accomplish this reduction the term positions are [delta-encoded](https://en.wikipedia.org/wiki/Delta_encoding) and [base36-encoded](https://en.wikipedia.org/wiki/Base36) before entering the index map. 
 
-At runtime, when documents are indexed or during a phrase match, a document's metadata entry is **momentarily** parsed to the expanded structure, which looks as follows:
+At runtime, when documents are indexed or during a phrase match, a document's metadata entry is **momentarily** parsed to the following expanded structure:
 ```js
 { // metadata for document UID: 1
   "frequency": 7,

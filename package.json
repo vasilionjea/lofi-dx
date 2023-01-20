@@ -3,7 +3,7 @@
   "name": "search-query",
   "version": "1.2.2",
   "private": true,
-  "description": "A webpack starter template for Frontend projects with typescript",
+  "description": "A client side query tokenizer, parser, and inverted index with typescript",
   "scripts": {
     "start": "webpack serve --env dev",
     "format": "prettier --ignore-path .eslintignore --write '**/**/*.{js,ts,tsx}'",

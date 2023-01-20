@@ -75,9 +75,9 @@ export function spliceItem<T = unknown>(arr: T[], val: T): T | undefined {
 
 export function encodePostings(arr: number[]): string[] {
   const nums = arr.concat();
-  if (!nums.length) return [];
-
   const result: string[] = [];
+
+  if (!nums.length) return result;
 
   for (let i = 0; i < nums.length; i++) {
     const prev = nums[i - 1];
@@ -96,10 +96,12 @@ export function encodePostings(arr: number[]): string[] {
 
 export function decodePostings(arr: string[]): number[] {
   const nums = arr.concat();
-  if (!nums.length) return [];
+  const result: number[] = [];
+
+  if (!nums.length) return result;
 
   let prev = parseInt(nums.shift() as string, 36);
-  const result = [prev];
+  result.push(prev);
 
   for (const current of nums) {
     const n = prev + parseInt(current, 36);

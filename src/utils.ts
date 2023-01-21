@@ -73,10 +73,8 @@ export function spliceItem<T = unknown>(arr: T[], val: T): T | undefined {
   return found;
 }
 
-export function encodePostings(arr: number[]): string[] {
-  const nums = arr.concat();
+export function encodePostings(nums: number[]): string[] {
   const result: string[] = [];
-
   if (!nums.length) return result;
 
   for (let i = 0; i < nums.length; i++) {

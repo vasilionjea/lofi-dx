@@ -1,16 +1,13 @@
 import {
-  collapseWhitespace,
   isNone,
-  isBlank,
-  isStopWord,
   objectIntersection,
   objectDifference,
-  spliceItem,
-  encodePostings,
-  decodePostings,
-  stemmer,
-} from './utils';
-import { Query, QueryPart, QueryPartType } from './query-parser';
+  removeArrayItem,
+} from './utils/core';
+import { collapseWhitespace, isBlank, stemWord } from './utils/string';
+import { encodePostings, decodePostings } from './utils/encoding';
+import { isStopword } from './stopwords';
+import { ParsedQuery, QueryPart, QueryPartType } from './query/index';
 
 interface SearchOptions {
   uidKey: string;
@@ -84,8 +81,8 @@ export class Search {
     let start = 0;
 
     for (const text of tokens) {
-      if (!isStopWord(text)) {
-        const token = { text: stemmer(text), posting: start };
+      if (!isStopword(text)) {
+        const token = { text: stemWord(text), posting: start };
         start += text.length + 1;
 
         result.push(token);
@@ -225,7 +222,7 @@ export class Search {
 
         const currentPos = stack[stack.length - 1] as number;
         const nextExpected = currentPos + terms[t].length + 1;
-        const nextPos = spliceItem(postings[terms[t + 1]], nextExpected);
+        const nextPos = removeArrayItem(postings[terms[t + 1]], nextExpected);
 
         if (!isNone(nextPos)) {
           stack.push(nextPos);
@@ -279,7 +276,7 @@ export class Search {
     return matches;
   }
 
-  search(query: Query) {
+  search(query: ParsedQuery) {
     const groupedParts = this.groupQueryParts(query.parts);
     const negatedMatches = this.getMatches(groupedParts.negated);
 

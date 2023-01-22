@@ -1,4 +1,4 @@
-import { typeOf } from './utils';
+import { typeOf } from './utils/core';
 
 /**
  * Stopwords stripped away from queries and the index.
@@ -185,37 +185,61 @@ const STOPWORDS_MAP = [
   'yours',
   'yourself',
   'yourselves',
-].reduce(
-  (acc: Record<string, string>, word: string) => {
-    acc[word] = word;
-    return acc;
-  },
-  {}
-);
+].reduce((acc: Record<string, string>, word: string) => {
+  acc[word] = word;
+  return acc;
+}, {});
 
 /**
- * Stopwords
+ * Returns all stopwords.
  */
-export const stopwords = {
-  add(words: string[] = []): void {
-    if (!Array.isArray(words)) {
-      throw new Error(`Expected array of stopwords but received ${typeOf(words)}`);
+export function getStopwords(): string[] {
+  return Object.values(STOPWORDS_MAP);
+}
+
+/**
+ * True if word is in the internal stopword map.
+ */
+export function hasStopword(word: string): boolean {
+  return Boolean(STOPWORDS_MAP[word]);
+}
+
+/**
+ * Adds additional stopwords to the internal map.
+ */
+export function addStopwords(words: string[] = []): void {
+  if (!Array.isArray(words)) {
+    throw new Error(
+      `Expected array of stopwords but received ${typeOf(words)}`
+    );
+  }
+
+  if (!words.length) return;
+
+  for (const word of words) {
+    if (!hasStopword(word)) {
+      STOPWORDS_MAP[word] = word;
     }
+  }
+}
 
-    if (!words.length) return;
+/**
+ * True if word is a stopword or it's made up of only non-word chars
+ */
+export function isStopword(word: string): boolean {
+  return hasStopword(word) || !word.match(/(\w+)/g);
+}
 
-    for (const word of words) {
-      if (!this.has(word)) {
-        STOPWORDS_MAP[word] = word;
-      }
-    }
-  },
+/**
+ * Removes all stopwords the provided text.
+ */
+export function stripStopwords(text: string): string {
+  const result = [];
 
-  has(word: string): boolean {
-    return Boolean(STOPWORDS_MAP[word]);
-  },
+  for (const word of text.split(/\s+/g)) {
+    if (isStopword(word)) continue;
+    result.push(word);
+  }
 
-  getAll(): string[] {
-    return Object.values(STOPWORDS_MAP);
-  },
-};
+  return result.join(' ');
+}

@@ -1,5 +1,5 @@
 import './styles/style.scss';
-import { QueryTokenizer, QueryParser, Query, Token, Search } from '../src/index';
+import { Search, createQuery } from '../src/index';
 import { $, debounce, StateEvent, State } from './utils';
 import SearchInput from './components/search-input';
 import SearchResults from './components/search-results';
@@ -75,13 +75,8 @@ class App {
 
   search(queryText = '') {
     if (queryText.length <= 1) return;
-
-    const tokens: Token[] = new QueryTokenizer(queryText).tokenize();
-    const query: Query = new QueryParser(tokens).parse();
-
-    this.state.set({
-      results: this.searchIndex.search(query)
-    });
+    const results = this.searchIndex.search(createQuery(queryText));
+    this.state.set({ results });
   }
 }
 

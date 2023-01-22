@@ -1,16 +1,35 @@
-import stopwords from '../src/stopwords';
+import {
+  getStopwords,
+  hasStopword,
+  addStopwords,
+  isStopword,
+  stripStopwords,
+} from '../src/stopwords';
 
-test('it should have stopwords', () => {
-  expect(stopwords.has('the')).toBe(true);
-  expect(stopwords.getAll()).toBeInstanceOf(Array);
-  expect(stopwords.getAll().includes('the')).toBe(true);
-});
+describe('Stopwords', () => {
+  test('it should have default stopwords', () => {
+    expect(hasStopword('the')).toBe(true);
+    expect(getStopwords()).toBeInstanceOf(Array);
+    expect(getStopwords().includes('the')).toBe(true);
+  });
 
-test('it should allow additional stopwords', () => {
-  expect(stopwords.has('foo')).toBe(false);
-  expect(stopwords.has('bar')).toBe(false);
+  test('it should allow additional stopwords', () => {
+    expect(hasStopword('foo')).toBe(false);
+    expect(hasStopword('bar')).toBe(false);
 
-  stopwords.add(['foo', 'bar']);
-  expect(stopwords.has('foo')).toBe(true);
-  expect(stopwords.has('bar')).toBe(true);
+    addStopwords(['foo', 'bar']);
+    expect(hasStopword('foo')).toBe(true);
+    expect(hasStopword('bar')).toBe(true);
+  });
+
+  test('it should return true for stopwords or non-word characters', () => {
+    expect(isStopword('the')).toBe(true);
+    expect(isStopword('is')).toBe(true);
+    expect(isStopword('@&$^%*')).toBe(true);
+  });
+
+  test('it removes stopwords from text', () => {
+    expect(stripStopwords('it is the thing')).toEqual('thing');
+    expect(stripStopwords('the thing it is')).toEqual('thing');
+  });
 });

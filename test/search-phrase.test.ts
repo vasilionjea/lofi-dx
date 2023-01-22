@@ -1,4 +1,4 @@
-import { Query, QueryPartType } from '../src/query-parser';
+import { ParsedQuery, QueryPartType } from '../src/query/parser';
 import { Search } from '../src/search';
 
 const stopwords = {
@@ -23,7 +23,7 @@ test('it should search simple phrases', () => {
     },
   ]);
 
-  const query = new Query();
+  const query = new ParsedQuery();
   query.add({
     term: 'staff software engineer',
     type: QueryPartType.Simple,
@@ -51,7 +51,7 @@ test('it should search simple phrases even if stopwords appear in between', () =
     },
   ]);
 
-  const query = new Query();
+  const query = new ParsedQuery();
   query.add({
     term: 'dummy text printing typesetting industry',
     type: QueryPartType.Simple,
@@ -78,7 +78,7 @@ test('it should find phrase even when terms appear multiple times', () => {
         'hello one two lorem ipsum three dolor three one two foobar one two three biz baz',
     },
   ]);
-  const query = new Query();
+  const query = new ParsedQuery();
   query.add({
     term: 'one two three',
     type: QueryPartType.Simple,
@@ -103,7 +103,7 @@ test('it should NOT find phrase even when terms appear multiple times', () => {
         'one one two lorem ipsum two three dolor three one one two two foobar two three',
     },
   ]);
-  const query = new Query();
+  const query = new ParsedQuery();
   query.add({
     term: 'one two three',
     type: QueryPartType.Simple,
@@ -129,7 +129,7 @@ test('it should return empty results when all the words appear in document but n
     },
   ]);
 
-  const query = new Query();
+  const query = new ParsedQuery();
   query.add({
     term: 'national park located southwest', // document contains "southwestern" as last word in phrase
     type: QueryPartType.Simple,
@@ -160,7 +160,7 @@ test('it should search simple phrases even with a single term', () => {
     },
   ]);
 
-  const query = new Query();
+  const query = new ParsedQuery();
   query.add({
     term: 'engineer',
     type: QueryPartType.Simple,
@@ -193,7 +193,7 @@ test('it should search required phrases', () => {
     },
   ]);
 
-  const query = new Query();
+  const query = new ParsedQuery();
   query.add({
     term: 'software engineer',
     type: QueryPartType.Required,
@@ -226,7 +226,7 @@ test('it should search required phrases even with a single term', () => {
     },
   ]);
 
-  const query = new Query();
+  const query = new ParsedQuery();
   query.add({
     term: 'software',
     type: QueryPartType.Required,
@@ -264,7 +264,7 @@ test('it should search negated phrases', () => {
     },
   ]);
 
-  const query = new Query();
+  const query = new ParsedQuery();
   query.add({ term: 'engineer', type: QueryPartType.Simple, isPhrase: false });
   query.add({
     term: 'senior staff',
@@ -303,7 +303,7 @@ test('it should search negated phrases even with a single term', () => {
     },
   ]);
 
-  const query = new Query();
+  const query = new ParsedQuery();
   query.add({ term: 'engineer', type: QueryPartType.Simple, isPhrase: false });
   query.add({
     term: 'staff',

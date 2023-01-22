@@ -1,4 +1,4 @@
-import { Query, QueryPartType } from '../src/query-parser';
+import { ParsedQuery, QueryPartType } from '../src/query/parser';
 import { Search } from '../src/search';
 
 let docs: Array<{ [key: string]: unknown }>;
@@ -137,7 +137,7 @@ test('it should search simple fields', () => {
     searchFields: ['title'],
   }).addDocuments(docs);
 
-  const query = new Query();
+  const query = new ParsedQuery();
   query.add({ term: 'designer', type: QueryPartType.Simple, isPhrase: false });
   const results = instance.search(query);
 
@@ -152,7 +152,7 @@ test('it should search required fields', () => {
     searchFields: ['title'],
   }).addDocuments(docs);
 
-  const query = new Query();
+  const query = new ParsedQuery();
   query.add({ term: 'senior', type: QueryPartType.Required, isPhrase: false });
   query.add({ term: 'staff', type: QueryPartType.Required, isPhrase: false });
   const results = instance.search(query);
@@ -167,7 +167,7 @@ test('it should search negated fields', () => {
     searchFields: ['title'],
   }).addDocuments(docs);
 
-  const query = new Query();
+  const query = new ParsedQuery();
   query.add({ term: 'engineer', type: QueryPartType.Simple, isPhrase: false });
   query.add({ term: 'senior', type: QueryPartType.Negated, isPhrase: false });
   const results = instance.search(query);
@@ -182,7 +182,7 @@ test('it should search mixed queries', () => {
     searchFields: ['title'],
   }).addDocuments(docs);
 
-  const query = new Query();
+  const query = new ParsedQuery();
   query.add({
     term: 'software engineer',
     type: QueryPartType.Simple,
@@ -209,7 +209,7 @@ test('it should return empty results', () => {
     searchFields: ['title'],
   }).addDocuments(docs);
 
-  const query = new Query();
+  const query = new ParsedQuery();
   query.add({
     term: 'software engineer',
     type: QueryPartType.Required,

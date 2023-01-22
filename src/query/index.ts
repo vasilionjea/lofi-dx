@@ -2,7 +2,7 @@ import { QueryToken, QueryTokenizer } from './tokenizer';
 import { QueryParser, ParsedQuery } from './parser';
 
 /**
- * Tokenizes a raw query and returns a parsed ParsedQuery instance.
+ * Tokenizes a raw query and returns a ParsedQuery instance.
  */
 export function createQuery(rawText = ''): ParsedQuery {
   if (!rawText) return new ParsedQuery();

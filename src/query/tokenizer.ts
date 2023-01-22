@@ -1,7 +1,7 @@
 import { isStopword } from '../stopwords';
 
 /**
- * The types of query tokens that are supported.
+ * The query token types that are supported.
  */
 export enum QueryTokenType {
   Invalid = 'Invalid', // unsupported

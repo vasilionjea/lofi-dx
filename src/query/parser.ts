@@ -17,7 +17,7 @@ export enum QueryPartType {
 }
 
 /**
- * A query is made of N parts and a part could be a phrase.
+ * A query is made of parts and a part can be a phrase.
  */
 export interface QueryPart {
   term: string;
@@ -38,13 +38,13 @@ export class ParsedQuery {
 
 /**
  * From an array of QueryToken instances, it returns a ParsedQuery
- * instance. The index can only be searched with a ParsedQuery.
+ * instance, which can be used to search the index.
  */
 export class QueryParser {
   constructor(public readonly tokens: QueryToken[]) {}
 
   /**
-   * Parses a presence token into a Required/Negated QueryPart.
+   * Parses a presence token into a Required or Negated query part.
    */
   private parsePresence(token: QueryToken): QueryPart {
     let term = collapseWhitespace(token.text.toLocaleLowerCase()).trim();
@@ -75,7 +75,7 @@ export class QueryParser {
   }
 
   /**
-   * Parses an exact token into a simple QueryPart.
+   * Parses an exact token into a simple phrase part.
    */
   private parseExact(token: QueryToken): QueryPart {
     let term = unquote(token.text.toLocaleLowerCase());
@@ -92,7 +92,7 @@ export class QueryParser {
   }
 
   /**
-   * Parses a token into a simple QueryPart.
+   * Parses a token into a simple query part.
    */
   private parseSimple(token: QueryToken): QueryPart {
     return {
@@ -103,7 +103,7 @@ export class QueryParser {
   }
 
   /**
-   * Parses each query token and returns a ParsedQuery.
+   * Parses each query token and into query parts returns a ParsedQuery.
    */
   parse() {
     const query = new ParsedQuery();

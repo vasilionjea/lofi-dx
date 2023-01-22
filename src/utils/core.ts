@@ -1,11 +1,3 @@
-export function isNone(obj: unknown): boolean {
-  return obj === null || obj === undefined;
-}
-
-export function hasOwn(obj: object, key: string): boolean {
-  return Object.prototype.hasOwnProperty.call(obj, key);
-}
-
 const JsTypesMap = new Map<string, string>([
   ['[object Undefined]', 'undefined'],
   ['[object Null]', 'null'],
@@ -26,6 +18,14 @@ const JsTypesMap = new Map<string, string>([
 export function typeOf(obj: unknown): string {
   const key = Object.prototype.toString.call(obj);
   return JsTypesMap.get(key) || '';
+}
+
+export function isNone(obj: unknown): boolean {
+  return obj === null || obj === undefined;
+}
+
+export function hasOwn(obj: object, key: string): boolean {
+  return Object.prototype.hasOwnProperty.call(obj, key);
 }
 
 /**

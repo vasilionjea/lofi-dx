@@ -1,7 +1,7 @@
 import { typeOf } from './utils/core';
 
 /**
- * Stopwords stripped away from queries and the index.
+ * Stopwords that are stripped away from queries and the index.
  */
 const STOPWORDS_MAP = [
   'a',
@@ -191,14 +191,14 @@ const STOPWORDS_MAP = [
 }, {});
 
 /**
- * Returns all stopwords.
+ * Returns all stopwords present in the internal map.
  */
 export function getStopwords(): string[] {
   return Object.values(STOPWORDS_MAP);
 }
 
 /**
- * True if word is in the internal stopword map.
+ * True if a word is in the internal map.
  */
 export function hasStopword(word: string): boolean {
   return Boolean(STOPWORDS_MAP[word]);
@@ -224,14 +224,14 @@ export function addStopwords(words: string[] = []): void {
 }
 
 /**
- * True if word is a stopword or it's made up of only non-word chars
+ * True if a word is a stopword, or if it's made up of only non-word chars.
  */
 export function isStopword(word: string): boolean {
   return hasStopword(word) || !word.match(/(\w+)/g);
 }
 
 /**
- * Removes all stopwords the provided text.
+ * Removes all stopwords from the provided text.
  */
 export function stripStopwords(text: string): string {
   const result = [];

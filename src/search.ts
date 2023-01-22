@@ -7,7 +7,7 @@ import {
 import { collapseWhitespace, isBlank, stemWord } from './utils/string';
 import { encodePostings, decodePostings } from './utils/encoding';
 import { isStopword } from './stopwords';
-import { ParsedQuery, QueryPart, QueryPartType } from './query/index';
+import { ParsedQuery, QueryPart, QueryPartType } from './query/parser';
 
 interface SearchOptions {
   uidKey: string;

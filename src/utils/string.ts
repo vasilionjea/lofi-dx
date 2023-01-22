@@ -1,5 +1,5 @@
 /**
- * True for empty or whitespace-only strings.
+ * True for empty or whitespace strings.
  */
 export function isBlank(text: string): boolean {
   return !text || !/\S+/g.test(text);

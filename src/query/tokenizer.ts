@@ -7,7 +7,7 @@ export enum QueryTokenType {
   Invalid = 'Invalid', // unsupported
   PresenceTerm = 'PresenceTerm', // prefixed term with `+` or `-`
   ExactTerm = 'ExactTerm', // quoted term
-  Term = 'Term', // rest of terms
+  Term = 'Term', // simple terms
 }
 
 // Test at: https://regex101.com
@@ -27,7 +27,7 @@ const tokenizerRegex = new RegExp(
 );
 
 /**
- * A query token has a type and the token's text.
+ * A query token has a type and text.
  */
 export class QueryToken {
   constructor(public type: QueryTokenType, public text: string) {}

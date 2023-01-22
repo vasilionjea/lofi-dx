@@ -9,7 +9,10 @@ module.exports = {
     'node_modules',
     'src',
   ],
-  modulePathIgnorePatterns: ['<rootDir>/dist/', '<rootDir>/public/'],
+  modulePathIgnorePatterns: [
+    '<rootDir>/dist/',
+    '<rootDir>/public/',
+  ],
   resetMocks: true,
 
   // https://jestjs.io/docs/configuration#globals-object

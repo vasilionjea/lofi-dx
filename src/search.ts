@@ -8,6 +8,7 @@ import {
   spliceItem,
   encodePostings,
   decodePostings,
+  stemmer,
 } from './utils';
 import { Query, QueryPart, QueryPartType } from './parser';
 
@@ -84,7 +85,7 @@ export class Search {
 
     for (const text of tokens) {
       if (!isStopWord(text)) {
-        const token = { text, posting: start };
+        const token = { text: stemmer(text), posting: start };
         start += text.length + 1;
 
         result.push(token);

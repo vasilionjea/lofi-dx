@@ -73,6 +73,9 @@ export function spliceItem<T = unknown>(arr: T[], val: T): T | undefined {
   return found;
 }
 
+/**
+ * Encodes term postings using delta and base36 encoding.
+ */
 export function encodePostings(nums: number[]): string[] {
   const result: string[] = [];
   if (!nums.length) return result;
@@ -92,6 +95,9 @@ export function encodePostings(nums: number[]): string[] {
   return result;
 }
 
+/**
+ * Decodes postings from base36, then delta-decodes them.
+ */
 export function decodePostings(arr: string[]): number[] {
   const nums = arr.concat();
   const result: number[] = [];
@@ -134,12 +140,37 @@ export function isStopWord(word: string) {
   return Boolean(STOPWORDS_MAP[word]) || !word.match(/(\w+)/g);
 }
 
+/**
+ * Removes stopwords from both queries and the index.
+ * TODO: expose API to add additional stopwords.
+ */
 export function stripStopWords(text: string) {
   const result = [];
 
   for (const word of text.split(/\s+/g)) {
     if (isStopWord(word)) continue;
     result.push(word);
+  }
+
+  return result.join(' ');
+}
+
+/**
+ * Not a stemmer. Just a simple default that only drops "s" from some plural words. Doesn't
+ * touch words that end with 'ss', 'es' (e.g. grass, centuries, goes/trees). Used for both,
+ * query words and index words. TODO: expose API for users to provide their own stemmer.
+ */
+const sSuffix = /s$/i;
+const ssIesSuffix = /(ss|i?es)$/i;
+export function stemmer(text: string): string {
+  const result = [];
+
+  for (const word of text.split(/\s+/g)) {
+    if (sSuffix.test(word) && !ssIesSuffix.test(word)) {
+      result.push(word.replace(sSuffix, ''));
+    } else {
+      result.push(word);
+    }
   }
 
   return result.join(' ');

@@ -4,6 +4,7 @@ import {
   stripModifiers,
   collapseWhitespace,
   stripStopWords,
+  stemmer,
 } from './utils';
 
 export enum QueryPartType {
@@ -27,7 +28,7 @@ export class Query {
 }
 
 export class QueryParser {
-  constructor(public readonly tokens: Token[]) {}
+  constructor(public readonly tokens: Token[]) { }
 
   private parsePresence(part: QueryPart) {
     let term = collapseWhitespace(part.term).trim();
@@ -46,12 +47,14 @@ export class QueryParser {
 
     part.term = unquote(term).trim();
     part.term = stripStopWords(part.term);
+    part.term = stemmer(part.term);
   }
 
   private parseExact(part: QueryPart) {
     part.isPhrase = true;
     part.term = collapseWhitespace(unquote(part.term));
     part.term = stripStopWords(part.term);
+    part.term = stemmer(part.term);
   }
 
   parse() {
@@ -59,7 +62,7 @@ export class QueryParser {
 
     for (const token of this.tokens) {
       const part: QueryPart = {
-        term: token.text.toLocaleLowerCase(),
+        term: stemmer(token.text.toLocaleLowerCase()),
         isPhrase: false,
         type: QueryPartType.Simple,
       };
@@ -74,7 +77,9 @@ export class QueryParser {
           break;
       }
 
-      query.add(part);
+      if (part.term) {
+        query.add(part);
+      }
     }
 
     return query;

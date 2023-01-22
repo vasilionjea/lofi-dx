@@ -12,6 +12,7 @@ import {
   spliceItem,
   encodePostings,
   decodePostings,
+  stemmer,
 } from '../src/utils';
 
 test('[hasOwnProperty] it returns true for own props otherwise false', () => {
@@ -153,4 +154,14 @@ test('[decodePostings] it should decode deltas to the original sorted numbers', 
   const original = [18, 41, 105, 444, 1048, 1087, 1285, 1290, 1319, 1396, 1886];
   expect(decodePostings(encoded)).toEqual(original);
   expect(encoded).toBe(encoded); // it didn't modify array
+});
+
+test('[stemmer] it singularizes plurals ending with "s"', () => {
+  expect(stemmer('pets')).toBe('pet');
+  expect(stemmer('hello worlds')).toBe('hello world');
+
+  expect(stemmer('the zones')).toBe('the zones');
+  expect(stemmer('there she goes')).toBe('there she goes');
+  expect(stemmer('the grass')).toBe('the grass');
+  expect(stemmer('during pasts centuries')).toBe('during past centuries');
 });

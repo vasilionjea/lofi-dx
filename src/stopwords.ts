@@ -196,7 +196,7 @@ const STOPWORDS_MAP = [
 /**
  * Stopwords
  */
-export default {
+export const stopwords = {
   add(words: string[] = []): void {
     if (!Array.isArray(words)) {
       throw new Error(`Expected array of stopwords but received ${typeOf(words)}`);

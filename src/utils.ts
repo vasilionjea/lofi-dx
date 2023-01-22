@@ -1,4 +1,4 @@
-import stopwords from './stopwords';
+import { stopwords } from './stopwords';
 
 /**
  * Object utils

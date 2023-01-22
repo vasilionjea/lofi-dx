@@ -9,9 +9,7 @@ const JsTypesMap = new Map<string, string>([
   ['[object Object]', 'object'],
   ['[object Map]', 'map'],
   ['[object Function]', 'function'],
-  ['[object Date]', 'date'],
   ['[object RegExp]', 'regexp'],
-  ['[object Symbol]', 'symbol'],
   ['[object Error]', 'error'],
 ]);
 

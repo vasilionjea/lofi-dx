@@ -41,10 +41,8 @@ describe('Core utils', () => {
     const fn = () => 0;
     expect(typeOf(fn)).toBe('function');
 
-    expect(typeOf(new Date())).toBe('date');
     expect(typeOf(new RegExp(''))).toBe('regexp');
     expect(typeOf(/./g)).toBe('regexp');
-    expect(typeOf(Symbol('id'))).toBe('symbol');
     expect(typeOf(new Error('oh no'))).toBe('error');
 
     // Random unsupported object

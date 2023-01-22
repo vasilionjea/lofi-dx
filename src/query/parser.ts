@@ -41,7 +41,7 @@ export class ParsedQuery {
  * instance, which can be used to search the index.
  */
 export class QueryParser {
-  constructor(public readonly tokens: QueryToken[]) {}
+  constructor(public readonly tokens: QueryToken[]) { }
 
   /**
    * Parses a presence token into a Required or Negated query part.
@@ -79,7 +79,6 @@ export class QueryParser {
    */
   private parseExact(token: QueryToken): QueryPart {
     let term = unquote(token.text.toLocaleLowerCase());
-
     term = collapseWhitespace(term).trim();
     term = stripStopwords(term);
     term = stemWord(term);
@@ -103,7 +102,7 @@ export class QueryParser {
   }
 
   /**
-   * Parses each query token and into query parts returns a ParsedQuery.
+   * Parses each query token into query parts and returns a ParsedQuery.
    */
   parse() {
     const query = new ParsedQuery();

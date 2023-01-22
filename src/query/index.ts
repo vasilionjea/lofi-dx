@@ -1,5 +1,5 @@
 import { QueryToken, QueryTokenizer } from './tokenizer';
-import { ParsedQuery, QueryParser } from './parser';
+import { QueryParser, ParsedQuery } from './parser';
 
 /**
  * Tokenizes a raw query and returns a parsed ParsedQuery instance.

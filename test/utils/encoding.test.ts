@@ -20,6 +20,7 @@ describe('Encoding utils', () => {
     ];
     expect(encodePostings(original)).toEqual(encoded);
     expect(original).toBe(original); // it didn't modify array
+    expect(encodePostings([])).toEqual([]); // empty input
   });
 
   test('[decodePostings] it should decode deltas to the original sorted numbers', () => {
@@ -41,5 +42,6 @@ describe('Encoding utils', () => {
     ];
     expect(decodePostings(encoded)).toEqual(original);
     expect(encoded).toBe(encoded); // it didn't modify array
+    expect(decodePostings([])).toEqual([]); // empty input
   });
 });

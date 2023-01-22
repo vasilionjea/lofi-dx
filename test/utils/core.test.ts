@@ -29,6 +29,7 @@ describe('Core utils', () => {
     expect(typeOf(false)).toBe('boolean');
     expect(typeOf(true)).toBe('boolean');
     expect(typeOf('foo bar')).toBe('string');
+    expect(typeOf('')).toBe('string');
     expect(typeOf(10)).toBe('number');
 
     expect(typeOf([])).toBe('array');
@@ -45,6 +46,9 @@ describe('Core utils', () => {
     expect(typeOf(/./g)).toBe('regexp');
     expect(typeOf(Symbol('id'))).toBe('symbol');
     expect(typeOf(new Error('oh no'))).toBe('error');
+
+    // Random unsupported object
+    expect(typeOf(new ArrayBuffer(0))).toBe('');
   });
 
   test('[objectIntersection] it should return key-value pairs found in both objects', () => {

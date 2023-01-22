@@ -156,9 +156,17 @@ test('it should search required fields', () => {
   query.add({ term: 'senior', type: QueryPartType.Required, isPhrase: false });
   query.add({ term: 'staff', type: QueryPartType.Required, isPhrase: false });
   const results = instance.search(query);
-
   expect(results.length).toBe(1);
   expect(results[0]['id']).toBe(101);
+
+  const query2 = new ParsedQuery();
+  query2.add({ term: 'senior', type: QueryPartType.Required, isPhrase: false });
+  query2.add({
+    term: 'INVALID',
+    type: QueryPartType.Required,
+    isPhrase: false,
+  });
+  expect(instance.search(query2).length).toBe(0);
 });
 
 test('it should search negated fields', () => {

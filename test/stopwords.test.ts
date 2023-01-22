@@ -20,6 +20,12 @@ describe('Stopwords', () => {
     addStopwords(['foo', 'bar']);
     expect(hasStopword('foo')).toBe(true);
     expect(hasStopword('bar')).toBe(true);
+
+    try {
+      addStopwords();
+    } catch (err) {
+      expect(err).toBeInstanceOf(TypeError);
+    }
   });
 
   test('it should return true for stopwords or non-word characters', () => {

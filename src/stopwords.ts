@@ -209,7 +209,7 @@ export function hasStopword(word: string): boolean {
  */
 export function addStopwords(words: string[] = []): void {
   if (!Array.isArray(words)) {
-    throw new Error(
+    throw new TypeError(
       `Expected array of stopwords but received ${typeOf(words)}`
     );
   }

@@ -1,4 +1,9 @@
-const STOPWORDS = [
+import { typeOf } from './utils';
+
+/**
+ * Stopwords stripped away from queries and the index.
+ */
+const STOPWORDS_MAP = [
   'a',
   'able',
   'about',
@@ -180,12 +185,37 @@ const STOPWORDS = [
   'yours',
   'yourself',
   'yourselves',
-];
-
-export const STOPWORDS_MAP = STOPWORDS.reduce(
+].reduce(
   (acc: Record<string, string>, word: string) => {
     acc[word] = word;
     return acc;
   },
   {}
 );
+
+/**
+ * Stopwords
+ */
+export default {
+  add(words: string[] = []): void {
+    if (!Array.isArray(words)) {
+      throw new Error(`Expected array of stopwords but received ${typeOf(words)}`);
+    }
+
+    if (!words.length) return;
+
+    for (const word of words) {
+      if (!this.has(word)) {
+        STOPWORDS_MAP[word] = word;
+      }
+    }
+  },
+
+  has(word: string): boolean {
+    return Boolean(STOPWORDS_MAP[word]);
+  },
+
+  getAll(): string[] {
+    return Object.values(STOPWORDS_MAP);
+  },
+};

@@ -1,4 +1,4 @@
-import { STOPWORDS_MAP } from './stopwords';
+import stopwords from './stopwords';
 
 /**
  * Object utils
@@ -137,7 +137,7 @@ export function isBlank(text: string) {
 
 // True if word is a stopword or it contains only non-word chars
 export function isStopWord(word: string) {
-  return Boolean(STOPWORDS_MAP[word]) || !word.match(/(\w+)/g);
+  return stopwords.has(word) || !word.match(/(\w+)/g);
 }
 
 /**

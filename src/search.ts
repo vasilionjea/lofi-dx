@@ -10,7 +10,7 @@ import {
   decodePostings,
   stemmer,
 } from './utils';
-import { Query, QueryPart, QueryPartType } from './parser';
+import { Query, QueryPart, QueryPartType } from './query-parser';
 
 interface SearchOptions {
   uidKey: string;

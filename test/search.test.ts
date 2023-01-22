@@ -1,4 +1,4 @@
-import { Query, QueryPartType } from '../src/parser';
+import { Query, QueryPartType } from '../src/query-parser';
 import { Search } from '../src/search';
 
 let docs: Array<{ [key: string]: unknown }>;

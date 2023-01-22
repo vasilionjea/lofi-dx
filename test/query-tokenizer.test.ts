@@ -1,4 +1,4 @@
-import { TokenType, QueryTokenizer } from '../src/tokenizer';
+import { TokenType, QueryTokenizer } from '../src/query-tokenizer';
 
 test('it should strip illegal character from query', () => {
   const invalid = '^*()_}][{>\\<|/`~}';

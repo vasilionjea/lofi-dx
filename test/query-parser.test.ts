@@ -1,5 +1,5 @@
-import { Token } from '../src/tokenizer';
-import { Query, QueryParser, QueryPartType } from '../src/parser';
+import { Token } from '../src/query-tokenizer';
+import { Query, QueryParser, QueryPartType } from '../src/query-parser';
 
 test('it should parse tokens to a query object', () => {
   const tokens = [

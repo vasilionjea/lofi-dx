@@ -1,4 +1,4 @@
-import { Token, TokenType } from './tokenizer';
+import { Token, TokenType } from './query-tokenizer';
 import {
   unquote,
   stripModifiers,

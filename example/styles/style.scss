@@ -13,31 +13,12 @@ html {
 }
 
 body {
-  max-width: 80vw;
-  margin: 4rem auto;
+  margin: 0;
   font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 100%;
   line-height: 1.5;
   color: $primary-dark-color;
   background-color: $body-background-color;
-
-  @media all and (min-width: $screen-sm) {
-    & {
-      max-width: 88vw;
-    }
-  }
-
-  @media all and (min-width: $screen-md) {
-    & {
-      max-width: 76vw;
-    }
-  }
-
-  @media all and (min-width: $screen-lg) {
-    & {
-      max-width: 68vw;
-    }
-  }
 }
 
 h1 {
@@ -54,6 +35,23 @@ h3 {
 
 header {
   margin-bottom: 2rem;
+}
+
+.page {
+  max-width: 90vw;
+  margin: 4rem auto;
+
+  @media all and (min-width: $screen-md) {
+    & {
+      max-width: 76vw;
+    }
+  }
+
+  @media all and (min-width: $screen-lg) {
+    & {
+      max-width: 68vw;
+    }
+  }
 }
 
 .page-title {

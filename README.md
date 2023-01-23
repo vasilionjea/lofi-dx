@@ -9,7 +9,7 @@ A client side query tokenizer, parser, and [inverted index](https://en.wikipedia
 * Simple terms like `software engineer` will result in documents that may have either one or both terms, but not necessarily as a phrase.
 
 ## Example
-Create instance and add documents to the index:
+Create and add documents to the index:
 ```js
 const peopleIndex = new InvertedIndex({ uidKey: 'id', fields: ['title'] });
 const peopleSearch = new InvertedSearch(this.invertedIndex);

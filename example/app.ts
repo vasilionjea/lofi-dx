@@ -33,14 +33,14 @@ class App {
   }
 
   async start() {
+    this.$header.prepend(this.searchInput.render().element);
+    this.$main.append(this.searchResults.element);
+
     try {
       await this.loadDocuments();
     } catch (err) {
       return console.error(err);
     }
-
-    this.$header.prepend(this.searchInput.render().element);
-    this.$main.append(this.searchResults.element);
 
     this.searchInput.addEventListener('input:value', this);
     this.searchInput.addEventListener('input:clear', this);

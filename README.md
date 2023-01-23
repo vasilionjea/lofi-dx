@@ -11,9 +11,10 @@ A client side query tokenizer, parser, and [inverted index](https://en.wikipedia
 ## Example
 Create instance and add documents to the index:
 ```js
-const people = new Search({ uidKey: 'id', searchFields: ['title'] });
+const peopleIndex = new InvertedIndex({ uidKey: 'id', fields: ['title'] });
+const peopleSearch = new InvertedSearch(this.invertedIndex);
 
-people.addDocuments([
+peopleIndex.addDocuments([
   { id: 3, name: 'Mike', title: 'Chief Forward Impact Engineer 3 Foo' },
   { id: 7, name: 'Joe Doe', title: 'Chief Interactions Liason' },
   { id: 11, name: 'Alice Smith', title: 'UX Designer Bar Baz' },
@@ -26,7 +27,7 @@ people.addDocuments([
 ```
 Search the index:
 ```js
-const results = people.search(`"software engineer" ux designer -"engineer 3"`);
+const results = peopleSearch.search(`"software engineer" ux designer -"engineer 3"`);
 console.log(results);
 ```
 ```js 

@@ -4,7 +4,7 @@ import { QueryParser, ParsedQuery } from './parser';
 /**
  * Tokenizes a raw query and returns a ParsedQuery instance.
  */
-export function createQuery(rawText = ''): ParsedQuery {
+export function parseQuery(rawText = ''): ParsedQuery {
   if (!rawText) return new ParsedQuery();
   const tokens: QueryToken[] = new QueryTokenizer(rawText).tokenize();
   return new QueryParser(tokens).parse();

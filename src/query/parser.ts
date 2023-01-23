@@ -41,7 +41,7 @@ export class ParsedQuery {
  * instance, which can be used to search the index.
  */
 export class QueryParser {
-  constructor(public readonly tokens: QueryToken[]) { }
+  constructor(public readonly tokens: QueryToken[]) {}
 
   /**
    * Parses a presence token into a Required or Negated query part.

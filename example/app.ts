@@ -1,5 +1,5 @@
 import './styles/style.scss';
-import { Search, createQuery } from '../src/index';
+import { InvertedIndex, InvertedSearch } from '../src/index';
 import { $, debounce, StateEvent, State } from './utils';
 import SearchInput from './components/search-input';
 import SearchResults from './components/search-results';
@@ -8,11 +8,8 @@ import SearchResults from './components/search-results';
  * Example app
  */
 class App {
-  private readonly searchIndex = new Search({
-    uidKey: 'id',
-    searchFields: ['body'],
-    splitter: /\W+|\d+/g, // non-words or digits
-  });
+  private readonly invertedIndex: InvertedIndex;
+  private readonly invertedSearch: InvertedSearch;
 
   private readonly state = new State();
 
@@ -24,6 +21,16 @@ class App {
   private readonly searchResults = new SearchResults();
 
   private readonly debouncedSearch = debounce(this.search, 100, this);
+
+  constructor() {
+    this.invertedIndex = new InvertedIndex({
+      uidKey: 'id',
+      fields: ['body'],
+      splitter: /\W+|\d+/g, // non-words or digits
+    });
+
+    this.invertedSearch = new InvertedSearch(this.invertedIndex);
+  }
 
   async start() {
     try {
@@ -45,8 +52,10 @@ class App {
   private async loadDocuments() {
     const response = await fetch('./data.json');
     const { data } = await response.json();
-    this.searchIndex.addDocuments(data);
-    console.log(this.searchIndex.toJSON());
+
+    this.invertedIndex.addDocuments(data);
+
+    console.log(this.invertedIndex.toJSON());
   }
 
   private dispatchDefaultInputValue() {
@@ -75,7 +84,7 @@ class App {
 
   search(queryText = '') {
     if (queryText.length <= 1) return;
-    const results = this.searchIndex.search(createQuery(queryText));
+    const results = this.invertedSearch.search(queryText);
     this.state.set({ results });
   }
 }

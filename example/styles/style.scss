@@ -7,6 +7,9 @@
 html {
   font-size: 1rem;
   overflow-x: hidden;
+  border-style: solid;
+  border-width: 0.5rem 0 0;
+  border-image: linear-gradient(45deg, hsl(0deg 16% 96% / 88%), hsl(0deg 16% 96% / 85%)) 1;
 }
 
 body {
@@ -57,9 +60,10 @@ header {
   margin-bottom: 2rem;
 
   span {
-    border-bottom: 5px solid hsl(0deg 100% 89% / 87%);
-    padding: 0 0.15em;
+    border-bottom: 5px solid hsl(0deg 100% 89% / 98%);
+    padding: 0 .22em;
     color: hsl(0deg 0% 100%);
+    border-radius: 1px;
     background-color: $secondary-accent-color;
   }
 }
@@ -77,7 +81,12 @@ header {
     outline: none;
 
     &:focus {
-      border-color: hsl(0deg 100% 72%);
+      border-color: hsl(0deg 100% 72% / 70%);
+    }
+
+    &:hover,
+    &:focus {
+      box-shadow: 0px 1px 4px hsl(235deg 8% 70% / 49%);
     }
 
     padding: 1rem;
@@ -118,18 +127,19 @@ header {
 
   h3 span {
     padding-bottom: 6px;
-    border-bottom: 3px solid hsl(0deg 100% 73% / 82%);
+    border-bottom: 3px solid hsl(0deg 100% 73% / 76%);
   }
 
   article,
   .no-results {
     margin-bottom: 2rem;
-    box-shadow: 0 2px 3px rgb(0 0 0 / 6%);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 6%);
     border: 1px solid hsl(0deg 0% 90% / 80%);
-    border-radius: 5px;
+    border-radius: 6px;
   }
 
   article {
+    border-top: 4px solid hsl(0deg 0% 90% / 70%);
     padding: 1.65rem;
 
     p:last-child {

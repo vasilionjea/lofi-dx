@@ -50,15 +50,17 @@ h3 {
 }
 
 header {
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
 .page-title {
   margin-bottom: 2rem;
 
   span {
-    background-color: $secondary-accent-color;
+    border-bottom: 5px solid hsl(0deg 100% 89% / 87%);
     padding: 0 0.15em;
+    color: hsl(0deg 0% 100%);
+    background-color: $secondary-accent-color;
   }
 }
 
@@ -75,9 +77,9 @@ header {
     padding: 1rem;
     font-size: 96%;
     line-height: 1.15;
-    border: 2px solid hsl(240deg 1% 71% / 85%);
-    border-radius: 5px;
-    box-shadow: 0px 1px 3px hsl(235deg 8% 70% / 30%);
+    border: 1px solid hsl(240deg 1% 71% / 80%);
+    border-radius: 6px;
+    box-shadow: 0px 1px 3px hsl(235deg 8% 70% / 29%);
   }
 }
 
@@ -86,15 +88,17 @@ header {
     display: none;
   }
 
-  display: inline-block;
-  margin-top: .625rem;
-  padding: .125em 1.125em;
-  font-size: .725rem;
+  display: flex;
+  border: 1px solid hsl(240deg 1% 71% / 18%);
+  max-width: max-content;
+  padding: 0.18em 1.18em;
+  font-size: 0.725rem;
   font-family: monospace;
-  line-height: 1.15;
-  color: #333;
-  background-color: hsl(248deg 11% 93% / 57%);
+  line-height: 1.12;
+  color: hsl(0deg 0% 0% / 75%);
   border-radius: 15px;
+  background: hsl(248deg 11% 93% / 60%);
+  box-shadow: 0px 0 2px hsl(235deg 8% 70% / 8%);
 }
 
 .search-results {
@@ -108,19 +112,19 @@ header {
 
   h3 span {
     padding-bottom: 5px;
-    border-bottom: 3px solid $secondary-accent-color;
+    border-bottom: 3px solid hsl(0deg 100% 73% / 82%);
   }
 
   article,
   .no-results {
     margin-bottom: 2rem;
     box-shadow: 0 2px 3px rgb(0 0 0 / 6%);
-    border: 1px solid #e5e5e5;
+    border: 1px solid hsl(0deg 0% 90% / 80%);
     border-radius: 5px;
   }
 
   article {
-    padding: 1rem 1.5rem;
+    padding: 1.5rem;
   }
 
   .no-results {

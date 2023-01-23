@@ -12,8 +12,6 @@ A client side query tokenizer, parser, and [inverted index](https://en.wikipedia
 Create and add documents to the index:
 ```js
 const peopleIndex = new InvertedIndex({ uidKey: 'id', fields: ['title'] });
-const peopleSearch = new InvertedSearch(this.invertedIndex);
-
 peopleIndex.addDocuments([
   { id: 3, name: 'Mike', title: 'Chief Forward Impact Engineer 3 Foo' },
   { id: 7, name: 'Joe Doe', title: 'Chief Interactions Liason' },
@@ -27,6 +25,7 @@ peopleIndex.addDocuments([
 ```
 Search the index:
 ```js
+const peopleSearch = new InvertedSearch(peopleIndex);
 const results = peopleSearch.search(`"software engineer" ux designer -"engineer 3"`);
 console.log(results);
 ```

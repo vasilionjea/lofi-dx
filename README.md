@@ -1,7 +1,7 @@
 # search-query
 [![Build Status](https://github.com/vasilionjea/webpack-frontend-template/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/vasilionjea/webpack-frontend-template/actions/workflows/unit-tests.yml) 
 
-A Typescript query tokenizer, parser, and [inverted index](https://en.wikipedia.org/wiki/Inverted_index) for client side web apps that supports required, negated, and phrase queries. Stopwords like _an, the, it_ are filtered out from search queries and the index. 
+A Typescript query tokenizer, parser, and [inverted index](https://en.wikipedia.org/wiki/Inverted_index) for client side web apps that supports required, negated, and phrase queries. A set of default stopwords that can be extended are filtered out from search queries and the index. 
 
 Live demo: https://vasilionjea.github.io/search-query 
 

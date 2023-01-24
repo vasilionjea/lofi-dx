@@ -5,7 +5,7 @@ Typescript query [tokenizer](#tokenizer), [parser](#parser), and [inverted index
 
 Live demo: https://vasilionjea.github.io/search-query 
 
-The purpose of this is to allow making queries like `+jaguar speed "south america" -car` in a client side application (_e.g. offline PWA_): 
+The purpose of this is to allow making queries like `+jaguar speed "south america" -car` in a client side application (_think offline PWA_): 
 
 * A `+` indicates a required term and it will result only in documents which have that term but may also contain other terms indicated in your query. 
 * A `-` indicates term exclusion and it will result in documents that don't have that term. 

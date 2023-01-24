@@ -101,18 +101,18 @@ The point of client side full-text search is to improve the user experience in o
 ## Persistence
 No assumption is made about where the documents or the index are stored for persistence. Perhaps `localStorage` (_limited to about 5MB/synchronous API_) works for your usecase or you may need to reach for `IndexedDB`. 
 
-## Environments
-You must have NodeJS already installed on your machine, then run `npm install` before running any other commands.
+## Contributing
+I'll work with you to merge in bug or feature pull requests.  
 
 ### Development 
+You must have NodeJS already installed on your machine, then run `npm install` before running any other commands. There are only _devDependencies_ listed in _package.json_. 
+
 * `npm run start` to start the dev server with live reload, and point your browser to http://localhost:3000
 * `npm run lint` to lint your code with ESLint.
 * `npm run format` to format your code with Prettier.
 * `npm run test` to run tests in watch mode, or `npm run test:ci` to run tests once.
+* `npm run test:coverage` to display a test coverage report
 
-### Production
-There are only _devDependencies_ listed in _package.json_. There are a couple example TS files, styles, and tests that can be deleted but otherwise there are no production _dependencies_.
-
-1. Run `npm run build` to build project.
-2. Then deploy the generated `dist/` directory.
+### Deployment
+The `example/` directory contains a very simple frontend app with Vanilla TS (_no component frameworks_). Run `npm run deploy` to deploy to _gh-pages_
 

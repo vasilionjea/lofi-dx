@@ -1,7 +1,7 @@
 # search-query
 [![Build Status](https://github.com/vasilionjea/webpack-frontend-template/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/vasilionjea/webpack-frontend-template/actions/workflows/unit-tests.yml) 
 
-A Typescript query tokenizer, parser, and [inverted index](https://en.wikipedia.org/wiki/Inverted_index) for client side web apps that supports required, negated, and phrase queries. A set of default stopwords that can be extended are filtered out from search queries and the index. 
+A Typescript query [tokenizer](#tokenizer), [parser](#parser), and [inverted index](#inverted-index) for client side web apps that supports required, negated, and phrase queries. A set of default stopwords that can be extended are filtered out from search queries and the index. 
 
 Live demo: https://vasilionjea.github.io/search-query 
 
@@ -64,7 +64,7 @@ From the tokens above, it results in the following query parts:
 ```
 
 ## Inverted Index
-An inverted index is an index of words and which documents those words occur in. Instead of linearly scanning every document looking for words, the inverted index reverses the logic by using the words to find the documents. Positions of every term occurrence are included in the index to support phrase queries. 
+An [inverted index](https://en.wikipedia.org/wiki/Inverted_index) is an index of words and which documents those words occur in. Instead of linearly scanning every document looking for words, the inverted index reverses the logic by using the words to find the documents. Positions of every term occurrence are included in the index to support phrase queries. 
 
 The index's internal word map is structured compactly as follows:
 ```js

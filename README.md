@@ -95,7 +95,7 @@ Given that this is a client-side solution to full-text search, the documents and
 The point of client side full-text search is to improve the user experience in offline mode, or when Internet connection is flakey, or when such client side feature is more performant than querying a server. However, if your app runs into memory issues and crashes the Browser tab because you're trying to load megabytes worth of documents, then that may actually derail the user experience. Have a cap on the total bytes you're storing and loading into memory client-side.
 
 ## Persistence
-No assumption is made about where the documents or the index are stored for persistence – perhaps `localStorage` works for your usecase or you may need to reach for `IndexedDB`. 
+No assumption is made about where the documents or the index are stored for persistence. Perhaps `localStorage` (_limited to about 5MB/synchronous API_) works for your usecase or you may need to reach for `IndexedDB`. 
 
 ## Environments
 You must have NodeJS already installed on your machine, then run `npm install` before running any other commands.

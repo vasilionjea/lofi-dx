@@ -89,6 +89,14 @@ Once documents have entered the index or a phrase match completes, the expanded 
 
 **Note:** Currently there isn't any support for document ranking (_see [TF-IDF](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) or [BM25](https://en.wikipedia.org/wiki/Okapi_BM25)_). This has been tested only in English and likely won't work with other alphabets.
 
+## Memory
+Given that this is a client-side solution to full-text search, the documents and the index are loaded into memory. The index stores the word corpus, the document UIDs that contain those words, and all the word positions in order to support phrase queries. Although the numerical word positions are stored space efficiently using delta and base36 encoding, keep in mind that a client side full-text search implementation is likely not practical for large enough datasets. 
+
+The point of client side full-text search is to improve the user experience in offline mode, or when Internet connection is flakey, or when such client side feature is more performant than querying a server. However, if your app runs into memory issues and crashes the Browser tab because you're trying to load megabytes worth of documents, then that may actually derail the user experience. Have a cap on the total bytes you're storing and loading into memory client-side.
+
+## Persistence
+No assumption is made about where the documents or the index are stored for persistence – perhaps `localStorage` works for your usecase or you may need to reach for `IndexedDB`. 
+
 ## Environments
 You must have NodeJS already installed on your machine, then run `npm install` before running any other commands.
 

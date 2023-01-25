@@ -26,7 +26,7 @@ export type ScoredMatches = {
  * it computes each term doc's tfidf, and sorts them by the highest score.
  */
 export class InvertedSearch {
-  constructor(private readonly invertedIndex: InvertedIndex) {}
+  constructor(private readonly invertedIndex: InvertedIndex) { }
 
   /**
    * For a set of matched docs, it computes each doc's tfidf value.
@@ -178,7 +178,7 @@ export class InvertedSearch {
   }
 
   /**
-   * For every term's subterm, it find docs that contain all subterms as a phrase.
+   * For every term's subterm, it finds docs that contain all subterms as a phrase.
    */
   private getPhraseMatches(part: QueryPart) {
     const subterms = part.term.split(/\s+/);
@@ -240,7 +240,7 @@ export class InvertedSearch {
   }
 
   /**
-   * Main entry point to search the index.
+   * Main entry point to searching the index.
    */
   search(queryText: string): Doc[] {
     const query: ParsedQuery = parseQuery(queryText);

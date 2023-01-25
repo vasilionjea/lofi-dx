@@ -43,6 +43,7 @@ export class InvertedIndex {
   private readonly documentSplitter: RegExp;
 
   private readonly documentsTable: DocTable = {};
+  private tempDocTermCount: { [key: string]: number } = {};
   private totalDocuments = 0;
 
   private readonly indexTable: IndexTable = {};
@@ -97,16 +98,20 @@ export class InvertedIndex {
     const tokens = this.tokensWithPostings(
       this.tokenizeText(doc[field] as string)
     );
-    const totalTokens = tokens.length;
+    const totalTokens = tokens.length; // tokens for this field
+    const totalDocTerms = this.tempDocTermCount[uid] || 0;
 
     for (const token of tokens) {
       if (!this.indexTable[token.term]) this.indexTable[token.term] = {};
 
-      // Update postings & frequency
+      // Update frequency, positions, and total terms for this doc
       const meta = this.getDocumentEntry(token.term, uid) as DocParsedMetadata;
-      meta.postings.push(token.posting);
       meta.frequency += 1;
-      meta.totalTerms += totalTokens;
+      meta.postings.push(token.posting);
+      meta.totalTerms = totalDocTerms
+        ? totalDocTerms + totalTokens
+        : totalTokens;
+      this.tempDocTermCount[uid] = meta.totalTerms;
 
       // Add to index
       this.indexTable[token.term][uid] = encodeDocMetadata(meta);
@@ -124,6 +129,7 @@ export class InvertedIndex {
 
     // Re-index search fields after adding docs
     this.fields.forEach((field) => this.index(field));
+    this.tempDocTermCount = {}; // cleanup
 
     return this;
   }

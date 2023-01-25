@@ -6,11 +6,36 @@ Typescript query [tokenizer](#tokenizer), [parser](#parser), and [inverted index
 Demo: https://vasilionjea.github.io/search-query 
 
 The purpose of this is to allow making queries like `+jaguar speed "south america" -car` in a client side application (_think offline PWA_): 
-
-* A `+` indicates a required term and it will result only in documents which have that term but may also contain other terms indicated in your query. 
-* A `-` indicates term exclusion and it will result in documents that don't have that term. 
-* A quoted string such as `"south america"` indicates an exact phrase. A `+` or `-` can be added in front of phrases: `+"foo bar"` `-"biz baz"`
-* Simple terms like `software engineer` will result in documents that may have either one or both terms, but not necessarily as a phrase.
+<table>
+  <colgroup>
+    <col span="1" style="width: 30%;">
+    <col span="1" style="width: 70%;">
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Operator</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>+</code></td>
+      <td>Indicates a required term and it will result only in documents which have that term, but may also contain other terms indicated by your query</td>
+    </tr>
+    <tr>
+      <td><code>-</code></td>
+      <td>Indicates term exclusion and it will result in documents that don't have that term</td>
+    </tr>
+    <tr>
+      <td><code>"south america"</code></td>
+      <td>A quoted term indicates an exact phrase. A <code>+</code> or <code>-</code> can be added in front of phrases: <code>+"foo bar"</code> <code>-"biz baz"</code></td>
+    </tr>
+    <tr>
+      <td><code>software engineer</code></td>
+      <td>Simple terms will result in documents that may have either one or both terms, but not necessarily as a phrase</td>
+    </tr>
+  </tbody>
+</table>
 
 ## Example
 Create and add documents to the index:

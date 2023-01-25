@@ -24,6 +24,7 @@ async function runStats() {
     { label: 'Stringified', name: 'stringified.json' },
     { label: 'Delta encoded', name: 'delta-encoded.json' },
     { label: 'Base36 encoded', name: 'base36-encoded.json' },
+    { label: 'With ranking data', name: 'with-ranking-data.json' },
   ];
 
   console.log('Index Stats\n___________');

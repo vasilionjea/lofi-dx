@@ -3,8 +3,6 @@
 
 A Typescript query [tokenizer](#tokenizer), [parser](#parser), and [inverted index](#inverted-index) for client side apps. Has support for required, negated, and phrase queries. A set of default stopwords that can be extended are filtered out from search queries and the index. Search results are ranked using simple [TF-IDF](https://en.wikipedia.org/wiki/Tf%E2%80%93idf). About _12.3 KB_ minified uncompressed.
 
-Demo: https://vasilionjea.github.io/search-query 
-
 The purpose of this is to allow making queries like `+jaguar speed "south america" -car` in a client side application (_think offline PWA_): 
 <table>
   <colgroup>
@@ -36,6 +34,8 @@ The purpose of this is to allow making queries like `+jaguar speed "south americ
     </tr>
   </tbody>
 </table>
+
+Demo: https://vasilionjea.github.io/search-query
 
 ## Example
 Create and add documents to the index:

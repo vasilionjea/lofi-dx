@@ -1,9 +1,9 @@
 # search-query
 [![Build Status](https://github.com/vasilionjea/webpack-frontend-template/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/vasilionjea/webpack-frontend-template/actions/workflows/unit-tests.yml) 
 
-Typescript query [tokenizer](#tokenizer), [parser](#parser), and [inverted index](#inverted-index) for client side apps. Has support for required, negated, and phrase queries. A set of default stopwords that can be extended are filtered out from search queries and the index. 
+Typescript query [tokenizer](#tokenizer), [parser](#parser), and [inverted index](#inverted-index) for client side apps. Has support for required, negated, and phrase queries. A set of default stopwords that can be extended are filtered out from search queries and the index. Search results are ranked using [TF-IDF](https://en.wikipedia.org/wiki/Tf%E2%80%93idf).
 
-Live demo: https://vasilionjea.github.io/search-query 
+Demo: https://vasilionjea.github.io/search-query 
 
 The purpose of this is to allow making queries like `+jaguar speed "south america" -car` in a client side application (_think offline PWA_): 
 
@@ -72,12 +72,12 @@ The index's internal word map is structured compactly as follows:
   // word
   "yosemite": { 
     // document UID: metadata
-    "1": "7/9,n,rz,13,33,2f,y",
-    "2": "7/9,e,e3,18,11,46,1x",
-    "3": "9/f,r,ao,1u,4n,1m,2o,16,49",
+    "1": "7:1hv/9,n,rz,13,33,2f,y",
+    "2": "7:ob/9,e,e3,18,11,46,1x",
+    "3": "9:1ci/f,r,ao,1u,4n,1m,2o,16,49",
   },
 
-  "other": {}
+  "other": {...}
 }
 ```
 This compact strucure reduces the index bytes by over 50% and memory allocation by over 60% as compared to the expanded structure below (_based on the index from the demo page_). To accomplish this reduction the term positions are [delta-encoded](https://en.wikipedia.org/wiki/Delta_encoding) and [base36-encoded](https://en.wikipedia.org/wiki/Base36) before entering the index map. 
@@ -91,7 +91,7 @@ At runtime, when documents are indexed or during a phrase match, a document's me
 ```
 Once documents have entered the index or a phrase match completes, the expanded structure above gets garbage-collected by the JS engine. `npm run index-stats` for byte size and memory allocation of each strucure.
 
-**Note:** Currently there isn't any support for document ranking (_see [TF-IDF](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) or [BM25](https://en.wikipedia.org/wiki/Okapi_BM25)_). This has been tested only in English and likely won't work with other alphabets.
+**Note:** This has been tested only in English and likely won't work with other alphabets.
 
 ## Memory
 Given that this is a client-side solution to full-text search, the documents and the index are loaded into memory. The index stores the word corpus, the document UIDs that contain those words, and all the word positions in order to support phrase queries. Although the numerical word positions are stored space efficiently using delta and base36 encoding, keep in mind that a client side full-text search implementation is likely not practical for large enough datasets. 

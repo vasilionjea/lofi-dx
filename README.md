@@ -13,7 +13,7 @@ The purpose of this is to allow making queries like `+jaguar speed "south americ
   </colgroup>
   <thead>
     <tr>
-      <th>Operator</th>
+      <th>Query operator</th>
       <th>Description</th>
     </tr>
   </thead>

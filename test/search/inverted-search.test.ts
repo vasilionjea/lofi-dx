@@ -312,8 +312,8 @@ describe('InvertedSearch - Phrase search', () => {
 
     const results = instance.search(`engineer -"senior staff"`);
     expect(results.length).toBe(2);
-    expect(results[0]['id']).toBe(3);
-    expect(results[1]['id']).toBe(32);
+    expect(results[0]['id']).toBe(32); // doc 32 comes first because of tfidf (32 has less words)
+    expect(results[1]['id']).toBe(3);
   });
 
   test('it should search negated phrases even with a single term', () => {
@@ -342,7 +342,7 @@ describe('InvertedSearch - Phrase search', () => {
 
     const results = instance.search(`engineer -"staff"`);
     expect(results.length).toBe(2);
-    expect(results[0]['id']).toBe(3);
-    expect(results[1]['id']).toBe(32);
+    expect(results[0]['id']).toBe(32); // doc 32 comes first because of tfidf (32 has less words)
+    expect(results[1]['id']).toBe(3);
   });
 });

@@ -61,7 +61,7 @@ class App {
   private dispatchDefaultInputValue() {
     this.searchInput.dispatchEvent(
       new CustomEvent('input:value', {
-        detail: { value: `"sierra nevada" -death` }
+        detail: { value: `"sierra nevada" california` }
       })
     );
   }
@@ -84,7 +84,12 @@ class App {
 
   search(queryText = '') {
     if (queryText.length <= 1) return;
+
+    const t0 = performance.now();
     const results = this.invertedSearch.search(queryText);
+    const t1 = performance.now();
+    console.log(`Search took ${t1 - t0} milliseconds.`);
+
     this.state.set({ results });
   }
 }

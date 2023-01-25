@@ -1,6 +1,10 @@
 import { isNone } from '../utils/core';
 import { collapseWhitespace, isBlank, stemWord } from '../utils/string';
-import { encodePostings, decodePostings } from '../utils/encoding';
+import {
+  encodeDocMetadata,
+  parseDocMetadata,
+  DocParsedMetadata,
+} from '../utils/encoding';
 import { isStopword } from '../stopwords';
 
 export interface InvertedIndexConfig {
@@ -27,11 +31,6 @@ export interface IndexTable {
   [key: string]: DocEntry;
 }
 
-export interface DocParsedMetadata {
-  frequency: number;
-  postings: number[];
-}
-
 const DEFAULT_UID_KEY = 'id';
 const DEFAULT_DOCUMENT_SPLITTER = /\s+/g;
 
@@ -44,7 +43,13 @@ export class InvertedIndex {
   private readonly documentSplitter: RegExp;
 
   private readonly documentsTable: DocTable = {};
+  private totalDocuments = 0;
+
   private readonly indexTable: IndexTable = {};
+
+  get totalDocs() {
+    return this.totalDocuments;
+  }
 
   constructor(opts: InvertedIndexConfig) {
     this.uidKey = opts.uidKey || DEFAULT_UID_KEY;
@@ -74,21 +79,6 @@ export class InvertedIndex {
     return result;
   }
 
-  private parseDocMetadata(meta: string): DocParsedMetadata {
-    if (!meta) return { frequency: 0, postings: [] };
-
-    const [frequencyStr, postingsStr] = meta.split('/');
-
-    return {
-      frequency: Number(frequencyStr),
-      postings: decodePostings(postingsStr.split(',')),
-    };
-  }
-
-  private stringifyDocMetadata(meta: DocParsedMetadata): string {
-    return `${meta.frequency}/${encodePostings(meta.postings).join(',')}`;
-  }
-
   index(field: string) {
     if (isNone(field) || isBlank(field)) return this;
 
@@ -107,17 +97,19 @@ export class InvertedIndex {
     const tokens = this.tokensWithPostings(
       this.tokenizeText(doc[field] as string)
     );
+    const totalTokens = tokens.length;
 
     for (const token of tokens) {
       if (!this.indexTable[token.term]) this.indexTable[token.term] = {};
 
       // Update postings & frequency
-      const meta = this.getDocumentEntry(token.term, uid);
+      const meta = this.getDocumentEntry(token.term, uid) as DocParsedMetadata;
       meta.postings.push(token.posting);
       meta.frequency += 1;
+      meta.totalTerms += totalTokens;
 
       // Add to index
-      this.indexTable[token.term][uid] = this.stringifyDocMetadata(meta);
+      this.indexTable[token.term][uid] = encodeDocMetadata(meta);
     }
   }
 
@@ -127,6 +119,7 @@ export class InvertedIndex {
     for (const doc of docs) {
       const uid = doc[this.uidKey] as string;
       this.documentsTable[uid] = doc;
+      this.totalDocuments += 1;
     }
 
     // Re-index search fields after adding docs
@@ -143,9 +136,14 @@ export class InvertedIndex {
     return this.indexTable[term] || {};
   }
 
-  getDocumentEntry(term: string, uid: string): DocParsedMetadata {
+  getDocumentEntry(
+    term: string,
+    uid: string,
+    parse = true
+  ): DocParsedMetadata | string {
     const termEntry = this.getTermEntry(term);
-    return this.parseDocMetadata(termEntry[uid]);
+    if (parse) return parseDocMetadata(termEntry[uid]);
+    return termEntry[uid];
   }
 
   toJSON() {

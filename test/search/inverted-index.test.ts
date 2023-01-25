@@ -1,4 +1,5 @@
 import { InvertedIndex } from '../../src/search/index';
+import { DocParsedMetadata } from '../../src/utils/encoding';
 
 let docs: Array<{ [key: string]: unknown }>;
 const stopwords = {
@@ -92,10 +93,12 @@ describe('InvertedIndex', () => {
     const instance = new InvertedIndex({ uidKey: 'id', fields: ['name'] });
     instance.addDocuments(docs);
 
-    const meta = instance.getDocumentEntry('joe', '7');
+    const meta = instance.getDocumentEntry('joe', '7') as DocParsedMetadata;
     expect(meta.frequency).toBe(1);
     expect(meta.postings).toContain(0);
-    expect(instance.getDocumentEntry('doe', '7').postings).toContain(4);
+
+    const meta2 = instance.getDocumentEntry('doe', '7') as DocParsedMetadata;
+    expect(meta2.postings).toContain(4);
   });
 
   test('it should index additional fields', () => {

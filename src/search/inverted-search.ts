@@ -1,5 +1,6 @@
 import {
   isNone,
+  hasOwn,
   objectIntersection,
   objectDifference,
   removeArrayItem,
@@ -9,76 +10,139 @@ import {
   QueryPartType,
   ParsedQuery,
   parseQuery,
+  groupQueryParts,
 } from '../query/index';
-import { InvertedIndex, Doc } from './inverted-index';
+import { tfidf } from '../utils/ranking';
+import { parseDocMetadata, DocParsedMetadata } from '../utils/encoding';
+import { InvertedIndex, Doc, DocEntry } from './inverted-index';
 
-export interface PartGroups {
-  required: QueryPart[];
-  negated: QueryPart[];
-  simple: QueryPart[];
-}
+export type ScoredMatches = {
+  // doc uid: tfidf
+  [key: string]: number;
+};
 
 /**
- * The InvertedSearch class searches the InvertedIndex.
+ * The InvertedSearch class searches the InvertedIndex. Before it returns the results,
+ * it computes each term doc's tfidf, and sorts them by the highest score.
  */
 export class InvertedSearch {
   constructor(private readonly invertedIndex: InvertedIndex) {}
 
-  private groupQueryParts(parts: QueryPart[]): PartGroups {
-    const groups = { required: [], negated: [], simple: [] } as PartGroups;
+  /**
+   * For a set of matched docs, it computes each doc's tfidf value.
+   */
+  private matchesWithScores(matches: DocEntry) {
+    const result: ScoredMatches = {};
+    const termDocs = Object.entries(matches);
+    const totalDocs = this.invertedIndex.totalDocs;
+    const totalTermDocs = termDocs.length;
 
-    for (const part of parts) {
-      switch (part.type) {
-        case QueryPartType.Required:
-          groups.required.push(part);
-          break;
-
-        case QueryPartType.Negated:
-          groups.negated.push(part);
-          break;
-
-        case QueryPartType.Simple:
-          groups.simple.push(part);
-          break;
-      }
+    for (const [uid, docEntry] of termDocs) {
+      const { frequency, totalTerms } = parseDocMetadata(docEntry);
+      result[uid] = tfidf(
+        { frequency, totalTerms },
+        { totalDocs, totalTermDocs }
+      );
     }
 
-    return groups;
+    return result;
   }
 
+  /**
+   * Sums up each term doc's tfidf values.
+   */
+  private sumScores(...args: number[]) {
+    return args.reduce((a = 0, b = 0) => Number((a + b).toFixed(6)));
+  }
+
+  /**
+   * For each doc, it sums a score from a previous term wth a score from a next term.
+   */
+  private assignScores(
+    currentMatches: ScoredMatches,
+    nextMatches: ScoredMatches,
+    onlyOwn = false
+  ) {
+    for (const [uid, tfidf] of Object.entries(nextMatches)) {
+      if (onlyOwn) {
+        if (hasOwn(currentMatches, uid)) {
+          currentMatches[uid] = this.sumScores(currentMatches[uid], tfidf);
+        }
+      } else {
+        currentMatches[uid] = this.sumScores(currentMatches[uid], tfidf);
+      }
+    }
+  }
+
+  /**
+   * A simple lookup into the index's term table.
+   */
   private getSimpleMatches(part: QueryPart) {
-    const result = part && this.invertedIndex.getTermEntry(part.term);
-    return { ...result };
+    const matches = part && this.invertedIndex.getTermEntry(part.term);
+    return this.matchesWithScores(matches);
   }
 
+  /**
+   * It returns only docs that are under every term's table.
+   */
   private getRequiredMatches(parts: QueryPart[]) {
-    let matches = {};
+    let result = {};
 
     for (let i = 0; i < parts.length; i++) {
       const part = parts[i];
-      const result = part.isPhrase
+      const matches = part.isPhrase
         ? this.getPhraseMatches(part)
         : this.getSimpleMatches(part);
 
-      if (result) {
-        matches = i === 0 ? result : objectIntersection(matches, result);
+      if (matches) {
+        if (i === 0) {
+          result = matches;
+        } else {
+          const intersection = objectIntersection(
+            result,
+            matches
+          ) as ScoredMatches;
+          this.assignScores(intersection, matches, true);
+          result = intersection;
+        }
       } else {
-        matches = {};
+        result = {};
         break;
       }
     }
 
-    return matches;
+    return result;
   }
 
-  private searchPhrase({ uids, terms }: { uids: string[]; terms: string[] }) {
-    const result: { [key: string]: number } = {};
-    const totalTerms = terms.length;
-    const postings: { [key: string]: number[] } = {};
+  /**
+   * For each doc candidate, the phrase search algorithm iterates through each term's positions
+   * to find term's next to each other. It either exits early when it finds all the terms
+   * as a phrase, or when the first term's positions are completely drained.
+   *
+   * The positions that are being looked up through iteration are progressively getting shorter
+   * at each loop to avoid unnecessary work. A term-to-positions map is being reused for each
+   * doc being looked up.
+   *
+   * @param candidates Docs that definitely have all the terms that we're gonna check for a phrase
+   * @param terms Terms being looked up for a phrase in each doc candidate
+   */
+  private searchPhrase({
+    candidates,
+    terms,
+  }: {
+    candidates: DocEntry;
+    terms: string[];
+  }) {
+    const matches: { [key: string]: number } = {}; // doc uid to term count (it's a phrase if count equals the total terms)
+    const totalTerms = terms.length; // total terms being looked up for a phrase
+    const postings: { [key: string]: number[] } = {}; // term to all positions of term
 
-    for (const uid of uids) {
+    for (const uid of Object.keys(candidates)) {
       for (const term of terms) {
-        const meta = this.invertedIndex.getDocumentEntry(term, uid);
+        const meta = this.invertedIndex.getDocumentEntry(
+          term,
+          uid
+        ) as DocParsedMetadata;
         postings[term] = meta.postings;
       }
 
@@ -86,8 +150,8 @@ export class InvertedSearch {
       const stack = [postings[terms[0]].shift()];
 
       while (stack.length) {
-        if (isNone(terms[t + 1]) || result[uid] === totalTerms) break;
-        if (t === 0) result[uid] = 1;
+        if (isNone(terms[t + 1]) || matches[uid] === totalTerms) break;
+        if (t === 0) matches[uid] = 1;
 
         const currentPos = stack[stack.length - 1] as number;
         const nextExpected = currentPos + terms[t].length + 1;
@@ -95,7 +159,7 @@ export class InvertedSearch {
 
         if (!isNone(nextPos)) {
           stack.push(nextPos);
-          result[uid] += 1;
+          matches[uid] += 1;
           t++;
         } else {
           t = 0;
@@ -106,12 +170,16 @@ export class InvertedSearch {
         }
       }
 
-      if (result[uid] !== totalTerms) delete result[uid];
+      if (matches[uid] !== totalTerms) delete matches[uid];
     }
 
-    return result;
+    // Return the actual doc entries in the index
+    return objectIntersection(candidates, matches);
   }
 
+  /**
+   * For every term's subterm, it find docs that contain all subterms as a phrase.
+   */
   private getPhraseMatches(part: QueryPart) {
     const subterms = part.term.split(/\s+/);
 
@@ -120,48 +188,76 @@ export class InvertedSearch {
       return this.getSimpleMatches(part);
     }
 
-    // Retrieve docs that contain all subterms (phrase or not)
-    const matches = this.getRequiredMatches(
+    // Retrieve candidate docs that contain all terms (phrase or not)
+    const candidates = this.getRequiredMatches(
       subterms.map((term) => ({ term, isPhrase: false } as QueryPart))
     );
 
+    // Do search for candidate docs
     return this.searchPhrase({
       terms: subterms,
-      uids: Object.keys(matches),
-    });
+      candidates,
+    }) as ScoredMatches;
   }
 
+  /**
+   * Handles all simple matches (phrased or not).
+   */
   private getMatches(parts: QueryPart[]) {
-    const matches = {};
+    const result = {};
 
     for (const part of parts) {
+      // no need to sum scores for negated matches
+      const isNegated = part.type === QueryPartType.Negated;
+
       if (part.isPhrase) {
-        Object.assign(matches, this.getPhraseMatches(part));
+        const matches = this.getPhraseMatches(part);
+        isNegated
+          ? Object.assign(result, matches)
+          : this.assignScores(result, matches);
       } else {
-        Object.assign(matches, this.getSimpleMatches(part));
+        const matches = this.getSimpleMatches(part);
+        isNegated
+          ? Object.assign(result, matches)
+          : this.assignScores(result, matches);
       }
     }
 
-    return matches;
+    return result;
   }
 
+  /**
+   * For all matched UIDs it retrieves the documents filtering out the ones
+   * that were found to have negated terms. Sorts them by tfidf score.
+   */
+  private result(allMatches: Doc, negated: Doc) {
+    const matches = objectDifference(allMatches, negated);
+    const sorted = Object.keys(matches).sort((a, b) => {
+      return (matches[b] as number) - (matches[a] as number);
+    });
+
+    return sorted.map((uid) => this.invertedIndex.getDocument(uid));
+  }
+
+  /**
+   * Main entry point to search the index.
+   */
   search(queryText: string): Doc[] {
     const query: ParsedQuery = parseQuery(queryText);
-    const groupedParts = this.groupQueryParts(query.parts);
+    const groupedParts = groupQueryParts(query.parts);
+
+    // Negated
     const negatedMatches = this.getMatches(groupedParts.negated);
 
-    // Stop early if we have required terms
+    // Required
     if (groupedParts.required.length) {
-      const requiredMatches = this.getRequiredMatches(groupedParts.required);
-      return Object.keys(objectDifference(requiredMatches, negatedMatches)).map(
-        (uid) => this.invertedIndex.getDocument(uid)
+      return this.result(
+        this.getRequiredMatches(groupedParts.required),
+        negatedMatches
       );
     }
 
-    // Return matches without the ones from negated terms
-    const simpleMatches = this.getMatches(groupedParts.simple);
-    return Object.keys(objectDifference(simpleMatches, negatedMatches)).map(
-      (uid) => this.invertedIndex.getDocument(uid)
-    );
+    // Simple
+    return this.result(this.getMatches(groupedParts.simple), negatedMatches);
   }
 }

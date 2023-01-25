@@ -1,3 +1,9 @@
+export interface DocParsedMetadata {
+  frequency: number;
+  totalTerms: number;
+  postings: number[];
+}
+
 /**
  * Encodes term postings using delta and base36 encoding.
  */
@@ -39,4 +45,35 @@ export function decodePostings(arr: string[]): number[] {
   }
 
   return result;
+}
+
+/**
+ * Parses the encoded meta for a doc back into a readable POJO.
+ */
+export function parseDocMetadata(meta: string): DocParsedMetadata {
+  if (!meta) {
+    return { frequency: 0, totalTerms: 0, postings: [] };
+  }
+
+  const [str, postingsStr] = meta.split('/');
+  const [frequencyStr, totalStr] = str.split(':');
+
+  return {
+    frequency: parseInt(frequencyStr, 36),
+    totalTerms: parseInt(totalStr, 36),
+    postings: decodePostings(postingsStr.split(',')),
+  };
+}
+
+/**
+ * Encodes the meta for a doc using delta and base36 for postings,
+ * and only base36 for everything else.
+ */
+export function encodeDocMetadata(meta: DocParsedMetadata): string {
+  const { frequency, totalTerms } = meta;
+
+  const rankingMeta = `${frequency.toString(36)}:${totalTerms.toString(36)}`;
+  const encodedPostings = encodePostings(meta.postings);
+
+  return `${rankingMeta}/${encodedPostings.join(',')}`;
 }

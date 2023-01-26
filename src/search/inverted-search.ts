@@ -26,7 +26,7 @@ export type ScoredMatches = {
  * it computes each term doc's tfidf, and sorts them by the highest score.
  */
 export class InvertedSearch {
-  constructor(private readonly invertedIndex: InvertedIndex) { }
+  constructor(private readonly invertedIndex: InvertedIndex) {}
 
   /**
    * For a set of matched docs, it computes each doc's tfidf value.

@@ -40,7 +40,7 @@ export default class SearchInput extends CoreComponent {
 
   private template() {
     let html = '<form>';
-    html += `<input type="search" role="search" autocorrect="off" placeholder="Search for something...">`;
+    html += `<input type="search" role="search" autocorrect="off" spellcheck="false" placeholder="Search for something...">`;
     html += '</form>';
     return html;
   }

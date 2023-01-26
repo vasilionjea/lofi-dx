@@ -37,7 +37,7 @@ The purpose of this is to allow making queries like `+jaguar speed "south americ
 
 Demo: https://vasilionjea.github.io/search-query
 
-## Example
+## Usage
 Create and add documents to the index:
 ```js
 const peopleIndex = new InvertedIndex({ uidKey: 'id', fields: ['title'] });

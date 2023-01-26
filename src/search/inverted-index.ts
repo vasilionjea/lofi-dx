@@ -70,8 +70,9 @@ export class InvertedIndex {
 
     for (const term of tokens) {
       if (!isStopword(term)) {
-        const token = { term: stemWord(term), posting: start };
-        start += term.length + 1;
+        const stemmed = stemWord(term);
+        const token = { term: stemmed, posting: start };
+        start += stemmed.length + 1;
 
         result.push(token);
       }

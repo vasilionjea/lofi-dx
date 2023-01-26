@@ -111,7 +111,8 @@ At runtime, when documents are indexed or during a phrase match, a document's me
 ```js
 { // metadata for document UID: 1
   "frequency": 7,
-  "postings": [9,32,1039,1078,1189,1276,1310]
+  "postings": [9,32,1039,1078,1189,1276,1310],
+  "totalTerms": 670
 }
 ```
 Once documents have entered the index or a phrase match completes, the expanded structure above gets garbage-collected by the JS engine. `npm run index-stats` for byte size and memory allocation of each strucure.

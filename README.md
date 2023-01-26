@@ -110,7 +110,7 @@ All term positions in a document are [delta encoded](https://en.wikipedia.org/wi
 
 <img src="https://raw.githubusercontent.com/vasilionjea/search-query/e19a977f4da1b5dabacd99406ac4009121d99e11/example/encoded-meta-explained.svg">
 
-At runtime, when documents are indexed or during a phrase match, a document's metadata entry is **momentarily** parsed to the following expanded structure:
+At runtime, when documents are indexed or during a phrase match, a document's metadata entry is **momentarily** decoded the following expanded representation:
 ```js
 { // metadata for document with UID: 3
   "frequency": 6,

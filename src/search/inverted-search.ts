@@ -49,7 +49,7 @@ export class InvertedSearch {
   }
 
   /**
-   * Sums up each term doc's tfidf values.
+   * Sums each term doc's tfidf values.
    */
   private sumScores(...args: number[]) {
     return args.reduce((a = 0, b = 0) => Number((a + b).toFixed(6)));
@@ -123,8 +123,8 @@ export class InvertedSearch {
    * at each loop to avoid unnecessary work. A term-to-positions map is being reused for each
    * doc being looked up.
    *
-   * @param candidates Docs that definitely have all the terms that we're gonna check for a phrase
-   * @param terms Terms being looked up for a phrase in each doc candidate
+   * @param candidates Docs that definitely have all the terms that we'll check
+   * @param terms Terms being checked for a phrase in each doc candidate
    */
   private searchPhrase({
     candidates,
@@ -134,8 +134,8 @@ export class InvertedSearch {
     terms: string[];
   }) {
     const matches: { [key: string]: number } = {}; // doc uid to term count (it's a phrase if count equals the total terms)
-    const totalTerms = terms.length; // total terms being looked up for a phrase
-    const postings: { [key: string]: number[] } = {}; // term to all positions of term
+    const totalTerms = terms.length; // total terms being checked for a phrase
+    const postings: { [key: string]: number[] } = {}; // term to positions of term
 
     for (const uid of Object.keys(candidates)) {
       for (const term of terms) {
@@ -193,7 +193,7 @@ export class InvertedSearch {
       subterms.map((term) => ({ term, isPhrase: false } as QueryPart))
     );
 
-    // Do search for candidate docs
+    // Perform search for the candidate docs
     return this.searchPhrase({
       terms: subterms,
       candidates,
@@ -227,8 +227,8 @@ export class InvertedSearch {
   }
 
   /**
-   * For all matched UIDs it retrieves the documents filtering out the ones
-   * that were found to have negated terms. Sorts them by tfidf score.
+   * For all matched UIDs it retrieves the documents, filtering out the
+   * ones that have negated terms. Sorts them by highest tf-idf score.
    */
   private result(allMatches: Doc, negated: Doc) {
     const matches = objectDifference(allMatches, negated);

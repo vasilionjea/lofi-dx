@@ -91,27 +91,30 @@ From the tokens above, it results in the following query parts:
 ## Inverted Index
 An [inverted index](https://en.wikipedia.org/wiki/Inverted_index) is an index of words and which documents those words occur in. Instead of linearly scanning every document looking for words, the inverted index reverses the logic by using the words to find the documents. Positions of every term occurrence are included in the index to support phrase queries. 
 
-The index's internal word map is structured compactly as follows:
+The index's internal word map is represented space efficiently as follows:
 ```js
 {
   // word
-  "yosemite": { 
+  "plateau": { 
     // document UID: metadata
-    "1": "7:1hv/9,n,rz,13,33,2f,y",
-    "2": "7:ob/9,e,e3,18,11,46,1x",
-    "3": "9:1ci/f,r,ao,1u,4n,1m,2o,16,49",
+    "2":"1:3h/ae",
+    "3":"6:5e/5o,nb,2a,2c,n,31",
+    "7":"1:3v/j5","15":"2:8g/39,1jn"
   },
 
   "other": {...}
 }
 ```
-This compact strucure reduces the index bytes and memory allocation by ~50% as compared to the expanded structure below (_based on the index from the demo page_). To accomplish this reduction the term positions are [delta-encoded](https://en.wikipedia.org/wiki/Delta_encoding) and [base36-encoded](https://en.wikipedia.org/wiki/Base36) before entering the index map. 
+
+Each term's positions in a document are [delta-encoded](https://en.wikipedia.org/wiki/Delta_encoding) and [base36-encoded](https://en.wikipedia.org/wiki/Base36) before entering the index map. The diagram below details the individual pieces for document `3` in the indexed word `plateau`: 
+
+<img src="https://raw.githubusercontent.com/vasilionjea/search-query/e19a977f4da1b5dabacd99406ac4009121d99e11/example/encoded-meta-explained.svg">
 
 At runtime, when documents are indexed or during a phrase match, a document's metadata entry is **momentarily** parsed to the following expanded structure:
 ```js
-{ // metadata for document UID: 1
-  "frequency": 7,
-  "postings": [9,32,1039,1078,1189,1276,1310],
+{ // metadata for document with UID: 3
+  "frequency": 6,
+  "postings":[204,1043,1125,1209,1232,1341],
   "totalTerms": 670
 }
 ```

@@ -207,20 +207,14 @@ export class InvertedSearch {
     const result = {};
 
     for (const part of parts) {
-      // no need to sum scores for negated matches
-      const isNegated = part.type === QueryPartType.Negated;
+      const matches = part.isPhrase
+        ? this.getPhraseMatches(part)
+        : this.getSimpleMatches(part);
 
-      if (part.isPhrase) {
-        const matches = this.getPhraseMatches(part);
-        isNegated
-          ? Object.assign(result, matches)
-          : this.assignScores(result, matches);
-      } else {
-        const matches = this.getSimpleMatches(part);
-        isNegated
-          ? Object.assign(result, matches)
-          : this.assignScores(result, matches);
-      }
+      // no need to sum scores for negated matches
+      part.type === QueryPartType.Negated
+        ? Object.assign(result, matches)
+        : this.assignScores(result, matches);
     }
 
     return result;

@@ -5,20 +5,21 @@ import CoreComponent from "./core";
  */
 export default class SearchInput extends CoreComponent {
   inputElement: HTMLInputElement | null = null;
+  btnClearElement: HTMLInputElement | null = null;
 
   get classNames() {
     return ['search-input'];
   }
 
-  private handleInputChange() {
+  private onInputChange() {
     if (this.inputElement!.value) {
-      this.dispatchInputEvent();
+      this.dispatchInput();
     } else {
-      this.dispatchClearEvent();
+      this.dispatchClear();
     }
   }
 
-  private dispatchInputEvent() {
+  private dispatchInput() {
     const event = new CustomEvent('input:value', {
       bubbles: true,
       detail: { value: this.inputElement!.value },
@@ -27,31 +28,51 @@ export default class SearchInput extends CoreComponent {
     this.dispatchEvent(event);
   }
 
-  private dispatchClearEvent() {
+  private dispatchClear() {
     const event = new CustomEvent('input:clear', { bubbles: true });
     this.dispatchEvent(event);
   }
 
-  private setValue(value: string) {
-    if (this.inputElement) {
-      this.inputElement!.value = value;
-    }
+  setValue(value: string) {
+    if (!this.inputElement) return;
+
+    this.inputElement.value = value;
+    this.onInputChange();
+  }
+
+  private clearIconTemplate() {
+    return `<svg aria-hidden="true" viewBox="0 0 24 24" focusable="false" style="pointer-events: none; display: block; width: inherit; height: inherit" class=""><g><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"></path></g></svg>`;
   }
 
   private template() {
-    let html = '<form>';
-    html += `<input type="search" role="search" autocorrect="off" spellcheck="false" placeholder="Search for something...">`;
-    html += '</form>';
-    return html;
+    const labelId = 'prompt';
+    const inputId = 'searchInput';
+    const placeholder = 'Search for something...';
+
+    let tpl = `<label id="${labelId}" for="${inputId}" class="visuallyhidden">Search national parks</label>`;
+    tpl += `<input type="search" id="${inputId}" placeholder="${placeholder}" aria-labelledby="${labelId}" autocorrect="off" spellcheck="false" autocapitalize="off">`;
+    tpl += `<button class="btn-icon btn-clear" aria-label="Clear search">${this.clearIconTemplate()}</button>`;
+
+    return tpl;
   }
 
   render() {
     this.element.insertAdjacentHTML('beforeend', this.template());
     this.inputElement = this.element.querySelector('input');
+    this.btnClearElement = this.element.querySelector('.btn-clear');
 
     if (this.inputElement) {
-      this.inputElement.addEventListener('input', () => this.handleInputChange());
-      this.addEventListener('input:value', (event: Event) => this.setValue((event as CustomEvent).detail.value));
+      this.inputElement.addEventListener('input', () => this.onInputChange());
+    }
+
+    if (this.btnClearElement) {
+      this.btnClearElement.addEventListener('click', (e) => {
+        e.stopPropagation();
+
+        this.setValue('');
+        this.dispatchClear();
+        this.inputElement?.focus();
+      });
     }
 
     return this;

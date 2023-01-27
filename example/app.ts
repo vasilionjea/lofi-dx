@@ -20,7 +20,7 @@ class App {
   private readonly searchInput = new SearchInput();
   private readonly searchResults = new SearchResults();
 
-  private readonly debouncedSearch = debounce(this.search, 100, this);
+  private readonly debouncedSearch = debounce(this.search, 150, this);
 
   constructor() {
     this.invertedIndex = new InvertedIndex({
@@ -46,7 +46,7 @@ class App {
     this.searchInput.addEventListener('input:clear', this);
     this.state.addEventListener('statechange', this);
 
-    this.dispatchDefaultInputValue();
+    this.searchInput.setValue(`"sierra nevada" california`);
   }
 
   private async loadDocuments() {
@@ -56,14 +56,6 @@ class App {
     this.invertedIndex.addDocuments(data);
 
     console.log(this.invertedIndex.toJSON());
-  }
-
-  private dispatchDefaultInputValue() {
-    this.searchInput.dispatchEvent(
-      new CustomEvent('input:value', {
-        detail: { value: `"sierra nevada" california` }
-      })
-    );
   }
 
   handleEvent(event: Event) {

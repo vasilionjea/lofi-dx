@@ -1,0 +1,45 @@
+@import 'variables';
+
+@mixin visuallyhidden() {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+
+.visuallyhidden:not(:focus):not(:active) {
+  @include visuallyhidden;
+}
+
+.btn-icon {
+  cursor: pointer;
+  position: relative;
+  margin: 0;
+  border: none;
+  border-radius: inherit;
+  padding: 0;
+  font-size: inherit;
+  font-family: inherit;
+  text-transform: none;
+  background: transparent;
+  box-shadow: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  svg {
+    fill: $color-gray;
+  }
+
+  &:hover,
+  &:focus {
+    svg {
+      fill: $color-medium-gray;
+      transition: fill 0.1s ease;
+    }
+  }
+}

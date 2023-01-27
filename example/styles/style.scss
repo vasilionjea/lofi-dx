@@ -9,14 +9,14 @@
 }
 
 ::selection {
-  background: $color-medium-accent;
+  background: $color-selection;
   text-shadow: none;
 }
 
 html {
-  font-size: 1rem;
   overflow-x: hidden;
   font-size: 100%;
+  background-color: $color-dark;
 }
 
 body {
@@ -25,7 +25,9 @@ body {
   font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: $font-size-base;
   line-height: 1.5;
-  background-color: $color-dark;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 h1,
@@ -36,9 +38,14 @@ h3 {
   letter-spacing: -.5px;
 }
 
+h2,
+h3 {
+  font-weight: 500;
+}
+
 h1 {
   font-size: $font-size-xlg;
-  letter-spacing: -0.025em;
+  letter-spacing: -0.022em;
 }
 
 h2 {
@@ -51,31 +58,82 @@ h3 {
   letter-spacing: -.5px;
 }
 
-header {
-  margin-bottom: 3.75rem;
-}
-
 .page {
   max-width: 92vw;
-  margin: 3.25rem auto;
+  padding-top: 6rem;
+
+  @media screen and (max-width: $screen-sm) {
+    & {
+      padding-top: 2.5rem;
+    }
+
+    .page-title {
+      margin-bottom: 1.5rem;
+    }
+  }
 
   @media all and (min-width: $screen-md) {
     & {
       max-width: 80vw;
+      padding-top: 9rem;
+    }
+
+    header {
+      min-width: 80vw;
     }
   }
 
   @media all and (min-width: $screen-lg) {
     & {
       max-width: 68vw;
-      margin: 4rem auto;
+    }
+
+    header {
+      min-width: 68vw;
     }
   }
 }
 
 .page-title {
-  margin-top: 0;
-  margin-bottom: 3.125rem;
+  margin: 2.125rem 2.5rem 2rem 1.5rem;
+  margin-bottom: 4rem;
+
+  span {
+    text-shadow: 0 0 3px hsl(243deg 16% 27% / 20%);
+  }
+}
+
+header {
+  margin-bottom: 3.75rem;
+  position: relative;
+  min-width: 92vw;
+}
+
+.main-illustration {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  top: -256px;
+  width: 492px;
+  z-index: -1;
+  overflow: hidden;
+  opacity: .9;
+
+  svg {
+    height: 100%;
+  }
+
+  @media all and (max-width: $screen-md) {
+    top: -212px;
+    width: 396px;
+  }
+
+  @media all and (max-width: $screen-sm) {
+    top: -196px;
+    width: 360px;
+  }
 }
 
 .search-input {
@@ -83,15 +141,15 @@ header {
   display: flex;
   margin: 0;
   padding: 0;
-  border: 2px solid $color-medium-gray;
+  border: 2.5px solid $color-medium-gray;
   border-radius: 6px;
   background: $color-dark;
-  box-shadow: 0 1px 5px rgb(17 18 21 / 70%);
+  box-shadow: 0 0px 6px rgb(59 58 80 / 67%);
   transition: border-color 0.13s ease-in, box-shadow 0.13s ease-in;
 
   &:focus,
   &:hover {
-    box-shadow: 0px 1px 6px rgb(95 95 120 / 25%);
+    box-shadow: 0 0px 6px rgb(92 91 113 / 66%);
   }
 
   input {
@@ -99,7 +157,7 @@ header {
     border-radius: inherit;
     border: none;
     width: 100%;
-    padding: 1.125rem;
+    padding: 1.25rem;
     color: $color-gray;
     font-size: 1.1rem;
     line-height: 1.15;
@@ -114,6 +172,7 @@ header {
   .btn-clear {
     width: 22px;
     padding-right: 2.325rem;
+    padding-left: 0.925rem;
     opacity: 0.7;
   }
 }
@@ -124,7 +183,7 @@ header {
   }
 
   display: flex;
-  margin-top: 0.925rem;
+  margin-top: 1rem;
   max-width: max-content;
   border-radius: 15px;
   padding: 0.25em 1.25em;
@@ -142,7 +201,7 @@ header {
   }
 
   h2 span {
-    border-bottom: 3px solid #85791f;
+    border-bottom: 3px solid $color-medium-accent;
     padding: 0.55rem 0;
     line-height: 1.6;
   }

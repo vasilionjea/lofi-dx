@@ -1,4 +1,7 @@
 // Colors
+// $color-light: #fdf1d0;
+// $color-light: #fbf1d6;
+// $color-light: rgb(251 241 214 / 98%);
 $color-light: #fdf1d0;
 
 $color-gray: #9ba0b3;
@@ -8,10 +11,11 @@ $color-dark-gray: #26272c;
 $color-medium-dark: #1f2128;
 $color-dark: #16171d;
 
-$color-medium-accent: #85791f;
+$color-medium-accent: #cbaa3b;
+$color-selection: hsl(208deg 49% 54% / 67%);
 
 // Font size
-$font-size-xsm: .75rem;
+$font-size-xsm: .8rem;
 $font-size-sm: 1rem;
 $font-size-base: 1.2rem;
 $font-size-md: 2rem;

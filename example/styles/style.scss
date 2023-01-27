@@ -69,7 +69,18 @@ h3 {
 
     .page-title {
       margin-bottom: 3.5rem;
+      padding-top: 3.5rem;
       font-size: 2.645rem;
+    }
+
+    .search-results {
+      article {
+        padding: 1.645rem;
+      }
+
+      h2 {
+        font-size: 1.825rem;
+      }
     }
   }
 
@@ -132,7 +143,7 @@ header {
   }
 
   @media all and (max-width: $screen-sm) {
-    top: -192px;
+    top: -196px;
     width: 360px;
   }
 }

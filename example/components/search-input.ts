@@ -4,8 +4,8 @@ import CoreComponent from "./core";
  * Search Input
  */
 export default class SearchInput extends CoreComponent {
-  inputElement: HTMLInputElement | null = null;
-  btnClearElement: HTMLInputElement | null = null;
+  inputElement!: HTMLInputElement;
+  btnClearElement!: HTMLButtonElement;
 
   get classNames() {
     return ['search-input'];
@@ -58,8 +58,8 @@ export default class SearchInput extends CoreComponent {
 
   render() {
     this.element.insertAdjacentHTML('beforeend', this.template());
-    this.inputElement = this.element.querySelector('input');
-    this.btnClearElement = this.element.querySelector('.btn-clear');
+    this.inputElement = this.element.querySelector('input')!;
+    this.btnClearElement = this.element.querySelector('.btn-clear')!;
 
     if (this.inputElement) {
       this.inputElement.addEventListener('input', () => this.onInputChange());

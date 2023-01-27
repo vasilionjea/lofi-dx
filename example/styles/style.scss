@@ -68,6 +68,7 @@ header {
   @media all and (min-width: $screen-lg) {
     & {
       max-width: 68vw;
+      margin: 4rem auto;
     }
   }
 }

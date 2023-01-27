@@ -199,11 +199,13 @@ header {
   max-width: max-content;
   border-radius: 15px;
   padding: 0.25em 1.25em;
-  color: $color-gray;
+  color: $color-medium-dark;
   font-size: $font-size-xsm;
   font-family: monospace;
+  font-weight: 600;
+  text-shadow: 0px 1px 0px hsl(347deg 54% 72% / 20%);
   line-height: 1.12;
-  background: $color-dark-gray;
+  background: $color-secondary-accent;
   box-shadow: 0px 0 2px rgb(172 173 185 / 8%);
 }
 
@@ -213,7 +215,7 @@ header {
   }
 
   h2 span {
-    border-bottom: 3px solid $color-medium-accent;
+    border-bottom: 3px solid $color-primary-accent;
     padding: 0.55rem 0;
     line-height: 1.6;
   }

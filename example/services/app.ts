@@ -1,11 +1,11 @@
 import { InvertedIndex, InvertedSearch } from '../../src/index';
 
-export interface AppService extends InterfaceOf<InternalAppService> { }
+export interface AppService extends InterfaceOf<Service> { }
 
 /**
  * The AppService fetches documents and creates the index
  */
-class InternalAppService {
+class Service {
   private readonly invertedIndex: InvertedIndex;
   private readonly invertedSearch: InvertedSearch;
 
@@ -42,4 +42,4 @@ class InternalAppService {
 }
 
 // Singleton
-export default new InternalAppService();
+export default new Service();

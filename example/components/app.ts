@@ -1,5 +1,5 @@
 import { $, debounce, State } from '../utils';
-import AppService from '../services/app';
+import { AppService } from '../services/app';
 import SearchInput from './input';
 import SearchResults from './results';
 

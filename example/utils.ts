@@ -25,12 +25,12 @@ export class State extends EventTarget {
     this.value = initialValue;
   }
 
-  set(newValue: pojo) {
+  setState(newValue: pojo) {
     this.value = newValue;
     this.dispatchEvent(new StateEvent(this.value));
   }
 
-  get() {
+  getState() {
     return this.value;
   }
 }

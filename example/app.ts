@@ -7,11 +7,9 @@ import SearchResults from './components/search-results';
 /**
  * Example app
  */
-class App {
+class App extends State {
   private readonly invertedIndex: InvertedIndex;
   private readonly invertedSearch: InvertedSearch;
-
-  private readonly state = new State();
 
   private readonly $header = $('header')!;
   private readonly $main = $('main')!;
@@ -23,6 +21,8 @@ class App {
   private readonly debouncedSearch = debounce(this.search, 150, this);
 
   constructor() {
+    super();
+
     this.invertedIndex = new InvertedIndex({
       uidKey: 'id',
       fields: ['body'],
@@ -44,7 +44,7 @@ class App {
 
     this.searchInput.addEventListener('input:value', this);
     this.searchInput.addEventListener('input:clear', this);
-    this.state.addEventListener('statechange', this);
+    this.addEventListener('statechange', this);
 
     this.searchInput.setValue(`"sierra nevada" california`);
   }
@@ -64,7 +64,7 @@ class App {
     }
 
     if (event.type === 'input:clear') {
-      return this.state.set({ results: null });
+      return this.setState({ results: null });
     }
 
     if (event.type === 'statechange') {
@@ -82,7 +82,7 @@ class App {
     const t1 = performance.now();
     console.log(`Search took ${t1 - t0} milliseconds.`);
 
-    this.state.set({ results });
+    this.setState({ results });
   }
 }
 

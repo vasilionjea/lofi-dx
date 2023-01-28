@@ -1,6 +1,6 @@
 @import 'variables';
 
-@mixin visuallyhidden() {
+.visuallyhidden:not(:focus):not(:active) {
   clip: rect(0 0 0 0);
   clip-path: inset(50%);
   height: 1px;
@@ -8,11 +8,6 @@
   position: absolute;
   white-space: nowrap;
   width: 1px;
-}
-
-
-.visuallyhidden:not(:focus):not(:active) {
-  @include visuallyhidden;
 }
 
 .btn-icon {
@@ -42,4 +37,33 @@
       transition: fill 0.1s ease;
     }
   }
+}
+
+.pill {
+  display: flex;
+  max-width: max-content;
+  border-radius: 10rem;
+  padding: 0.325em 1.65em;
+  font-size: $font-size-xsm;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  box-shadow: 0px 0 2px rgb(86 87 96 / 50%);
+}
+
+.pill--outlined {
+  color: $color-light;
+  border: 1px solid $color-light;
+  background-color: none;
+}
+
+.pill--gray {
+  color: $color-dark;
+  background-color: $color-gray;
+}
+
+.pill--accent {
+  color: $color-dark;
+  text-shadow: 0px 1px 0px hsl(347deg 54% 72% / 20%);
+  background-color: $color-secondary-accent;
 }

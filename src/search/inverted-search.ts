@@ -116,8 +116,8 @@ export class InvertedSearch {
 
   /**
    * For each doc candidate, the phrase search algorithm iterates through each term's positions
-   * to find term's next to each other. It either exits early when it finds all the terms
-   * as a phrase, or when the first term's positions are completely drained.
+   * to find term next to each other. It either exits early when it finds all the terms as a
+   * phrase, or when the first term's positions are completely drained.
    *
    * The positions that are being looked up through iteration are progressively getting shorter
    * at each loop to avoid unnecessary work. A term-to-positions map is being reused for each

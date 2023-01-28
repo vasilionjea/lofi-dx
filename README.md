@@ -118,14 +118,14 @@ At runtime, when documents are indexed or during a phrase match, a document's me
   "totalTerms": 194
 }
 ```
-Once documents have entered the index or a phrase match completes, the expanded structure above gets garbage-collected by the JS engine. `npm run index-stats` for byte size and memory allocation of each strucure.
+Once documents have entered the index or a phrase match completes, the expanded structure above gets garbage-collected by the JS engine.
 
 **Note:** This has been tested only in English and likely won't work with other alphabets.
 
 ## Memory
 Given that this is a client-side solution to full-text search, the documents and the index are loaded into memory. The index stores the word corpus, the document UIDs that contain those words, the total amount of words, and each word position in order to support phrase queries. Although the numerical word positions are stored space efficiently using delta and base36 encoding, keep in mind that a client side full-text search implementation is likely not practical for large enough datasets. 
 
-The point of client side full-text search is to improve the user experience in offline mode, or when Internet connection is flakey, or when such client side feature is more performant than querying a server. However, if your app runs into memory issues and crashes the Browser tab because you're trying to load megabytes worth of documents, then that may actually derail the user experience. Have a cap on the total bytes you're storing client-side and loading into memory.
+The point of client side full-text search is to improve the user experience in offline mode, or when Internet connection is flakey, or when such client side feature is more performant than querying a server. However, if your app runs into memory issues and crashes the Browser tab because you're trying to load megabytes worth of documents, then that will actually derail the user experience. Have a cap on the total bytes you're storing client-side and loading into memory.
 
 ## Persistence
 No assumption is made about where the documents or the index are stored for persistence. Perhaps `localStorage` (_limited to about 5MB/synchronous API_) works for your usecase or you may need to reach for `IndexedDB`. 

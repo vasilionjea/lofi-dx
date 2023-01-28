@@ -9,23 +9,21 @@ export function debounce(callback: Function, ms = 0, context?: object) {
   };
 }
 
-export type pojo = { [key: string]: any };
-
 export class StateEvent extends Event {
-  constructor(readonly state: pojo) {
+  constructor(readonly state: POJO) {
     super('statechange');
   }
 }
 
 export class State extends EventTarget {
-  private value: pojo;
+  private value: POJO;
 
   constructor(initialValue = {}) {
     super();
     this.value = initialValue;
   }
 
-  setState(newValue: pojo) {
+  setState(newValue: POJO) {
     this.value = newValue;
     this.dispatchEvent(new StateEvent(this.value));
   }

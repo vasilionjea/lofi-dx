@@ -1,10 +1,9 @@
 import { InvertedIndex, InvertedSearch } from '../../src/index';
 
-type InterfaceOf<T> = { [P in keyof T]: T[P] }
 export interface AppService extends InterfaceOf<InternalAppService> { }
 
 /**
- * The AppService fetches documents and creates the index.
+ * The AppService fetches documents and creates the index
  */
 class InternalAppService {
   private readonly invertedIndex: InvertedIndex;

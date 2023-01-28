@@ -1,4 +1,3 @@
-import { pojo } from '../utils';
 import CoreComponent from './core';
 
 /**
@@ -17,7 +16,7 @@ export default class SearchResults extends CoreComponent {
     return '<p class="no-results">No results found :(</p>';
   }
 
-  render(data: pojo[] | null = []) {
+  render(data: POJO[] | null = []) {
     if (!data) {
       this.element.innerHTML = '';
     } else {

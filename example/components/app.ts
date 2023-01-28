@@ -1,4 +1,4 @@
-import { $, debounce, State } from '../utils';
+import { State, $, debounce } from '../utils/index';
 import { AppService } from '../services/app';
 import SearchInput from './input';
 import SearchResults from './results';
@@ -7,7 +7,7 @@ const DEBOUNCE_MS = 150;
 const EXAMPLE_QUERY = `"sierra nevada" california`;
 
 /**
- * Example Application.
+ * Example Application
  */
 export default class App extends State {
   private readonly $header = $('header')!;

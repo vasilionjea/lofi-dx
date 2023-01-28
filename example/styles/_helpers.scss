@@ -41,9 +41,11 @@
 
 .pill {
   display: flex;
+  justify-content: center;
+  align-items: center;
   max-width: max-content;
   border-radius: 10rem;
-  padding: 0.325em 1.65em;
+  padding: 0.325em 1.5em;
   font-size: $font-size-xsm;
   font-weight: 600;
   line-height: 1;

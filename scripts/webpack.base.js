@@ -18,7 +18,7 @@ export default ({ isProdMode }) => ({
 
   // The entry file(s) from where Webpack will start resolving modules
   entry: {
-    app: './example/app.ts',
+    app: './example/main.ts',
   },
 
   module: {

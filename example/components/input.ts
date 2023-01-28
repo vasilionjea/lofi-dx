@@ -1,4 +1,4 @@
-import CoreComponent from "./core";
+import CoreComponent from './core';
 
 /**
  * Search Input

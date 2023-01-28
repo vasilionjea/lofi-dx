@@ -1,5 +1,5 @@
-import { pojo } from "../utils";
-import CoreComponent from "./core";
+import { pojo } from '../utils';
+import CoreComponent from './core';
 
 /**
  * Search Results

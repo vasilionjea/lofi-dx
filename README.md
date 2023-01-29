@@ -99,7 +99,8 @@ The index's internal word map is represented space efficiently as follows:
     // document UID: metadata
     "2":"3h/ae",
     "3":"5e/5o,nb,2a,2c,n,31",
-    "7":"3v/j5","15":"2:8g/39,1jn"
+    "7":"3v/j5",
+    "15":"8g/39,1jn"
   },
 
   "other": {...}

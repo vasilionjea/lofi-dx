@@ -108,7 +108,7 @@ The index's internal word map is represented space efficiently as follows:
 
 All term positions in a document are [delta encoded](https://en.wikipedia.org/wiki/Delta_encoding) and [base36 encoded](https://en.wikipedia.org/wiki/Base36) before entering the index. The diagram below shows the individual encoded parts for a document `3` that has been indexed under the word `plateau`: 
 
-<img src="https://raw.githubusercontent.com/vasilionjea/search-query/ca7a545bfb126fb09598720bf053a1e9e1923055/example/encoded-meta-explained.svg">
+<img src="https://raw.githubusercontent.com/vasilionjea/search-query/6340cf51e4a4c66ed80e2dd0a000dfe2008bf319/example/encoded-meta-explained.svg">
 
 At runtime, when documents are indexed or during a phrase match, a document's metadata entry is **momentarily** decoded the following expanded representation:
 ```js

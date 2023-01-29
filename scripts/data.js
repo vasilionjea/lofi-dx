@@ -39,6 +39,10 @@ function lineBuilder(obj) {
   };
 }
 
+function addButton(obj) {
+  obj.body += `<button class="btn see-more">read more</button>`;
+}
+
 /**
  * Returns an `AsyncIterator` that iterates through each line in the input stream as a string.
  * https://nodejs.org/dist/latest-v19.x/docs/api/readline.html#rlsymbolasynciterator
@@ -69,6 +73,7 @@ export async function getExampleData() {
       addLine(line);
     }
 
+    addButton(obj);
     result.data.push(obj);
   }
 

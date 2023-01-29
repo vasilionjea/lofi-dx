@@ -51,7 +51,7 @@ export default class SearchInput extends CoreComponent {
 
     let tpl = `<label id="${labelId}" for="${inputId}" class="visuallyhidden">Search national parks</label>`;
     tpl += `<input type="search" id="${inputId}" placeholder="${placeholder}" aria-labelledby="${labelId}" autocorrect="off" spellcheck="false" autocapitalize="off">`;
-    tpl += `<button class="btn-icon btn-clear" aria-label="Clear search">${this.clearIconTemplate()}</button>`;
+    tpl += `<button class="btn btn-icon btn-clear" aria-label="Clear search">${this.clearIconTemplate()}</button>`;
 
     return tpl;
   }

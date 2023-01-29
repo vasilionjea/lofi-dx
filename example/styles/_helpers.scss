@@ -10,21 +10,30 @@
   width: 1px;
 }
 
-.btn-icon {
+.btn {
   cursor: pointer;
+  user-select: none;
   position: relative;
   margin: 0;
   border: none;
-  border-radius: inherit;
-  padding: 0;
-  font-size: inherit;
+  border-radius: 3px;
+  border: 1px solid $color-medium-gray;
+  padding: .325em .65em;
+  color: $color-gray;
+  font-size: 1.1rem;
   font-family: inherit;
+  line-height: 1.15;
   text-transform: none;
   background: transparent;
-  box-shadow: none;
+  box-shadow: 0 0px 3px rgb(30 32 38);
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+}
+
+.btn-icon {
+  border: none;
+  box-shadow: none;
 
   svg {
     fill: $color-gray;
@@ -34,7 +43,7 @@
   &:focus {
     svg {
       fill: $color-medium-gray;
-      transition: fill 0.1s ease;
+      transition: fill 0.2s ease;
     }
   }
 }

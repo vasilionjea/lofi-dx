@@ -3,7 +3,7 @@ import { typeOf } from './utils/core';
 /**
  * Stopwords that are stripped away from queries and the index.
  */
-const STOPWORDS_MAP: { [key: string]: boolean } = {
+const STOPWORDS: { [key: string]: boolean } = {
   a: true,
   able: true,
   about: true,
@@ -191,14 +191,14 @@ const STOPWORDS_MAP: { [key: string]: boolean } = {
  * Returns all stopwords present in the internal map.
  */
 export function getStopwords(): string[] {
-  return Object.keys(STOPWORDS_MAP);
+  return Object.keys(STOPWORDS);
 }
 
 /**
  * True if a word is in the internal map.
  */
 export function hasStopword(word: string): boolean {
-  return Boolean(STOPWORDS_MAP[word]);
+  return Boolean(STOPWORDS[word]);
 }
 
 /**
@@ -215,7 +215,7 @@ export function addStopwords(words: string[] = []): void {
 
   for (const word of words) {
     if (!hasStopword(word)) {
-      STOPWORDS_MAP[word] = true;
+      STOPWORDS[word] = true;
     }
   }
 }

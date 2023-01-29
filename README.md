@@ -97,9 +97,9 @@ The index's internal word map is represented space efficiently as follows:
   // word
   "plateau": { 
     // document UID: metadata
-    "2":"1:3h/ae",
-    "3":"6:5e/5o,nb,2a,2c,n,31",
-    "7":"1:3v/j5","15":"2:8g/39,1jn"
+    "2":"3h/ae",
+    "3":"5e/5o,nb,2a,2c,n,31",
+    "7":"3v/j5","15":"2:8g/39,1jn"
   },
 
   "other": {...}
@@ -113,7 +113,6 @@ All term positions in a document are [delta encoded](https://en.wikipedia.org/wi
 At runtime, when documents are indexed or during a phrase match, a document's metadata entry is **momentarily** decoded the following expanded representation:
 ```js
 { // metadata for document with UID: 3
-  "frequency": 6,
   "postings":[204,1043,1125,1209,1232,1341],
   "totalTerms": 194
 }

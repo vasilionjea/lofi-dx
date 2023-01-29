@@ -1,5 +1,5 @@
 import { InvertedIndex } from '../../src/search/index';
-import { DocParsedMetadata } from '../../src/utils/encoding';
+import { ParsedMetadata } from '../../src/utils/encoding';
 
 let docs: Array<{ [key: string]: unknown }>;
 const stopwords = {
@@ -89,15 +89,15 @@ describe('InvertedIndex', () => {
     expect(index[stopwords['the']]).not.toBeDefined();
   });
 
-  test('it should index documents with frequency and postings', () => {
+  test('it should index documents with totalTerms and postings', () => {
     const instance = new InvertedIndex({ uidKey: 'id', fields: ['name'] });
     instance.addDocuments(docs);
 
-    const meta = instance.getDocumentEntry('joe', '7') as DocParsedMetadata;
-    expect(meta.frequency).toBe(1);
+    const meta = instance.getDocumentEntry('joe', '7') as ParsedMetadata;
+    expect(meta.totalTerms).toBe(2);
     expect(meta.postings).toContain(0);
 
-    const meta2 = instance.getDocumentEntry('doe', '7') as DocParsedMetadata;
+    const meta2 = instance.getDocumentEntry('doe', '7') as ParsedMetadata;
     expect(meta2.postings).toContain(4);
   });
 

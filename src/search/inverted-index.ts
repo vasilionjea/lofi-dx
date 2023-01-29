@@ -1,9 +1,9 @@
 import { isNone } from '../utils/core';
 import { collapseWhitespace, isBlank, stemWord } from '../utils/string';
 import {
-  encodeDocMetadata,
-  parseDocMetadata,
-  DocParsedMetadata,
+  encodeMetadata,
+  parseMetadata,
+  ParsedMetadata,
 } from '../utils/encoding';
 import { isStopword } from '../stopwords';
 
@@ -105,17 +105,16 @@ export class InvertedIndex {
     for (const token of tokens) {
       if (!this.indexTable[token.term]) this.indexTable[token.term] = {};
 
-      // Update frequency, positions, and total terms for this doc
-      const meta = this.getDocumentEntry(token.term, uid) as DocParsedMetadata;
-      meta.frequency += 1;
-      meta.postings.push(token.posting);
+      // Update positions, and total terms for this doc
+      const meta = this.getDocumentEntry(token.term, uid) as ParsedMetadata;
+      meta.postings?.push(token.posting);
       meta.totalTerms = totalDocTerms
         ? totalDocTerms + totalTokens
         : totalTokens;
       this.tempDocTermCount[uid] = meta.totalTerms;
 
       // Add to index
-      this.indexTable[token.term][uid] = encodeDocMetadata(meta);
+      this.indexTable[token.term][uid] = encodeMetadata(meta);
     }
   }
 
@@ -147,9 +146,9 @@ export class InvertedIndex {
     term: string,
     uid: string,
     parse = true
-  ): DocParsedMetadata | string {
+  ): ParsedMetadata | string {
     const termEntry = this.getTermEntry(term);
-    if (parse) return parseDocMetadata(termEntry[uid]);
+    if (parse) return parseMetadata(termEntry[uid]);
     return termEntry[uid];
   }
 

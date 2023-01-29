@@ -1,8 +1,10 @@
-export interface DocParsedMetadata {
-  frequency: number;
+export interface ParsedMetadata {
   totalTerms: number;
   postings: number[];
 }
+
+const CHUNK_SEPARATOR = '/';
+const POSTINGS_SEPARATOR = ',';
 
 /**
  * Encodes term postings using delta and base36 encoding.
@@ -50,30 +52,40 @@ export function decodePostings(arr: string[]): number[] {
 /**
  * Parses the encoded meta for a doc back into a readable POJO.
  */
-export function parseDocMetadata(meta: string): DocParsedMetadata {
-  if (!meta) {
-    return { frequency: 0, totalTerms: 0, postings: [] };
-  }
+export function parseMetadata(meta: string): ParsedMetadata {
+  if (!meta) return { totalTerms: 0, postings: [] };
 
-  const [str, postingsStr] = meta.split('/');
-  const [frequencyStr, totalStr] = str.split(':');
+  const [totalStr, postingsStr] = meta.split(CHUNK_SEPARATOR);
 
   return {
-    frequency: parseInt(frequencyStr, 36),
     totalTerms: parseInt(totalStr, 36),
-    postings: decodePostings(postingsStr.split(',')),
+    postings: decodePostings(postingsStr.split(POSTINGS_SEPARATOR)),
   };
+}
+
+/**
+ * Parses the encoded term count for a doc back into Base10.
+ */
+export function parseTermCount(meta: string): number {
+  const chunks = meta.split(CHUNK_SEPARATOR);
+  return parseInt(chunks[0], 36);
+}
+
+/**
+ * Returns length of postings without decoding them.
+ */
+export function getPostingsLength(meta: string): number {
+  const chunks = meta.split(CHUNK_SEPARATOR);
+  return chunks[1].split(POSTINGS_SEPARATOR).length;
 }
 
 /**
  * Encodes the meta for a doc using delta and base36 for postings,
  * and only base36 for everything else.
  */
-export function encodeDocMetadata(meta: DocParsedMetadata): string {
-  const { frequency, totalTerms } = meta;
+export function encodeMetadata(meta: ParsedMetadata): string {
+  const termCount = meta.totalTerms.toString(36);
+  const postings = encodePostings(meta.postings);
 
-  const rankingMeta = `${frequency.toString(36)}:${totalTerms.toString(36)}`;
-  const encodedPostings = encodePostings(meta.postings);
-
-  return `${rankingMeta}/${encodedPostings.join(',')}`;
+  return `${termCount}/${postings.join(POSTINGS_SEPARATOR)}`;
 }

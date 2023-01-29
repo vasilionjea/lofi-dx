@@ -13,7 +13,11 @@ import {
   groupQueryParts,
 } from '../query/index';
 import { tfidf } from '../utils/ranking';
-import { parseDocMetadata, DocParsedMetadata } from '../utils/encoding';
+import {
+  parseTermCount,
+  getPostingsLength,
+  ParsedMetadata,
+} from '../utils/encoding';
 import { InvertedIndex, Doc, DocEntry } from './inverted-index';
 
 export type ScoredMatches = {
@@ -38,7 +42,8 @@ export class InvertedSearch {
     const totalTermDocs = termDocs.length;
 
     for (const [uid, docEntry] of termDocs) {
-      const { frequency, totalTerms } = parseDocMetadata(docEntry);
+      const totalTerms = parseTermCount(docEntry);
+      const frequency = getPostingsLength(docEntry);
       result[uid] = tfidf(
         { frequency, totalTerms },
         { totalDocs, totalTermDocs }
@@ -142,7 +147,7 @@ export class InvertedSearch {
         const meta = this.invertedIndex.getDocumentEntry(
           term,
           uid
-        ) as DocParsedMetadata;
+        ) as ParsedMetadata;
         postings[term] = meta.postings;
       }
 

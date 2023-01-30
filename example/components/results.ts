@@ -21,8 +21,22 @@ export default class SearchResults extends CoreComponent {
     return data.reduce((str, o) => str + `<article>${o.title}${o.body}</article>`, '');
   }
 
+  private querySuggestions() {
+    let str = '<div class="query-suggestions">';
+    str += '<p>Suggestions</p>';
+    str += '<ul>';
+    str += `<li class="pill pill--outlined">camping waterfalls -Teton</li>`;
+    str += `<li class="pill pill--outlined">"sierra nevada" +mojave</li>`;
+    str += `<li class="pill pill--outlined">southwestern Utah</li>`;
+    str += '</ul>';
+    return str + '</div>';
+  }
+
   private noResultsTemplate() {
-    return '<p class="no-results">No results found</p>';
+    let str = '<div class="no-results">';
+    str += '<p>No results found :(</p>';
+    str += this.querySuggestions();
+    return str + '</div>';
   }
 
   private toggle(trigger: Element, article: Element) {

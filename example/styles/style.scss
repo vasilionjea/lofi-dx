@@ -242,10 +242,23 @@ header {
 
   .no-results {
     margin-bottom: 2rem;
-    padding: 4rem;
+    padding: 3.5rem;
     border-radius: 6px;
-    text-align: center;
     font-size: 1.1rem;
+  }
+
+  .query-suggestions {
+    p:nth-of-type(1) {
+      display: inline-block;
+      border-bottom: 1px solid $color-medium-gray;
+      padding-bottom: 4px;
+      font-weight: 300;
+    }
+
+    li {
+      margin-bottom: 0.8rem;
+      opacity: .95;
+    }
   }
 
   .see-more {

@@ -58,6 +58,27 @@ export default class App extends State {
   renderResults() {
     const { results } = this.getState();
     this.searchResults.render(results);
-    this.$stats!.textContent = results ? `${results.length} results found` : '';
+    this.renderStats(results);
+  }
+
+  renderStats(results: unknown[]) {
+    let text = ''
+
+    if (!results) {
+      this.$stats!.textContent = text;
+      return;
+    }
+
+    const size = results.length;
+
+    if (size === 0) {
+      text = 'no results found';
+    } else if (size === 1) {
+      text = `1 result found`;
+    } else if (size > 1) {
+      text = `${size} results found`;
+    }
+
+    this.$stats!.textContent = text;
   }
 }

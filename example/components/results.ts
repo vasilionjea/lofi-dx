@@ -1,11 +1,20 @@
 import CoreComponent from './core';
 
+const CLASS_EXPANDED = 'expanded';
+const TEXT_MORE = 'read more';
+const TEXT_LESS = 'read less';
+
 /**
  * Search Results
  */
 export default class SearchResults extends CoreComponent {
   get classNames() {
     return ['search-results'];
+  }
+
+  constructor() {
+    super();
+    this.element.addEventListener('click', this)
   }
 
   private resultsTemplate(data: any[]): string {
@@ -17,14 +26,14 @@ export default class SearchResults extends CoreComponent {
   }
 
   private toggle(trigger: Element, article: Element) {
-    const isExpanded = article.classList.contains('expanded');
+    const isExpanded = article.classList.contains(CLASS_EXPANDED);
 
     if (isExpanded) {
-      article.classList.remove('expanded');
-      trigger.textContent = 'read more';
+      article.classList.remove(CLASS_EXPANDED);
+      trigger.textContent = TEXT_MORE;
     } else {
-      article.classList.add('expanded');
-      trigger.textContent = 'read less';
+      article.classList.add(CLASS_EXPANDED);
+      trigger.textContent = TEXT_LESS;
     }
   }
 
@@ -41,12 +50,6 @@ export default class SearchResults extends CoreComponent {
       this.element.innerHTML = '';
     } else {
       this.element.innerHTML = data.length ? this.resultsTemplate(data) : this.noResultsTemplate();
-    }
-
-    const buttons = this.element.querySelectorAll('.see-more');
-
-    if (buttons) {
-      buttons.forEach(btn => btn.addEventListener('click', this))
     }
 
     return this;

@@ -3,7 +3,7 @@ import {
   hasOwn,
   objectIntersection,
   objectDifference,
-  removeArrayItem,
+  bsDeleteItem,
 } from '../utils/core';
 import {
   QueryPart,
@@ -121,7 +121,7 @@ export class InvertedSearch {
 
   /**
    * For each doc candidate, the phrase search algorithm iterates through each term's positions
-   * to find term next to each other. It either exits early when it finds all the terms as a
+   * to find terms next to each other. It either exits early when it finds all the terms as a
    * phrase, or when the first term's positions are completely drained.
    *
    * The positions that are being looked up through iteration are progressively getting shorter
@@ -160,7 +160,7 @@ export class InvertedSearch {
 
         const currentPos = stack[stack.length - 1] as number;
         const nextExpected = currentPos + terms[t].length + 1;
-        const nextPos = removeArrayItem(postings[terms[t + 1]], nextExpected);
+        const nextPos = bsDeleteItem(postings[terms[t + 1]], nextExpected);
 
         if (!isNone(nextPos)) {
           stack.push(nextPos);

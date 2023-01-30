@@ -4,7 +4,7 @@ import {
   typeOf,
   objectIntersection,
   objectDifference,
-  removeArrayItem,
+  bsDeleteItem,
 } from '../../src/utils/core';
 
 describe('Core utils', () => {
@@ -71,9 +71,9 @@ describe('Core utils', () => {
     expect(diff).toMatchObject({ foo: 'foo' });
   });
 
-  test('[removeArrayItem] it should removes and returns array item mutating the array', () => {
+  test('[bsDeleteItem] it should delete and return array item mutating the array', () => {
     const arr = [1, 2, 3, 4, 5];
-    const item = removeArrayItem(arr, 4);
+    const item = bsDeleteItem(arr, 4);
     expect(item).toBe(4);
     expect(arr.length).toBe(4);
     expect(arr.indexOf(4)).toBe(-1);

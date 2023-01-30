@@ -55,17 +55,24 @@ export function objectDifference(
 }
 
 /**
- * Removes and returns array item or undefined if not found.
+ * Deletes and returns array item using binary search (mutates array).
  */
-export function removeArrayItem<T = unknown>(arr: T[], item: T): T | undefined {
-  let foundItem;
+export function bsDeleteItem<T = unknown>(arr: T[], item: T) {
+  let start = 0;
+  let end = arr.length - 1;
+  let mid = Math.floor(end / 2);
 
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] === item) {
-      foundItem = arr.splice(i, 1)[0];
-      break;
+  while (arr[mid] !== item && start < end) {
+    if (item < arr[mid]) {
+      end = mid - 1;
+    } else {
+      start = mid + 1;
     }
+
+    mid = Math.floor((start + end) / 2);
   }
 
-  return foundItem;
+  if (item === arr[mid]) {
+    return arr.splice(mid, 1)[0];
+  }
 }

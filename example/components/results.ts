@@ -1,8 +1,8 @@
 import CoreComponent from './core';
 
-const CLASS_EXPANDED = 'expanded';
 const TEXT_MORE = 'read more';
 const TEXT_LESS = 'read less';
+const CLASS_EXPANDED = 'expanded';
 
 /**
  * Search Results
@@ -22,7 +22,7 @@ export default class SearchResults extends CoreComponent {
   }
 
   private noResultsTemplate() {
-    return '<p class="no-results">No results found :(</p>';
+    return '<p class="no-results">No results found</p>';
   }
 
   private toggle(trigger: Element, article: Element) {
@@ -46,10 +46,14 @@ export default class SearchResults extends CoreComponent {
   }
 
   render(data: POJO[] | null = []) {
-    if (!data) {
+    if (!data || !data.length) {
       this.element.innerHTML = '';
     } else {
-      this.element.innerHTML = data.length ? this.resultsTemplate(data) : this.noResultsTemplate();
+      this.element.innerHTML = (
+        data.length ?
+          this.resultsTemplate(data) :
+          this.noResultsTemplate()
+      );
     }
 
     return this;

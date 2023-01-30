@@ -46,7 +46,7 @@ export default class SearchResults extends CoreComponent {
   }
 
   render(data: POJO[] | null = []) {
-    if (!data || !data.length) {
+    if (!data) {
       this.element.innerHTML = '';
     } else {
       this.element.innerHTML = (

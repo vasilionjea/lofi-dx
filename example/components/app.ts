@@ -58,6 +58,6 @@ export default class App extends State {
   renderResults() {
     const { results } = this.getState();
     this.searchResults.render(results);
-    this.$stats!.textContent = results ? `Total results: ${results.length}` : '';
+    this.$stats!.textContent = results ? `${results.length} results found` : '';
   }
 }

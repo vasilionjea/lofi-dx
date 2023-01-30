@@ -227,6 +227,13 @@ header {
   article {
     padding: 2rem;
 
+    @media all and (max-width: $screen-sm) {
+      p:nth-of-type(1) {
+        overflow: hidden;
+        @include line-clamp;
+      }
+    }
+
     p:nth-of-type(1)~p {
       display: none;
     }

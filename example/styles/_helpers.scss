@@ -1,5 +1,11 @@
 @import 'variables';
 
+@mixin line-clamp($count: 10) {
+  display: -webkit-box;
+  -webkit-line-clamp: $count;
+  -webkit-box-orient: vertical;
+}
+
 .visuallyhidden:not(:focus):not(:active) {
   clip: rect(0 0 0 0);
   clip-path: inset(50%);

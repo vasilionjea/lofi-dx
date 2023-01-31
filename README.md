@@ -35,10 +35,10 @@ The purpose of this is to allow making queries like `+jaguar speed "south americ
   </tbody>
 </table>
 
-Demo: https://vasilionjea.github.io/search-query
+[Demo app](https://vasilionjea.github.io/search-query/)
 
 ## Usage
-Create and add documents to the index:
+Add documents to an index:
 ```js
 const peopleIndex = new InvertedIndex({ uidKey: 'id', fields: ['title'] });
 peopleIndex.addDocuments([

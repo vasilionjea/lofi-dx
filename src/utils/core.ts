@@ -58,7 +58,7 @@ export function objectDifference(
  * Native deepclone or fallback to JSON stringify+parse.
  */
 export function deepClone<T = unknown>(obj: T): T {
-  if (structuredClone instanceof Function) {
+  if (typeof structuredClone === 'function') {
     return structuredClone(obj);
   } else {
     return JSON.parse(JSON.stringify(obj)) as T;

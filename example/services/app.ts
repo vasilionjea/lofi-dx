@@ -19,11 +19,29 @@ class Service {
     this.invertedSearch = new InvertedSearch(this.invertedIndex);
   }
 
-  async loadDocuments() {
+  async fetch() {
+    const start = performance.now();
     const response = await fetch('./data.json');
     const { data } = await response.json();
-
     this.invertedIndex.addDocuments(data);
+    const end = performance.now();
+    console.log(`Loaded (fetch + index): ${end - start}ms`);
+  }
+
+  async loadStore() {
+    const start = performance.now();
+    await this.invertedIndex.loadStore();
+    const end = performance.now();
+    console.log(`Loaded (localstorage): ${end - start}ms`);
+  }
+
+  async loadDocuments() {
+    if (this.invertedIndex.isStored) {
+      await this.loadStore();
+    } else {
+      await this.fetch();
+      this.invertedIndex.saveStore();
+    }
 
     console.log(this.invertedIndex.toJSON());
   }

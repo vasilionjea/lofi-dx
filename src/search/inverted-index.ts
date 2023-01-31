@@ -11,6 +11,7 @@ export interface InvertedIndexConfig {
   uidKey: string;
   fields?: string[];
   splitter?: RegExp;
+  storageKey?: string;
 }
 
 export type Doc = { [key: string]: unknown };
@@ -35,6 +36,7 @@ export interface Serializable {
 
 const DEFAULT_UID_KEY = 'id';
 const DEFAULT_DOCUMENT_SPLITTER = /\s+/g;
+const DEFAULT_STORAGE_KEY = 'search-query:index';
 
 /**
  * InvertedIndex contains both the index table and the documents.
@@ -42,6 +44,7 @@ const DEFAULT_DOCUMENT_SPLITTER = /\s+/g;
 export class InvertedIndex {
   private readonly uidKey: string;
   private readonly documentSplitter: RegExp;
+  private readonly storageKey: string;
 
   private fields: Set<string>;
   private documentsTable: DocTable = {};
@@ -50,7 +53,7 @@ export class InvertedIndex {
 
   private totalDocuments = 0;
 
-  get totalDocs() {
+  get totalDocs(): number {
     return this.totalDocuments;
   }
 
@@ -58,6 +61,7 @@ export class InvertedIndex {
     this.uidKey = opts.uidKey || DEFAULT_UID_KEY;
     this.fields = new Set(opts.fields);
     this.documentSplitter = opts.splitter || DEFAULT_DOCUMENT_SPLITTER;
+    this.storageKey = opts.storageKey || DEFAULT_STORAGE_KEY;
   }
 
   private tokenizeText(text: string) {
@@ -168,15 +172,6 @@ export class InvertedIndex {
     };
   }
 
-  save(key: string) {
-    try {
-      const serialized = JSON.stringify(this.toJSON());
-      localStorage.setItem(key, serialized);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
   private setLoaded({ fields, documents, index }: Serializable) {
     const [totalDocuments, documentsTable, documentTermCounts] = documents;
 
@@ -187,15 +182,56 @@ export class InvertedIndex {
     this.indexTable = index;
   }
 
-  load(key: string) {
-    const result = localStorage.getItem(key);
-    if (!result) return;
+  get isStored(): boolean {
+    return Boolean(localStorage.getItem(this.storageKey));
+  }
 
-    try {
-      const parsed = JSON.parse(result) as Serializable;
-      this.setLoaded(parsed);
-    } catch (err) {
-      console.error(err);
-    }
+  /**
+   * Saves a snapshot of the index and its document to local storage.
+   */
+  saveStore(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      try {
+        const data: Serializable = this.toJSON();
+        localStorage.setItem(this.storageKey, JSON.stringify(data));
+        resolve(true);
+      } catch (err) {
+        console.error(err);
+        reject(err);
+      }
+    });
+  }
+
+  /**
+   * Sets a previously stored index and its documents.
+   */
+  loadStore(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      const result = localStorage.getItem(this.storageKey);
+
+      if (!result) {
+        resolve(false);
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(result) as Serializable;
+        this.setLoaded(parsed);
+        resolve(true);
+      } catch (err) {
+        console.error(err);
+        reject(err);
+      }
+    });
+  }
+
+  /**
+   * Clear stored index and its documents.
+   */
+  clearStore(): Promise<void> {
+    return new Promise((resolve) => {
+      localStorage.removeItem(this.storageKey);
+      resolve();
+    });
   }
 }

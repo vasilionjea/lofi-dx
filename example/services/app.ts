@@ -25,14 +25,14 @@ class Service {
     const { data } = await response.json();
     this.invertedIndex.addDocuments(data);
     const end = performance.now();
-    console.log(`Loaded (fetch + index): ${end - start}ms`);
+    console.log(`Loaded (init): ${end - start}ms`);
   }
 
   async loadStore() {
     const start = performance.now();
     await this.invertedIndex.loadStore();
     const end = performance.now();
-    console.log(`Loaded (localstorage): ${end - start}ms`);
+    console.log(`Loaded (cache): ${end - start}ms`);
   }
 
   async loadDocuments() {
@@ -53,7 +53,7 @@ class Service {
     const results = this.invertedSearch.search(queryText);
     const end = performance.now();
 
-    console.log(`Search took ${end - start} milliseconds.`);
+    console.log(`Search took ${end - start}ms`);
 
     return results;
   }

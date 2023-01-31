@@ -20,11 +20,11 @@ function logStats(label = '', data = {}) {
 
 async function runStats() {
   const files = [
-    { label: 'Parsed (no ranking)', name: 'parsed.json' },
-    { label: 'Stringified (no ranking)', name: 'stringified.json' },
-    { label: 'Delta encoded (no ranking)', name: 'delta-encoded.json' },
-    { label: 'Base36 encoded (no ranking)', name: 'base36-encoded.json' },
-    { label: 'Current (with ranking)', name: 'current.json' },
+    { label: 'Parsed', name: 'parsed.json' },
+    { label: 'Stringified', name: 'stringified.json' },
+    { label: 'Delta encoded', name: 'delta-encoded.json' },
+    { label: 'Base36 encoded', name: 'base36-encoded.json' },
+    { label: 'Current', name: 'current.json' },
   ];
 
   console.log('Index Stats\n___________');

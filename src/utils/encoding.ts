@@ -1,9 +1,7 @@
 export interface ParsedMetadata {
-  totalTerms: number;
   postings: number[];
 }
 
-const CHUNK_SEPARATOR = '/';
 const POSTINGS_SEPARATOR = ',';
 
 /**
@@ -50,42 +48,27 @@ export function decodePostings(arr: string[]): number[] {
 }
 
 /**
- * Parses the encoded meta for a doc back into a readable POJO.
+ * Encodes the meta for a doc using delta and base36 for postings,
+ * and only base36 for everything else.
  */
-export function parseMetadata(meta: string): ParsedMetadata {
-  if (!meta) return { totalTerms: 0, postings: [] };
-
-  const [totalStr, postingsStr] = meta.split(CHUNK_SEPARATOR);
-
-  return {
-    totalTerms: parseInt(totalStr, 36),
-    postings: decodePostings(postingsStr.split(POSTINGS_SEPARATOR)),
-  };
+export function encodeMetadata(meta: ParsedMetadata): string {
+  const postings = encodePostings(meta.postings);
+  return `${postings.join(POSTINGS_SEPARATOR)}`;
 }
 
 /**
- * Parses the encoded term count for a doc back into Base10.
+ * Parses the encoded meta for a doc back into a readable POJO.
  */
-export function parseTermCount(meta: string): number {
-  const chunks = meta.split(CHUNK_SEPARATOR);
-  return parseInt(chunks[0], 36);
+export function parseMetadata(meta: string): ParsedMetadata {
+  if (!meta) return { postings: [] };
+  return {
+    postings: decodePostings(meta.split(POSTINGS_SEPARATOR)),
+  };
 }
 
 /**
  * Returns length of postings without decoding them.
  */
 export function getPostingsLength(meta: string): number {
-  const chunks = meta.split(CHUNK_SEPARATOR);
-  return chunks[1].split(POSTINGS_SEPARATOR).length;
-}
-
-/**
- * Encodes the meta for a doc using delta and base36 for postings,
- * and only base36 for everything else.
- */
-export function encodeMetadata(meta: ParsedMetadata): string {
-  const termCount = meta.totalTerms.toString(36);
-  const postings = encodePostings(meta.postings);
-
-  return `${termCount}/${postings.join(POSTINGS_SEPARATOR)}`;
+  return meta.split(POSTINGS_SEPARATOR).length;
 }

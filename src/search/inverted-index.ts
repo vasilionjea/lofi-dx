@@ -1,4 +1,4 @@
-import { isNone } from '../utils/core';
+import { isNone, deepClone } from '../utils/core';
 import { collapseWhitespace, isBlank, stemWord } from '../utils/string';
 import {
   encodeMetadata,
@@ -13,22 +13,24 @@ export interface InvertedIndexConfig {
   splitter?: RegExp;
 }
 
-export interface Doc {
-  [key: string]: unknown;
-}
+export type Doc = { [key: string]: unknown };
+export type DocTable = { [key: string]: Doc };
 
-export interface DocTable {
-  [key: string]: Doc;
-}
+export type TermTable = { [key: string]: string };
+export type IndexTable = { [key: string]: TermTable };
 
-export interface DocEntry {
-  // uid: metadata
-  [key: string]: string;
-}
+export type DocTermCounts = { [key: string]: number };
 
-export interface IndexTable {
-  // word: doc entry
-  [key: string]: DocEntry;
+export type SerializedDocuments = [
+  number, // total docs
+  DocTable, // doc table
+  DocTermCounts // doc term counts
+];
+
+export interface Serializable {
+  fields: string[];
+  documents: SerializedDocuments;
+  index: IndexTable;
 }
 
 const DEFAULT_UID_KEY = 'id';
@@ -39,14 +41,14 @@ const DEFAULT_DOCUMENT_SPLITTER = /\s+/g;
  */
 export class InvertedIndex {
   private readonly uidKey: string;
-  private readonly fields: Set<string>;
   private readonly documentSplitter: RegExp;
 
-  private readonly documentsTable: DocTable = {};
-  private tempDocTermCount: { [key: string]: number } = {};
-  private totalDocuments = 0;
+  private fields: Set<string>;
+  private documentsTable: DocTable = {};
+  private indexTable: IndexTable = {};
+  private documentTermCounts: DocTermCounts = {};
 
-  private readonly indexTable: IndexTable = {};
+  private totalDocuments = 0;
 
   get totalDocs() {
     return this.totalDocuments;
@@ -73,7 +75,6 @@ export class InvertedIndex {
         const stemmed = stemWord(term);
         const token = { term: stemmed, posting: start };
         start += stemmed.length + 1;
-
         result.push(token);
       }
     }
@@ -83,24 +84,23 @@ export class InvertedIndex {
 
   index(field: string) {
     if (isNone(field) || isBlank(field)) return this;
-
     this.fields.add(field);
 
     for (const doc of Object.values(this.documentsTable)) {
       this.indexDocument(field, doc);
     }
+
     return this;
   }
 
   private indexDocument(field: string, doc: Doc) {
     const uid = doc[this.uidKey] as string;
-    if (isNone(uid)) return;
+    if (isNone(uid) || isNone(doc[field])) return;
 
     const tokens = this.tokensWithPostings(
       this.tokenizeText(doc[field] as string)
     );
-    const totalTokens = tokens.length; // tokens for this field
-    const totalDocTerms = this.tempDocTermCount[uid] || 0;
+    this.documentTermCounts[uid] += tokens.length;
 
     for (const token of tokens) {
       if (!this.indexTable[token.term]) this.indexTable[token.term] = {};
@@ -108,10 +108,6 @@ export class InvertedIndex {
       // Update positions, and total terms for this doc
       const meta = this.getDocumentEntry(token.term, uid) as ParsedMetadata;
       meta.postings?.push(token.posting);
-      meta.totalTerms = totalDocTerms
-        ? totalDocTerms + totalTokens
-        : totalTokens;
-      this.tempDocTermCount[uid] = meta.totalTerms;
 
       // Add to index
       this.indexTable[token.term][uid] = encodeMetadata(meta);
@@ -123,13 +119,17 @@ export class InvertedIndex {
 
     for (const doc of docs) {
       const uid = doc[this.uidKey] as string;
-      this.documentsTable[uid] = doc;
-      this.totalDocuments += 1;
-    }
 
-    // Re-index search fields after adding docs
-    this.fields.forEach((field) => this.index(field));
-    this.tempDocTermCount = {}; // cleanup
+      // Count unique docs
+      if (!this.documentsTable[uid]) this.totalDocuments += 1;
+
+      // Add document
+      this.documentsTable[uid] = doc;
+      this.documentTermCounts[uid] = 0;
+
+      // Re-index search fields for added doc
+      this.fields.forEach((field) => this.indexDocument(field, doc));
+    }
 
     return this;
   }
@@ -138,7 +138,11 @@ export class InvertedIndex {
     return this.documentsTable[uid];
   }
 
-  getTermEntry(term: string): DocEntry {
+  getDocumentTermCount(uid: string): number {
+    return this.documentTermCounts[uid] || 0;
+  }
+
+  getTermEntry(term: string): TermTable {
     return this.indexTable[term] || {};
   }
 
@@ -152,11 +156,46 @@ export class InvertedIndex {
     return termEntry[uid];
   }
 
-  toJSON() {
+  toJSON(): Serializable {
     return {
       fields: [...this.fields],
-      documents: { ...this.documentsTable },
-      index: { ...this.indexTable },
+      documents: [
+        this.totalDocuments,
+        deepClone(this.documentsTable),
+        deepClone(this.documentTermCounts),
+      ],
+      index: deepClone(this.indexTable),
     };
+  }
+
+  save(key: string) {
+    try {
+      const serialized = JSON.stringify(this.toJSON());
+      localStorage.setItem(key, serialized);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  private setLoaded({ fields, documents, index }: Serializable) {
+    const [totalDocuments, documentsTable, documentTermCounts] = documents;
+
+    this.fields = new Set(fields);
+    this.totalDocuments = totalDocuments;
+    this.documentsTable = documentsTable;
+    this.documentTermCounts = documentTermCounts;
+    this.indexTable = index;
+  }
+
+  load(key: string) {
+    const result = localStorage.getItem(key);
+    if (!result) return;
+
+    try {
+      const parsed = JSON.parse(result) as Serializable;
+      this.setLoaded(parsed);
+    } catch (err) {
+      console.error(err);
+    }
   }
 }

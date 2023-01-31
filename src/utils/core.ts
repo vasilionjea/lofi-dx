@@ -55,6 +55,17 @@ export function objectDifference(
 }
 
 /**
+ * Native deepclone or fallback to JSON stringify+parse.
+ */
+export function deepClone<T = unknown>(obj: T): T {
+  if (structuredClone instanceof Function) {
+    return structuredClone(obj);
+  } else {
+    return JSON.parse(JSON.stringify(obj)) as T;
+  }
+}
+
+/**
  * Deletes and returns array item using binary search (mutates array).
  */
 export function bsDeleteItem<T = unknown>(arr: T[], item: T) {

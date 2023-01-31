@@ -56,17 +56,21 @@ describe('InvertedIndex', () => {
     instance.addDocuments(docs);
 
     const { documents } = instance.toJSON();
-    expect(Object.keys(documents).length).toBe(docs.length);
+    const [totalDocuments, documentsTable] = documents;
 
-    expect(documents['3'].name).toBe('Mike');
-    expect(documents['3'].title).toContain('Chief Forward Impact Engineer');
+    expect(totalDocuments).toBe(docs.length);
+
+    expect(documentsTable['3'].name).toBe('Mike');
+    expect(documentsTable['3'].title).toContain(
+      'Chief Forward Impact Engineer'
+    );
   });
 
   test('it should create the index from the document search fields', () => {
     const instance = new InvertedIndex({ uidKey: 'id', fields: ['name'] });
     instance.addDocuments(docs);
 
-    const { index, fields } = instance.toJSON();
+    const { fields, index } = instance.toJSON();
     expect(fields.length).toBe(1);
     expect(fields.includes('name')).toBe(true);
 
@@ -89,12 +93,11 @@ describe('InvertedIndex', () => {
     expect(index[stopwords['the']]).not.toBeDefined();
   });
 
-  test('it should index documents with totalTerms and postings', () => {
+  test('it should index documents with postings', () => {
     const instance = new InvertedIndex({ uidKey: 'id', fields: ['name'] });
     instance.addDocuments(docs);
 
     const meta = instance.getDocumentEntry('joe', '7') as ParsedMetadata;
-    expect(meta.totalTerms).toBe(2);
     expect(meta.postings).toContain(0);
 
     const meta2 = instance.getDocumentEntry('doe', '7') as ParsedMetadata;
@@ -107,7 +110,7 @@ describe('InvertedIndex', () => {
       fields: ['name'],
     }).addDocuments(docs);
 
-    const { index, fields } = instance.toJSON();
+    const { fields, index } = instance.toJSON();
     expect(fields.length).toBe(1);
     expect(fields.includes('name')).toBe(true);
 

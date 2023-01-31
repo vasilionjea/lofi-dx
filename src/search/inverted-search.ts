@@ -13,12 +13,8 @@ import {
   groupQueryParts,
 } from '../query/index';
 import { tfidf } from '../utils/ranking';
-import {
-  parseTermCount,
-  getPostingsLength,
-  ParsedMetadata,
-} from '../utils/encoding';
-import { InvertedIndex, Doc, DocEntry } from './inverted-index';
+import { getPostingsLength, ParsedMetadata } from '../utils/encoding';
+import { InvertedIndex, Doc, TermTable } from './inverted-index';
 
 export type ScoredMatches = {
   // doc uid: tfidf
@@ -35,14 +31,14 @@ export class InvertedSearch {
   /**
    * For a set of matched docs, it computes each doc's tfidf value.
    */
-  private matchesWithScores(matches: DocEntry) {
+  private matchesWithScores(matches: TermTable) {
     const result: ScoredMatches = {};
     const termDocs = Object.entries(matches);
     const totalDocs = this.invertedIndex.totalDocs;
     const totalTermDocs = termDocs.length;
 
     for (const [uid, docEntry] of termDocs) {
-      const totalTerms = parseTermCount(docEntry);
+      const totalTerms = this.invertedIndex.getDocumentTermCount(uid);
       const frequency = getPostingsLength(docEntry);
       result[uid] = tfidf(
         { frequency, totalTerms },
@@ -135,7 +131,7 @@ export class InvertedSearch {
     candidates,
     terms,
   }: {
-    candidates: DocEntry;
+    candidates: TermTable;
     terms: string[];
   }) {
     const matches: { [key: string]: number } = {}; // doc uid to term count (it's a phrase if count equals the total terms)

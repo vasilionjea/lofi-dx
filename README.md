@@ -89,7 +89,7 @@ From the tokens above, it results in the following query parts:
 ```
 
 ## Inverted Index
-An [inverted index](https://en.wikipedia.org/wiki/Inverted_index) is an index of words and which documents those words occur in. Instead of linearly scanning every document looking for words, the inverted index reverses the logic by using the words to find the documents. Positions of every term occurrence are included in the index to support phrase queries. 
+An [inverted index](https://en.wikipedia.org/wiki/Inverted_index) is an index of words and which documents those words occur in. Instead of linearly scanning every document looking for words, the inverted index reverses the logic by using the words to find the documents. Positions of every term occurrence are included in the index to support phrase queries and are [delta encoded](https://en.wikipedia.org/wiki/Delta_encoding) and [base36 encoded](https://en.wikipedia.org/wiki/Base36) before entering the index. 
 
 The index's internal word map is represented space efficiently as follows:
 ```js
@@ -97,38 +97,25 @@ The index's internal word map is represented space efficiently as follows:
   // word
   "plateau": { 
     // document UID: metadata
-    "2":"3h/ae",
-    "3":"5e/5o,nb,2a,2c,n,31",
-    "7":"3v/j5",
-    "15":"8g/39,1jn"
+    "2":"ae",
+    "3":"5o,nb,2a,2c,n,31",
+    "7":"j5",
+    "15":"39,1jn"
   },
 
   "other": {...}
 }
 ```
 
-All term positions in a document are [delta encoded](https://en.wikipedia.org/wiki/Delta_encoding) and [base36 encoded](https://en.wikipedia.org/wiki/Base36) before entering the index. The diagram below shows the individual encoded parts for a document `3` that has been indexed under the word `plateau`: 
-
-<img src="https://raw.githubusercontent.com/vasilionjea/search-query/6340cf51e4a4c66ed80e2dd0a000dfe2008bf319/example/encoded-meta-explained.svg">
-
-At runtime, when documents are indexed or during a phrase match, a document's metadata entry is **momentarily** decoded the following expanded representation:
-```js
-{ // metadata for document with UID: 3
-  "postings":[204,1043,1125,1209,1232,1341],
-  "totalTerms": 194
-}
-```
-Once documents have entered the index or a phrase match completes, the expanded structure above gets garbage-collected by the JS engine.
-
 **Note:** This has been tested only in English and likely won't work with other alphabets.
 
 ## Memory
-Given that this is a client-side solution to full-text search, the documents and the index are loaded in memory. The index stores the word corpus, the document UIDs that contain those words, the total amount of words, and each word position in order to support phrase queries. Although the numerical word positions are stored space efficiently using delta and base36 encoding, keep in mind that a client side full-text search implementation is likely not practical for large enough datasets. 
+Given that this is a client-side solution to full-text search, the documents and the index are loaded in memory. Although the index is represented space efficiently, keep in mind that a client side full-text search implementation is likely not practical for large enough datasets. 
 
-The point of client side full-text search is to improve the user experience in offline mode, or when Internet connection is flakey, or when such client side feature is more performant than querying a server. However, if your app runs into memory issues and crashes the Browser tab because you're trying to load megabytes worth of documents, then that will actually derail the user experience. Have a cap on the total bytes you're storing client-side and loading into memory.
+The point of client side full-text search is to improve the user experience in offline mode, or when Internet connection is flakey, or when such client side feature is more performant than querying a server. However, if your app runs into memory issues and crashes the Browser tab because you're trying to load many megabytes worth of documents, then that will actually derail the user experience. Have a cap on the total bytes you're storing client-side and loading into memory.
 
 ## Persistence
-No assumption is made about where the documents or the index are stored for persistence. Perhaps `localStorage` (_limited to about 5MB/synchronous API_) works for your usecase or you may need to reach for `IndexedDB`. 
+There are methods for writing the index to `localStorage` and later loading it but no other assumption is for persistence. Perhaps `localStorage` (_limited to about 5MB/synchronous API_) works for your usecase or you may need to reach for `IndexedDB`.
 
 ## Contributing
 I'll work with you to merge in bug or feature pull requests.  

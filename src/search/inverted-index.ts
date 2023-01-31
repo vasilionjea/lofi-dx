@@ -21,7 +21,7 @@ export type IndexTable = { [key: string]: TermTable };
 
 export type DocTermCounts = { [key: string]: number };
 
-export type SerializedDocuments = [
+export type SerializableDocData = [
   number, // total docs
   DocTable, // doc table
   DocTermCounts // doc term counts
@@ -29,7 +29,7 @@ export type SerializedDocuments = [
 
 export interface Serializable {
   fields: string[];
-  documents: SerializedDocuments;
+  documents: SerializableDocData;
   index: IndexTable;
 }
 

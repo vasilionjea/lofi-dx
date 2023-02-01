@@ -66,29 +66,7 @@ console.log(results);
 ]
 ```
 
-## Query 
-### Tokenizer 
-For the query `+jaguar speed "south america" -car`, it results in tokens:
-```js
-[
-  { "type": "PresenceTerm", "text": "+jaguar" },
-  { "type": "Term", "text": "speed" },
-  { "type": "ExactTerm", "text": "\"south america\"" },
-  { "type": "PresenceTerm", "text": "-car" }
-]
-```
-### Parser
-From the tokens above, it results in the following query parts:
-```js
-[
-  { "term": "jaguar", "isPhrase": false, "type": 2 }, // Required
-  { "term": "speed", "isPhrase": false, "type": 0 }, // Simple
-  { "term": "south america", "isPhrase": true, "type": 0 }, // Simple
-  { "term": "car", "isPhrase": false, "type": 1 } // Negated
-]
-```
-
-## Inverted Index
+## Index
 An [inverted index](https://en.wikipedia.org/wiki/Inverted_index) is an index of words and which documents those words occur in. Instead of linearly scanning every document looking for words, the inverted index reverses the logic by using the words to find the documents. Positions of every term occurrence are included in the index to support phrase queries and are [delta encoded](https://en.wikipedia.org/wiki/Delta_encoding) and [base36 encoded](https://en.wikipedia.org/wiki/Base36) before entering the index. 
 
 The index's internal word map is represented space efficiently as follows:

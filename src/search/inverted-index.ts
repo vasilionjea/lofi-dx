@@ -24,8 +24,8 @@ export type DocTermCounts = { [key: string]: number };
 
 export type SerializableDocData = [
   number, // total docs
-  DocTable, // doc table
-  DocTermCounts // doc term counts
+  DocTable,
+  DocTermCounts
 ];
 
 export interface Serializable {

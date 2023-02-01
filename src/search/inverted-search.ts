@@ -34,7 +34,7 @@ export class InvertedSearch {
   private matchesWithScores(matches: TermTable) {
     const result: ScoredMatches = {};
     const termDocs = Object.entries(matches);
-    const totalDocs = this.invertedIndex.totalDocs;
+    const totalDocs = this.invertedIndex.getDocumentCount();
     const totalTermDocs = termDocs.length;
 
     for (const [uid, docEntry] of termDocs) {

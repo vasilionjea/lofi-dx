@@ -43,31 +43,25 @@ const DEFAULT_STORAGE_KEY = 'lofi-dx:index';
  */
 export class InvertedIndex {
   private readonly uidKey: string;
-  private readonly documentSplitter: RegExp;
+  private readonly docSplitter: RegExp;
   private readonly storageKey: string;
 
   private fields: Set<string>;
-  private documentTable: DocTable = {};
+  private docTable: DocTable = {};
   private indexTable: IndexTable = {};
-  private documentTermCounts: DocTermCounts = {};
+  private docTermCounts: DocTermCounts = {};
 
-  private totalDocuments = 0;
-
-  get totalDocs(): number {
-    return this.totalDocuments;
-  }
+  private totalDocs = 0;
 
   constructor(opts: InvertedIndexConfig) {
     this.uidKey = opts.uidKey || DEFAULT_UID_KEY;
-    this.fields = new Set(opts.fields);
-    this.documentSplitter = opts.splitter || DEFAULT_DOCUMENT_SPLITTER;
+    this.fields = new Set(opts.fields || []);
+    this.docSplitter = opts.splitter || DEFAULT_DOCUMENT_SPLITTER;
     this.storageKey = opts.storageKey || DEFAULT_STORAGE_KEY;
   }
 
   private tokenizeText(text: string) {
-    return collapseWhitespace(text)
-      .toLocaleLowerCase()
-      .split(this.documentSplitter);
+    return collapseWhitespace(text).toLocaleLowerCase().split(this.docSplitter);
   }
 
   private tokensWithPostings(tokens: string[]) {
@@ -90,7 +84,7 @@ export class InvertedIndex {
     if (isNone(field) || isBlank(field)) return this;
     this.fields.add(field);
 
-    for (const doc of Object.values(this.documentTable)) {
+    for (const doc of Object.values(this.docTable)) {
       this.indexDocument(field, doc);
     }
 
@@ -104,16 +98,16 @@ export class InvertedIndex {
     const tokens = this.tokensWithPostings(
       this.tokenizeText(doc[field] as string)
     );
-    this.documentTermCounts[uid] += tokens.length;
+    this.docTermCounts[uid] += tokens.length;
 
     for (const token of tokens) {
       if (!this.indexTable[token.term]) this.indexTable[token.term] = {};
 
-      // Update positions, and total terms for this doc
+      // Update positions for this doc
       const meta = this.getDocumentEntry(token.term, uid) as ParsedMetadata;
       meta.postings?.push(token.posting);
 
-      // Add to index
+      // Add to term index
       this.indexTable[token.term][uid] = encodeMetadata(meta);
     }
   }
@@ -125,13 +119,13 @@ export class InvertedIndex {
       const uid = doc[this.uidKey] as string;
 
       // Count unique docs
-      if (!this.documentTable[uid]) this.totalDocuments += 1;
+      if (!this.docTable[uid]) this.totalDocs += 1;
 
-      // Add document
-      this.documentTable[uid] = doc;
-      this.documentTermCounts[uid] = 0;
+      // Add doc
+      this.docTable[uid] = doc;
+      this.docTermCounts[uid] = 0;
 
-      // Re-index search fields for added doc
+      // Index doc
       this.fields.forEach((field) => this.indexDocument(field, doc));
     }
 
@@ -139,11 +133,15 @@ export class InvertedIndex {
   }
 
   getDocument(uid: string): Doc {
-    return this.documentTable[uid];
+    return this.docTable[uid];
+  }
+
+  getDocumentCount(): number {
+    return this.totalDocs;
   }
 
   getDocumentTermCount(uid: string): number {
-    return this.documentTermCounts[uid] || 0;
+    return this.docTermCounts[uid] || 0;
   }
 
   getTermEntry(term: string): TermTable {
@@ -164,21 +162,21 @@ export class InvertedIndex {
     return {
       fields: [...this.fields],
       documents: [
-        this.totalDocuments,
-        deepClone(this.documentTable),
-        deepClone(this.documentTermCounts),
+        this.totalDocs,
+        deepClone(this.docTable),
+        deepClone(this.docTermCounts),
       ],
       index: deepClone(this.indexTable),
     };
   }
 
   private setLoaded({ fields, documents, index }: Serializable) {
-    const [totalDocuments, documentTable, documentTermCounts] = documents;
+    const [totalDocs, docTable, docTermCounts] = documents;
 
     this.fields = new Set(fields);
-    this.totalDocuments = totalDocuments;
-    this.documentTable = documentTable;
-    this.documentTermCounts = documentTermCounts;
+    this.totalDocs = totalDocs;
+    this.docTable = docTable;
+    this.docTermCounts = docTermCounts;
     this.indexTable = index;
   }
 

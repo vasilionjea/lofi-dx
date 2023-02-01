@@ -36,7 +36,7 @@ export interface Serializable {
 
 const DEFAULT_UID_KEY = 'id';
 const DEFAULT_DOCUMENT_SPLITTER = /\s+/g;
-const DEFAULT_STORAGE_KEY = 'search-query:index';
+const DEFAULT_STORAGE_KEY = 'lofi-dx:index';
 
 /**
  * InvertedIndex contains both the index table and the documents.

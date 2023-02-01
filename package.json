@@ -1,7 +1,7 @@
 {
   "type": "module",
-  "name": "search-query",
-  "version": "1.4.0",
+  "name": "lofi-dx",
+  "version": "1.0.0",
   "private": true,
   "description": "A client side query tokenizer, parser, and inverted index with typescript",
   "scripts": {

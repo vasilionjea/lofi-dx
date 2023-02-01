@@ -35,7 +35,7 @@ The purpose of this is to allow making queries like `+jaguar speed "south americ
   </tbody>
 </table>
 
-[Demo app](https://vasilionjea.github.io/search-query/)
+[Demo app](https://vasilionjea.github.io/lofi-dx/)
 
 ## Usage
 Add documents to an index:

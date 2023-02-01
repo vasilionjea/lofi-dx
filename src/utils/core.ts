@@ -98,3 +98,11 @@ export function deleteArrayItem<T>(arr: T[], item: T) {
     return arr.splice(found, 1)[0];
   }
 }
+
+/**
+ * Generates a unique UID for a document.
+ */
+let uidCounter = 0;
+export function uid() {
+  return String(uidCounter++);
+}

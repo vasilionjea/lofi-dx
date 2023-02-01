@@ -6,20 +6,17 @@
     "allowJs": true,
     "rootDir": ".",
     "composite": true,
+    "strict": true,
     "declaration": true,
-    "declarationDir": ".tmp/types",
+    "outDir": "dist",
+    "declarationDir": "dist/types",
+    "esModuleInterop": true,
     "noImplicitAny": true,
     "removeComments": true,
     "sourceMap": true
   },
   "include": [
-    "src",
-    "example"
+    "src"
   ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "public",
-    ".tmp"
-  ]
+  "exclude": []
 }

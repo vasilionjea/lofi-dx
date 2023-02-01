@@ -107,7 +107,7 @@ You must have NodeJS already installed on your machine, then run `npm install` b
 * `npm run lint` to lint your code with ESLint.
 * `npm run format` to format your code with Prettier.
 * `npm run test` to run tests in watch mode, or `npm run test:ci` to run tests once.
-* `npm run test:coverage` to display a test coverage report
+* `npm run coverage` to display a code coverage report
 
 ### Deployment
 The `example/` directory contains a very simple frontend app with Vanilla TS (_no component frameworks_). Run `npm run deploy` to deploy to _gh-pages_

@@ -172,7 +172,6 @@ export class InvertedIndex {
 
   private setLoaded({ fields, documents, index }: Serializable) {
     const [totalDocs, docTable, docTermCounts] = documents;
-
     this.fields = new Set(fields);
     this.totalDocs = totalDocs;
     this.docTable = docTable;

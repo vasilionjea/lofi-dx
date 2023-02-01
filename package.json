@@ -3,6 +3,8 @@
   "name": "lofi-dx",
   "version": "1.0.0",
   "private": true,
+  "main": "dist/src/index.js",
+  "types": "dist/types/src/index.d.ts",
   "description": "A client side query tokenizer, parser, and inverted index with typescript",
   "scripts": {
     "start": "webpack serve --env dev",
@@ -10,7 +12,7 @@
     "lint": "eslint --ignore-path .eslintignore './src/**/*.{js,ts,tsx}'",
     "test": "jest --verbose --watch",
     "test:ci": "jest --verbose --forceExit",
-    "test:coverage": "jest --coverage",
+    "coverage": "jest --coverage",
     "index-stats": "node ./scripts/index-stats.js",
     "benchmarks": "NODE_OPTIONS=\"--loader ts-node/esm\" ts-node -T ./benchmarks/index.ts",
     "preversion": "npm-run-all format lint",

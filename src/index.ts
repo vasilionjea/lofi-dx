@@ -1,4 +1,8 @@
-// Export public API
-export * from './stopwords';
-export * from './query/index';
-export * from './search/index';
+import * as stopwords from './stopwords';
+import { parseQuery } from './query/index';
+import {
+  InvertedIndex as Index,
+  InvertedSearch as Search,
+} from './search/index';
+
+export { stopwords, parseQuery, Index, Search };

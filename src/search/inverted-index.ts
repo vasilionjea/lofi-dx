@@ -224,7 +224,7 @@ export class InvertedIndex {
   }
 
   /**
-   * Clear stored index and its documents.
+   * Clears stored index and its documents.
    */
   clearStore(): Promise<void> {
     return new Promise((resolve) => {

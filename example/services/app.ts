@@ -1,4 +1,4 @@
-import { InvertedIndex, InvertedSearch } from '../../src/index';
+import * as lofi from '../../src/index';
 
 export interface AppService extends InterfaceOf<Service> { }
 
@@ -6,51 +6,51 @@ export interface AppService extends InterfaceOf<Service> { }
  * The AppService fetches documents and creates the index
  */
 class Service {
-  private readonly invertedIndex: InvertedIndex;
-  private readonly invertedSearch: InvertedSearch;
+  private readonly docIndex: lofi.Index;
+  private readonly docSearch: lofi.Search;
 
   constructor() {
-    this.invertedIndex = new InvertedIndex({
+    this.docIndex = new lofi.Index({
       uidKey: 'id',
       fields: ['body'],
       splitter: /\W+|\d+/g, // non-words or digits
     });
 
-    this.invertedSearch = new InvertedSearch(this.invertedIndex);
+    this.docSearch = new lofi.Search(this.docIndex);
   }
 
   async fetch() {
     const start = performance.now();
     const response = await fetch('./data.json');
     const { data } = await response.json();
-    this.invertedIndex.addDocuments(data);
+    this.docIndex.addDocuments(data);
     const end = performance.now();
     console.log(`Loaded (init): ${end - start}ms`);
   }
 
   async loadStore() {
     const start = performance.now();
-    await this.invertedIndex.loadStore();
+    await this.docIndex.loadStore();
     const end = performance.now();
     console.log(`Loaded (cache): ${end - start}ms`);
   }
 
   async loadDocuments() {
-    if (this.invertedIndex.isStored) {
+    if (this.docIndex.isStored) {
       await this.loadStore();
     } else {
       await this.fetch();
-      this.invertedIndex.saveStore();
+      this.docIndex.saveStore();
     }
 
-    console.log(this.invertedIndex.toJSON());
+    console.log(this.docIndex.toJSON());
   }
 
   search(queryText = '') {
     if (queryText.length <= 1) return;
 
     const start = performance.now();
-    const results = this.invertedSearch.search(queryText);
+    const results = this.docSearch.search(queryText);
     const end = performance.now();
 
     console.log(`Search took ${end - start}ms`);

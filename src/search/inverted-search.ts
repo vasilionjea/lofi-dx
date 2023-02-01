@@ -3,7 +3,7 @@ import {
   hasOwn,
   objectIntersection,
   objectDifference,
-  bsDeleteItem,
+  deleteArrayItem,
 } from '../utils/core';
 import {
   QueryPart,
@@ -156,7 +156,7 @@ export class InvertedSearch {
 
         const currentPos = stack[stack.length - 1] as number;
         const nextExpected = currentPos + terms[t].length + 1;
-        const nextPos = bsDeleteItem(postings[terms[t + 1]], nextExpected);
+        const nextPos = deleteArrayItem(postings[terms[t + 1]], nextExpected);
 
         if (!isNone(nextPos)) {
           stack.push(nextPos);

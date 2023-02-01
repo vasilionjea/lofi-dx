@@ -66,9 +66,9 @@ export function deepClone<T = unknown>(obj: T): T {
 }
 
 /**
- * Deletes and returns array item using binary search (mutates array).
+ * Binary search for sorted list of numbers.
  */
-export function bsDeleteItem<T = unknown>(arr: T[], item: T) {
+export function binarySearch<T = unknown>(arr: T[], item: T) {
   let start = 0;
   let end = arr.length - 1;
   let mid = Math.floor(end / 2);
@@ -84,6 +84,17 @@ export function bsDeleteItem<T = unknown>(arr: T[], item: T) {
   }
 
   if (item === arr[mid]) {
-    return arr.splice(mid, 1)[0];
+    return mid;
+  }
+}
+
+/**
+ * Deletes and returns array item (mutates array).
+ */
+export function deleteArrayItem<T>(arr: T[], item: T) {
+  const found = binarySearch(arr, item);
+
+  if (typeof found === 'number') {
+    return arr.splice(found, 1)[0];
   }
 }

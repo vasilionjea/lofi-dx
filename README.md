@@ -66,6 +66,8 @@ console.log(results);
 ]
 ```
 
+See [example](https://github.com/vasilionjea/lofi-dx/tree/main/example) directory for UI integration.
+
 ## Inverted Index
 An [inverted index](https://en.wikipedia.org/wiki/Inverted_index) is an index of words and which documents those words occur in. Instead of linearly scanning every document looking for words, the inverted index reverses the logic by using the words to find the documents. Positions of every term occurrence are included in the index to support phrase queries and are [delta encoded](https://en.wikipedia.org/wiki/Delta_encoding) and [base36 encoded](https://en.wikipedia.org/wiki/Base36) before entering the index. 
 

@@ -47,7 +47,7 @@ export class InvertedIndex {
   private readonly storageKey: string;
 
   private fields: Set<string>;
-  private documentsTable: DocTable = {};
+  private documentTable: DocTable = {};
   private indexTable: IndexTable = {};
   private documentTermCounts: DocTermCounts = {};
 
@@ -90,7 +90,7 @@ export class InvertedIndex {
     if (isNone(field) || isBlank(field)) return this;
     this.fields.add(field);
 
-    for (const doc of Object.values(this.documentsTable)) {
+    for (const doc of Object.values(this.documentTable)) {
       this.indexDocument(field, doc);
     }
 
@@ -125,10 +125,10 @@ export class InvertedIndex {
       const uid = doc[this.uidKey] as string;
 
       // Count unique docs
-      if (!this.documentsTable[uid]) this.totalDocuments += 1;
+      if (!this.documentTable[uid]) this.totalDocuments += 1;
 
       // Add document
-      this.documentsTable[uid] = doc;
+      this.documentTable[uid] = doc;
       this.documentTermCounts[uid] = 0;
 
       // Re-index search fields for added doc
@@ -139,7 +139,7 @@ export class InvertedIndex {
   }
 
   getDocument(uid: string): Doc {
-    return this.documentsTable[uid];
+    return this.documentTable[uid];
   }
 
   getDocumentTermCount(uid: string): number {
@@ -165,7 +165,7 @@ export class InvertedIndex {
       fields: [...this.fields],
       documents: [
         this.totalDocuments,
-        deepClone(this.documentsTable),
+        deepClone(this.documentTable),
         deepClone(this.documentTermCounts),
       ],
       index: deepClone(this.indexTable),
@@ -173,11 +173,11 @@ export class InvertedIndex {
   }
 
   private setLoaded({ fields, documents, index }: Serializable) {
-    const [totalDocuments, documentsTable, documentTermCounts] = documents;
+    const [totalDocuments, documentTable, documentTermCounts] = documents;
 
     this.fields = new Set(fields);
     this.totalDocuments = totalDocuments;
-    this.documentsTable = documentsTable;
+    this.documentTable = documentTable;
     this.documentTermCounts = documentTermCounts;
     this.indexTable = index;
   }

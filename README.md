@@ -54,7 +54,7 @@ index.addDocuments([
 ```
 Search the index:
 ```js
-const people = new lofi.Search(peopleIndex);
+const people = new lofi.Search(index);
 const results = people.search(`"software engineer" ux designer -"engineer 3"`);
 console.log(results);
 ```

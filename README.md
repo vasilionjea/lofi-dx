@@ -40,8 +40,8 @@ The purpose of this is to allow making queries like `+jaguar speed "south americ
 ## Usage
 Add documents to an index:
 ```js
-const peopleIndex = new InvertedIndex({ uidKey: 'id', fields: ['title'] });
-peopleIndex.addDocuments([
+const index = new lofi.Index({ uidKey: 'id', fields: ['title'] });
+index.addDocuments([
   { id: 3, name: 'Mike', title: 'Chief Forward Impact Engineer 3 Foo' },
   { id: 7, name: 'Joe Doe', title: 'Chief Interactions Liason' },
   { id: 11, name: 'Alice Smith', title: 'UX Designer Bar Baz' },
@@ -54,8 +54,8 @@ peopleIndex.addDocuments([
 ```
 Search the index:
 ```js
-const peopleSearch = new InvertedSearch(peopleIndex);
-const results = peopleSearch.search(`"software engineer" ux designer -"engineer 3"`);
+const people = new lofi.Search(peopleIndex);
+const results = people.search(`"software engineer" ux designer -"engineer 3"`);
 console.log(results);
 ```
 ```js 

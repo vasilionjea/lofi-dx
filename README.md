@@ -1,4 +1,4 @@
-# search-query
+# lofi-dx
 [![Build Status](https://github.com/vasilionjea/webpack-frontend-template/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/vasilionjea/webpack-frontend-template/actions/workflows/unit-tests.yml) 
 
 A searchable inverted index for client side web apps written in Typescript. Has support for required, negated, and phrase queries. A set of default stopwords that can be extended are filtered out from queries and the index. Search results are ranked using simple [TF-IDF](https://en.wikipedia.org/wiki/Tf%E2%80%93idf).

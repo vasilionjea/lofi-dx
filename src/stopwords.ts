@@ -197,14 +197,14 @@ export function getStopwords(): string[] {
 /**
  * True if a word is in the internal map.
  */
-export function hasStopword(word: string): boolean {
+export function hasStopword(word: string) {
   return Boolean(STOPWORDS[word]);
 }
 
 /**
  * Adds additional stopwords to the internal map.
  */
-export function addStopwords(words: string[] = []): void {
+export function addStopwords(words: string[] = []) {
   if (!Array.isArray(words)) {
     throw new TypeError(
       `Expected array of stopwords but received ${typeOf(words)}`
@@ -223,15 +223,15 @@ export function addStopwords(words: string[] = []): void {
 /**
  * True if a word is a stopword, or if it's made up of only non-word chars.
  */
-export function isStopword(word: string): boolean {
+export function isStopword(word: string) {
   return hasStopword(word) || !word.match(/(\w+)/g);
 }
 
 /**
  * Removes all stopwords from the provided text.
  */
-export function stripStopwords(text: string): string {
-  const result = [];
+export function stripStopwords(text: string) {
+  const result: string[] = [];
 
   for (const word of text.split(/\s+/g)) {
     if (isStopword(word)) continue;

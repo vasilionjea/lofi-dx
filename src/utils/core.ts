@@ -57,7 +57,7 @@ export function objectDifference(
 /**
  * Native deepclone or fallback to JSON stringify+parse.
  */
-export function deepClone<T = unknown>(obj: T): T {
+export function deepClone<T>(obj: T): T {
   if (typeof structuredClone === 'function') {
     return structuredClone(obj);
   } else {
@@ -68,7 +68,7 @@ export function deepClone<T = unknown>(obj: T): T {
 /**
  * Binary search for sorted list of numbers.
  */
-export function binarySearch<T = unknown>(arr: T[], item: T) {
+export function binarySearch<T>(arr: T[], item: T) {
   let start = 0;
   let end = arr.length - 1;
   let mid = Math.floor(end / 2);

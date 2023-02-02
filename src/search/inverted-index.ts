@@ -184,7 +184,7 @@ export class InvertedIndex {
   }
 
   /**
-   * Saves a snapshot of the index and its document to local storage.
+   * Saves a snapshot of the index and its documents to locally.
    */
   saveStore(): Promise<boolean> {
     return new Promise((resolve, reject) => {

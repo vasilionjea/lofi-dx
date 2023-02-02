@@ -5,14 +5,14 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   roots: ['test/'],
+  setupFiles: ['./test/__setups__/index.ts'],
   moduleDirectories: [
     'node_modules',
     'src',
   ],
-  modulePathIgnorePatterns: [
-    '<rootDir>/dist/',
-    '<rootDir>/public/',
-  ],
+  modulePathIgnorePatterns: ['<rootDir>/__setups__'],
+  coveragePathIgnorePatterns: ['__setups__'],
+  clearMocks: true,
   resetMocks: true,
 
   // https://jestjs.io/docs/configuration#globals-object

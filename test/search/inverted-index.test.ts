@@ -10,6 +10,8 @@ const stopwords = {
 };
 
 beforeEach(() => {
+  localStorage.clear();
+
   docs = [
     {
       id: 3,
@@ -131,5 +133,95 @@ describe('InvertedIndex', () => {
 
     expect(index2['engineer']).toBeDefined();
     expect(index2['designer']).toBeDefined();
+  });
+
+  test('it should have working getters', async () => {
+    const storageKey = 'test-key';
+    const instance = new InvertedIndex({
+      uidKey: 'id',
+      fields: ['title'],
+      storageKey,
+    });
+    instance.addDocuments(docs);
+
+    expect(instance.getDocument('3')).toBeDefined();
+    expect(instance.getDocument('123456789')).toBeUndefined();
+
+    expect(instance.getDocumentCount()).toBe(docs.length);
+
+    expect(instance.getDocumentTermCount('3') > 0).toBe(true);
+    expect(instance.getDocumentTermCount('123456789') > 0).toBe(false);
+
+    expect(Object.keys(instance.getTermEntry('engineer')).length > 0).toBe(
+      true
+    );
+    expect(Object.keys(instance.getTermEntry('notthere')).length > 0).toBe(
+      false
+    );
+
+    let docEntry = instance.getDocumentEntry('engineer', '3', true);
+    expect(typeof docEntry).toBe('object');
+    expect(Object.keys(docEntry).length > 0).toBe(true);
+
+    docEntry = instance.getDocumentEntry('engineer', '3', false);
+    expect(typeof docEntry).toBe('string');
+
+    docEntry = instance.getDocumentEntry('engineer', '1000000', false);
+    expect(docEntry).toBeUndefined();
+  });
+
+  test('it should save to localStorage', async () => {
+    const storageKey = 'test-key';
+    const instance = new InvertedIndex({
+      uidKey: 'id',
+      fields: ['title'],
+      storageKey,
+    });
+    instance.addDocuments(docs);
+
+    expect(instance.isStored).toBe(false);
+    expect(localStorage.getItem(storageKey)).toBeNull();
+
+    await instance.saveStore();
+
+    expect(instance.isStored).toBe(true);
+    expect(localStorage.getItem(storageKey)).not.toBeNull();
+  });
+
+  test('it should load from localStorage', async () => {
+    const storageKey = 'test-key';
+    const instance = new InvertedIndex({
+      uidKey: 'id',
+      fields: ['title'],
+      storageKey,
+    });
+    instance.addDocuments(docs);
+
+    expect(await instance.loadStore()).toBe(false);
+
+    await instance.saveStore();
+
+    expect(await instance.loadStore()).toBe(true);
+    expect(instance.getDocumentCount()).toBe(docs.length);
+  });
+
+  test('it should clear from localStorage', async () => {
+    const storageKey = 'test-key';
+    const instance = new InvertedIndex({
+      uidKey: 'id',
+      fields: ['title'],
+      storageKey,
+    });
+    instance.addDocuments(docs);
+
+    expect(instance.isStored).toBe(false);
+    await instance.saveStore();
+
+    expect(instance.isStored).toBe(true);
+    expect(localStorage.getItem(storageKey)).not.toBeNull();
+
+    await instance.clearStore();
+    expect(instance.isStored).toBe(false);
+    expect(localStorage.getItem(storageKey)).toBeNull();
   });
 });

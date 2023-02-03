@@ -94,7 +94,7 @@ export function binarySearch<T>(arr: T[], item: T): number {
 /**
  * Deletes and returns array item (mutates array).
  */
-export function deleteArrayItem<T>(arr: T[], item: T) {
+export function deleteArrayItem<T>(arr: T[], item: T): T | undefined {
   const foundIndex = binarySearch(arr, item);
 
   if (foundIndex !== -1) {

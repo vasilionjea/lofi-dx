@@ -1,28 +1,28 @@
 /**
  * True for empty or whitespace strings.
  */
-export function isBlank(text: string) {
+export function isBlank(text: string): boolean {
   return !text || !/\S+/g.test(text);
 }
 
 /**
  * Normalizes multiple whitespace chars to a single one.
  */
-export function collapseWhitespace(text = '') {
+export function collapseWhitespace(text = ''): string {
   return text.replace(/\s+/g, ' ').trim();
 }
 
 /**
  * Removes all double quotes found in text.
  */
-export function unquote(text = '') {
+export function unquote(text = ''): string {
   return text.replace(/["]/g, '');
 }
 
 /**
  * Removes `+` or `-` prefixes from text.
  */
-export function stripModifiers(text = '') {
+export function stripModifiers(text = ''): string {
   return text.replace(/^([-+]+)/, '');
 }
 
@@ -33,7 +33,7 @@ export function stripModifiers(text = '') {
  */
 const sSuffix = /s$/i;
 const ssIesSuffix = /(ss|i?es)$/i;
-export function stemWord(text: string) {
+export function stemWord(text: string): string {
   const result: string[] = [];
 
   for (const word of text.split(/\s+/g)) {

@@ -7,7 +7,7 @@ import {
 } from '../utils/encoding';
 import { isStopword } from '../stopwords';
 
-export interface InvertedIndexConfig {
+export interface IndexConfig {
   uidKey: string;
   fields?: string[];
   splitter?: RegExp;
@@ -53,7 +53,7 @@ export class InvertedIndex {
 
   private totalDocs = 0;
 
-  constructor(opts: InvertedIndexConfig) {
+  constructor(opts: IndexConfig) {
     this.uidKey = opts.uidKey || DEFAULT_UID_KEY;
     this.fields = new Set(opts.fields || []);
     this.docSplitter = opts.splitter || DEFAULT_DOCUMENT_SPLITTER;

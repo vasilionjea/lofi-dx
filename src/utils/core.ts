@@ -66,9 +66,10 @@ export function deepClone<T>(obj: T): T {
 }
 
 /**
- * Binary search for sorted list of numbers.
+ * Binary search for sorted list of numbers. Returns the index of an item if
+ * it is found, or it will return `-1` if nothing was found.
  */
-export function binarySearch<T>(arr: T[], item: T) {
+export function binarySearch<T>(arr: T[], item: T): number {
   let start = 0;
   let end = arr.length - 1;
   let mid = Math.floor(end / 2);
@@ -86,23 +87,17 @@ export function binarySearch<T>(arr: T[], item: T) {
   if (item === arr[mid]) {
     return mid;
   }
+
+  return -1;
 }
 
 /**
  * Deletes and returns array item (mutates array).
  */
 export function deleteArrayItem<T>(arr: T[], item: T) {
-  const found = binarySearch(arr, item);
+  const foundIndex = binarySearch(arr, item);
 
-  if (typeof found === 'number') {
-    return arr.splice(found, 1)[0];
+  if (foundIndex !== -1) {
+    return arr.splice(foundIndex, 1)[0];
   }
-}
-
-/**
- * Generates a unique UID for a document.
- */
-let uidCounter = 0;
-export function uid() {
-  return String(uidCounter++);
 }

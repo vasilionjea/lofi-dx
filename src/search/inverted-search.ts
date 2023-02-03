@@ -137,8 +137,11 @@ export class InvertedSearch {
     const matches: { [key: string]: number } = {}; // doc uid to term count (it's a phrase if count equals the total terms)
     const totalTerms = terms.length; // total terms being checked for a phrase
     const postings: { [key: string]: number[] } = {}; // term to positions of term
+    const candidateUIDs = Object.keys(candidates);
 
-    for (const uid of Object.keys(candidates)) {
+    if (!candidateUIDs.length) return matches;
+
+    for (const uid of candidateUIDs) {
       for (const term of terms) {
         const meta = this.invertedIndex.getDocumentEntry(
           term,
@@ -174,7 +177,7 @@ export class InvertedSearch {
       if (matches[uid] !== totalTerms) delete matches[uid];
     }
 
-    // Return the actual doc entries in the index
+    // Return matched candidates
     return objectIntersection(candidates, matches);
   }
 

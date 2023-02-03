@@ -1,10 +1,12 @@
 import {
+  typeOf,
   isNone,
   hasOwn,
-  typeOf,
   objectIntersection,
   objectDifference,
+  binarySearch,
   deleteArrayItem,
+  deepClone,
 } from '../../src/utils/core';
 
 describe('Core utils', () => {
@@ -71,11 +73,37 @@ describe('Core utils', () => {
     expect(diff).toMatchObject({ foo: 'foo' });
   });
 
+  test('[binarySearch] it should find array item using binary search', () => {
+    const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    const size = arr.length;
+
+    const foundIndex = binarySearch(arr, 7);
+
+    expect(foundIndex).toBe(6);
+    expect(arr.length).toBe(size);
+
+    expect(binarySearch(arr, 100)).toBe(-1);
+  });
+
   test('[deleteArrayItem] it should delete and return array item mutating the array', () => {
     const arr = [1, 2, 3, 4, 5];
     const item = deleteArrayItem(arr, 4);
     expect(item).toBe(4);
     expect(arr.length).toBe(4);
     expect(arr.indexOf(4)).toBe(-1);
+  });
+
+  test('[deepClone] it should deep clone object', () => {
+    const originial = {
+      bool: true,
+      num: 10,
+      arr: [1, 2, 3],
+      obj: { title: 'foo bar' },
+    };
+    const clone = deepClone(originial);
+
+    expect(originial === clone).toBe(false);
+    expect(originial.arr === clone.arr).toBe(false);
+    expect(originial.obj === clone.obj).toBe(false);
   });
 });

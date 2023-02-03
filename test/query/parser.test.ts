@@ -4,6 +4,7 @@ import {
   QueryPartType,
   ParsedQuery,
   parseQuery,
+  groupQueryParts,
 } from '../../src/query/index';
 
 describe('QueryParser', () => {
@@ -11,6 +12,7 @@ describe('QueryParser', () => {
     const query: ParsedQuery = parseQuery(
       `+frontend engineer -backend  "ux  engineer "  -" full stack"`
     );
+    expect(query instanceof ParsedQuery).toBe(true);
     expect(query.parts.length).toBe(5);
 
     expect(query.parts[0].term).toBe('frontend');
@@ -32,6 +34,10 @@ describe('QueryParser', () => {
     expect(query.parts[4].term).toBe('full stack');
     expect(query.parts[4].isPhrase).toBe(true);
     expect(query.parts[4].type).toBe(QueryPartType.Negated);
+
+    const query2: ParsedQuery = parseQuery();
+    expect(query2 instanceof ParsedQuery).toBe(true);
+    expect(query2.parts.length).toBe(0);
   });
 
   test('it should parse tokens into a ParsedQuery object', () => {
@@ -76,5 +82,20 @@ describe('QueryParser', () => {
     expect(query.parts[6].term).toBe('mean stack');
     expect(query.parts[6].isPhrase).toBe(true);
     expect(query.parts[6].type).toBe(QueryPartType.Required);
+  });
+
+  test('it should group query parts by type', () => {
+    const parts = [
+      { term: 'foo', type: QueryPartType.Negated, isPhrase: false },
+      { term: 'bar', type: QueryPartType.Required, isPhrase: false },
+      { term: 'cool beer', type: QueryPartType.Required, isPhrase: true },
+      { term: 'biz baz', type: QueryPartType.Simple, isPhrase: true },
+    ];
+
+    const groups = groupQueryParts(parts);
+
+    expect(groups.negated.length).toBe(1);
+    expect(groups.required.length).toBe(2);
+    expect(groups.simple.length).toBe(1);
   });
 });

@@ -1,30 +1,34 @@
-import { QueryTokenType, QueryTokenizer } from '../../src/query/tokenizer';
+import {
+  QueryTokenType,
+  QueryTokenizer,
+  stripQueryInvalidChars,
+} from '../../src/query/tokenizer';
 
 describe('QueryTokenizer', () => {
-  test('it should strip illegal character from query', () => {
+  test('it should strip illegal character from query text', () => {
     const invalid = '^*()_}][{>\\<|/`~}';
-    const tokenizer = new QueryTokenizer(
-      `lorem${invalid} ipsum${invalid} dolor${invalid}`
-    );
 
-    expect(tokenizer.queryText).toEqual('lorem ipsum dolor');
+    expect(
+      stripQueryInvalidChars(`lorem${invalid} ipsum${invalid} dolor${invalid}`)
+    ).toEqual('lorem ipsum dolor');
   });
 
-  test('it should not strip legal character from query', () => {
-    const tokenizer = new QueryTokenizer(`-negated +Term "eXact term"`);
-    expect(tokenizer.queryText).toEqual('-negated +Term "eXact term"');
+  test('it should not strip legal character from query text', () => {
+    expect(stripQueryInvalidChars(`-negated +Term "eXact term"`)).toEqual(
+      '-negated +Term "eXact term"'
+    );
   });
 
   test('it should not create tokens for empty queries', () => {
-    const tokens1 = new QueryTokenizer(``).tokenize();
-    const tokens2 = new QueryTokenizer(`   `).tokenize();
+    const tokens1 = new QueryTokenizer().tokenize('');
+    const tokens2 = new QueryTokenizer().tokenize(`   `);
 
     expect(tokens1.length).toBe(0);
     expect(tokens2.length).toBe(0);
   });
 
   test('it should create tokens for simple terms', () => {
-    const tokens = new QueryTokenizer(` Hello  world! `).tokenize();
+    const tokens = new QueryTokenizer().tokenize(` Hello  world! `);
     expect(tokens.length).toBe(2);
 
     expect(tokens[0].type).toEqual(QueryTokenType.Term);
@@ -35,7 +39,7 @@ describe('QueryTokenizer', () => {
   });
 
   test('it should create tokens for exact terms', () => {
-    const tokens = new QueryTokenizer(` "sea bass"  salmon `).tokenize();
+    const tokens = new QueryTokenizer().tokenize(` "sea bass"  salmon `);
     expect(tokens.length).toBe(2);
 
     expect(tokens[0].type).toEqual(QueryTokenType.ExactTerm);
@@ -46,7 +50,7 @@ describe('QueryTokenizer', () => {
   });
 
   test('it should create tokens for presence terms', () => {
-    const tokens = new QueryTokenizer(` -car +jaguar speed`).tokenize();
+    const tokens = new QueryTokenizer().tokenize(` -car +jaguar speed`);
     expect(tokens.length).toBe(3);
 
     expect(tokens[0].type).toEqual(QueryTokenType.PresenceTerm);
@@ -60,9 +64,9 @@ describe('QueryTokenizer', () => {
   });
 
   test('it should create tokens when combining terms', () => {
-    const tokens = new QueryTokenizer(
+    const tokens = new QueryTokenizer().tokenize(
       ` -"web design"  ux  +"user experience"  "2022" `
-    ).tokenize();
+    );
     expect(tokens.length).toBe(4);
 
     expect(tokens[0].type).toEqual(QueryTokenType.PresenceTerm);
@@ -79,7 +83,7 @@ describe('QueryTokenizer', () => {
   });
 
   test('it should not create tokens for stopwords', () => {
-    const tokens = new QueryTokenizer(`it is @#$% the me was what`).tokenize();
+    const tokens = new QueryTokenizer().tokenize(`it is @#$% the me was what`);
     expect(tokens.length).toBe(0);
   });
 });

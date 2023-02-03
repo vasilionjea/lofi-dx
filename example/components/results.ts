@@ -45,6 +45,7 @@ export default class SearchResults extends CoreComponent {
     if (isExpanded) {
       article.classList.remove(CLASS_EXPANDED);
       trigger.textContent = TEXT_MORE;
+      article.firstElementChild?.scrollIntoView();
     } else {
       article.classList.add(CLASS_EXPANDED);
       trigger.textContent = TEXT_LESS;

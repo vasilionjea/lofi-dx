@@ -7,13 +7,16 @@ export interface PartGroups {
   simple: QueryPart[];
 }
 
+const queryTokenizer = new QueryTokenizer();
+const queryParser = new QueryParser();
+
 /**
  * Tokenizes a raw query and returns a ParsedQuery instance.
  */
 export function parseQuery(rawText = ''): ParsedQuery {
   if (!rawText) return new ParsedQuery();
-  const tokens: QueryToken[] = new QueryTokenizer(rawText).tokenize();
-  return new QueryParser(tokens).parse();
+  const tokens: QueryToken[] = queryTokenizer.tokenize(rawText);
+  return queryParser.parse(tokens);
 }
 
 /**

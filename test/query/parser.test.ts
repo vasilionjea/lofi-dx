@@ -50,8 +50,8 @@ describe('QueryParser', () => {
       { type: 'ExactTerm', text: '"the backend  engineer "' },
       { type: 'PresenceTerm', text: '+"the mean stack is"' },
     ];
-    const parser = new QueryParser(tokens as QueryToken[]);
-    const query: ParsedQuery = parser.parse();
+    const parser = new QueryParser();
+    const query: ParsedQuery = parser.parse(tokens as QueryToken[]);
 
     expect(query.parts.length).toBe(7);
 

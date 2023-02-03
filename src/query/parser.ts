@@ -41,8 +41,6 @@ export class ParsedQuery {
  * instance, which can be used to search the index.
  */
 export class QueryParser {
-  constructor(public readonly tokens: QueryToken[]) {}
-
   /**
    * Parses a presence token into a Required or Negated query part.
    */
@@ -104,10 +102,12 @@ export class QueryParser {
   /**
    * Parses each query token into query parts and returns a ParsedQuery.
    */
-  parse() {
+  parse(tokens: QueryToken[]): ParsedQuery {
     const query = new ParsedQuery();
 
-    for (const token of this.tokens) {
+    if (!tokens || !tokens.length) return query;
+
+    for (const token of tokens) {
       let part: QueryPart;
 
       switch (token.type) {

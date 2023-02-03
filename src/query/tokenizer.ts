@@ -26,6 +26,10 @@ const tokenizerRegex = new RegExp(
   'g'
 );
 
+const invalidCharsRegex = /(?:[\^*()_}\]\\[{>\\<|\\/`~}]+)/gi;
+export const stripQueryInvalidChars = (rawText: string): string =>
+  rawText.replace(invalidCharsRegex, '');
+
 /**
  * A query token has a type and text.
  */
@@ -37,14 +41,9 @@ export class QueryToken {
  * Tokenizes a raw query text into the supported tokens.
  */
 export class QueryTokenizer {
-  readonly queryText: string;
-  private queryInvalidChars = /(?:[\^*()_}\]\\[{>\\<|\\/`~}]+)/gi;
-
-  constructor(rawQuery: string) {
-    this.queryText = rawQuery.replace(this.queryInvalidChars, '');
-  }
-
-  private getTokenType(matchGroup: { [key: string]: string } = {}) {
+  private getTokenType(
+    matchGroup: { [key: string]: string } = {}
+  ): QueryTokenType {
     let type = QueryTokenType.Invalid;
 
     if (matchGroup.PresenceTerm) {
@@ -58,10 +57,11 @@ export class QueryTokenizer {
     return type;
   }
 
-  tokenize() {
+  tokenize(rawQuery: string): QueryToken[] {
+    const queryText = stripQueryInvalidChars(rawQuery);
     const tokens: QueryToken[] = [];
 
-    for (const match of this.queryText.matchAll(tokenizerRegex)) {
+    for (const match of queryText.matchAll(tokenizerRegex)) {
       if (match && match.groups) {
         const type = this.getTokenType(match.groups);
         const text = (match[0] || '').trim();

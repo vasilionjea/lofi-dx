@@ -95,7 +95,30 @@ Given that this is a client-side solution to full-text search, the documents and
 The point of client side full-text search is to improve the user experience in offline mode, or when Internet connection is flakey, or when such client side feature is more performant than querying a server. However, if your app runs into memory issues and crashes the Browser tab because you're trying to load many megabytes worth of documents, then that will actually derail the user experience. Have a cap on the total bytes you're storing client-side and loading into memory.
 
 ## Persistence
-There are methods for writing the index to `localStorage` and later loading it but no other assumption is made for persistence. Perhaps `localStorage` (_limited to about 5MB/synchronous API_) works for your usecase or you may need to reach for `IndexedDB`.
+There are methods for writing the index to `localStorage` and later loading it but no other assumption is made for persistence. Perhaps `localStorage` (_limited to about 5MB_) works for your usecase or you may need to reach for `IndexedDB`.
+
+```js
+async load() {
+  // load from storage
+  if (index.isStored) {
+    await index.loadStore();
+    return;
+  }
+  
+  // fetch docs
+  const response = await fetch('./data.json');
+  const { data } = await response.json();
+
+  // add docs to index
+  index.addDocuments(data);
+
+  // save to storage
+  index.saveStore();
+}
+
+// later... clear index from storage
+await index.clearStore();
+```
 
 ## Contributing
 I'll work with you to merge in bug or feature pull requests.  

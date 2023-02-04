@@ -219,7 +219,7 @@ export class InvertedIndex {
         this.setLoaded(item.value || item);
 
         // Invalidate if it's non-expirable, or expired
-        if (!item.expiry || Date.now() > item.expiry) {
+        if (isNone(item.expiry) || Date.now() > item.expiry) {
           localStorage.removeItem(this.storageKey);
         }
 

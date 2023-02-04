@@ -1,4 +1,4 @@
-import { isNone, deepClone } from '../utils/core';
+import { isNone, deepClone, hasOwn } from '../utils/core';
 import { collapseWhitespace, isBlank, stemWord } from '../utils/string';
 import {
   encodeMetadata,
@@ -186,11 +186,11 @@ export class InvertedIndex {
   /**
    * Saves a snapshot of the index and its documents to locally.
    */
-  saveStore(): Promise<boolean> {
+  saveStore({ ttl = 0 } = {}): Promise<boolean> {
     return new Promise((resolve, reject) => {
       try {
-        const data: Serializable = this.toJSON();
-        localStorage.setItem(this.storageKey, JSON.stringify(data));
+        const item = { expiry: Date.now() + ttl, value: this.toJSON() };
+        localStorage.setItem(this.storageKey, JSON.stringify(item));
         resolve(true);
       } catch (err) {
         console.error(err);
@@ -204,16 +204,25 @@ export class InvertedIndex {
    */
   loadStore(): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      const result = localStorage.getItem(this.storageKey);
+      const itemStr = localStorage.getItem(this.storageKey);
 
-      if (!result) {
+      if (!itemStr) {
         resolve(false);
         return;
       }
 
       try {
-        const parsed = JSON.parse(result) as Serializable;
-        this.setLoaded(parsed);
+        const item = JSON.parse(itemStr) as {
+          expiry: number;
+          value: Serializable;
+        };
+        this.setLoaded(item.value || item);
+
+        // Invalidate if it's non-expirable, or expired
+        if (!hasOwn(item, 'expiry') || Date.now() > item.expiry) {
+          localStorage.removeItem(this.storageKey);
+        }
+
         resolve(true);
       } catch (err) {
         console.error(err);

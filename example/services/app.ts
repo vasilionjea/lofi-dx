@@ -36,11 +36,13 @@ class Service {
   }
 
   async loadDocuments() {
+    const ONE_DAY = 1000 * 60 * 60 * 24;
+
     if (this.docIndex.isStored) {
       await this.loadStore();
     } else {
       await this.fetch();
-      this.docIndex.saveStore();
+      this.docIndex.saveStore({ ttl: ONE_DAY });
     }
 
     console.log(this.docIndex.toJSON());

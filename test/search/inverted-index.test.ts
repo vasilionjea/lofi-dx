@@ -188,6 +188,28 @@ describe('InvertedIndex', () => {
     expect(localStorage.getItem(storageKey)).not.toBeNull();
   });
 
+  test('it should save to localStorage with TTL', async () => {
+    const storageKey = 'test-key';
+    const instance = new InvertedIndex({
+      uidKey: 'id',
+      fields: ['title'],
+      storageKey,
+    });
+    instance.addDocuments(docs);
+
+    expect(instance.isStored).toBe(false);
+    expect(localStorage.getItem(storageKey)).toBeNull();
+
+    const TEN_SECONDS = 1000 * 10;
+    await instance.saveStore({ ttl: TEN_SECONDS });
+
+    expect(localStorage.getItem(storageKey)).toBeTruthy();
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const item = JSON.parse(localStorage.getItem(storageKey)!);
+    expect(item.expiry > 0).toBe(true);
+  });
+
   test('it should load from localStorage', async () => {
     const storageKey = 'test-key';
     const instance = new InvertedIndex({

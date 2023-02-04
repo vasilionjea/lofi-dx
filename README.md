@@ -113,7 +113,8 @@ async load() {
   index.addDocuments(data);
 
   // save to storage
-  index.saveStore();
+  const ONE_DAY = 1000 * 60 * 60 * 24;
+  index.saveStore({ ttl: ONE_DAY });
 }
 
 // later... clear index from storage

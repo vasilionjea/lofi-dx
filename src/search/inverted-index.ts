@@ -1,4 +1,4 @@
-import { isNone, deepClone, hasOwn } from '../utils/core';
+import { isNone, deepClone } from '../utils/core';
 import { collapseWhitespace, isBlank, stemWord } from '../utils/string';
 import {
   encodeMetadata,
@@ -184,7 +184,7 @@ export class InvertedIndex {
   }
 
   /**
-   * Saves a snapshot of the index and its documents to locally.
+   * Saves a snapshot of the index and its documents locally.
    */
   saveStore({ ttl = 0 } = {}): Promise<boolean> {
     return new Promise((resolve, reject) => {
@@ -219,7 +219,7 @@ export class InvertedIndex {
         this.setLoaded(item.value || item);
 
         // Invalidate if it's non-expirable, or expired
-        if (!hasOwn(item, 'expiry') || Date.now() > item.expiry) {
+        if (!item.expiry || Date.now() > item.expiry) {
           localStorage.removeItem(this.storageKey);
         }
 

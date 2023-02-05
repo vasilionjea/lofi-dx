@@ -16,7 +16,7 @@ class Service {
       splitter: /\W+|\d+/g, // non-words or digits
     });
 
-    this.docSearch = new lofi.Search(this.docIndex);
+    this.docSearch = new lofi.Search(this.docIndex, { partialMatch: true });
   }
 
   async fetch() {

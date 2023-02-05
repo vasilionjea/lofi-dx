@@ -8,7 +8,10 @@ const stopwords = {
   the: 'the',
 };
 
-function createInstance(searchConfig = {}, docs: Array<{ [key: string]: unknown }> = []) {
+function createInstance(
+  searchConfig = {},
+  docs: Array<{ [key: string]: unknown }> = []
+) {
   const invertedIndex = new InvertedIndex({
     uidKey: 'id',
     fields: ['title'],
@@ -16,47 +19,47 @@ function createInstance(searchConfig = {}, docs: Array<{ [key: string]: unknown 
     docs.length
       ? docs
       : [
-        {
-          id: 3,
-          name: 'Mike',
-          title: `${stopwords['the']} Chief Forward Impact Engineer 3 ${stopwords['is']} Foo ${stopwords['a']}`,
-        },
-        {
-          id: 7,
-          name: 'Joe Doe',
-          title: `${stopwords['a']} Chief Interactions Liason ${stopwords['it']}`,
-        },
-        {
-          id: 11,
-          name: 'Alice Smith',
-          title: `UX Designer Bar Baz ${stopwords['it']}`,
-        },
-        {
-          id: 21,
-          name: 'Jamie Black',
-          title: 'Foo What Graphic Designer Biz',
-        },
-        {
-          id: 32,
-          name: 'Joe Brown',
-          title: `Senior Software Engineer Barfoo ${stopwords['the']}`,
-        },
-        {
-          id: 49,
-          name: 'Helen Queen',
-          title: 'Staff Dynamic Resonance Orchestrator Foo',
-        },
-        {
-          id: 55,
-          name: 'Mary',
-          title: 'Queen Product Program Executive Manager Foo',
-        },
-        {
-          id: 101,
-          name: 'Alan Smith',
-          title: 'Bar Senior The Staff Software Engineer 3 Foobar',
-        },
-      ]
+          {
+            id: 3,
+            name: 'Mike',
+            title: `${stopwords['the']} Chief Forward Impact Engineer 3 ${stopwords['is']} Foo ${stopwords['a']}`,
+          },
+          {
+            id: 7,
+            name: 'Joe Doe',
+            title: `${stopwords['a']} Chief Interactions Liason ${stopwords['it']}`,
+          },
+          {
+            id: 11,
+            name: 'Alice Smith',
+            title: `UX Designer Bar Baz ${stopwords['it']}`,
+          },
+          {
+            id: 21,
+            name: 'Jamie Black',
+            title: 'Foo What Graphic Designer Biz',
+          },
+          {
+            id: 32,
+            name: 'Joe Brown',
+            title: `Senior Software Engineer Barfoo ${stopwords['the']}`,
+          },
+          {
+            id: 49,
+            name: 'Helen Queen',
+            title: 'Staff Dynamic Resonance Orchestrator Foo',
+          },
+          {
+            id: 55,
+            name: 'Mary',
+            title: 'Queen Product Program Executive Manager Foo',
+          },
+          {
+            id: 101,
+            name: 'Alan Smith',
+            title: 'Bar Senior The Staff Software Engineer 3 Foobar',
+          },
+        ]
   );
 
   return new InvertedSearch(invertedIndex, searchConfig);

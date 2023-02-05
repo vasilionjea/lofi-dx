@@ -132,6 +132,10 @@ export class InvertedIndex {
     return this;
   }
 
+  forEach(cb: (value: string) => void) {
+    Object.keys(this.indexTable).forEach(cb);
+  }
+
   getDocument(uid: string): Doc {
     return this.docTable[uid];
   }
@@ -146,6 +150,10 @@ export class InvertedIndex {
 
   getTermEntry(term: string): TermTable {
     return this.indexTable[term] || {};
+  }
+
+  hasTermEntry(term: string): boolean {
+    return term in this.indexTable;
   }
 
   getDocumentEntry(

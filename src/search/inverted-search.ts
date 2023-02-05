@@ -78,22 +78,34 @@ export class InvertedSearch {
   /**
    * A simple lookup into the index's term table.
    */
-  private getSimpleMatches(part: QueryPart) {
-    const matches = part && this.invertedIndex.getTermEntry(part.term);
-    return this.matchesWithScores(matches);
+  private getSimpleMatches(part: QueryPart, partialMatch = false) {
+    if (partialMatch) {
+      const matches = {};
+      this.invertedIndex.forEach((term) => {
+        if (term.startsWith(part.term)) {
+          const partial = this.matchesWithScores(
+            this.invertedIndex.getTermEntry(term)
+          );
+          this.assignScores(matches, partial);
+        }
+      });
+      return matches;
+    }
+
+    return this.matchesWithScores(this.invertedIndex.getTermEntry(part.term));
   }
 
   /**
    * It returns only docs that are under every term's table.
    */
-  private getRequiredMatches(parts: QueryPart[]) {
+  private getRequiredMatches(parts: QueryPart[], partialMatch = false) {
     let result = {};
 
     for (let i = 0; i < parts.length; i++) {
       const part = parts[i];
       const matches = part.isPhrase
         ? this.getPhraseMatches(part)
-        : this.getSimpleMatches(part);
+        : this.getSimpleMatches(part, partialMatch);
 
       if (matches) {
         if (i === 0) {
@@ -211,12 +223,15 @@ export class InvertedSearch {
     const result = {};
 
     for (const part of parts) {
+      const isNegated = part.type === QueryPartType.Negated;
+      const isSimple = part.type === QueryPartType.Simple;
+
       const matches = part.isPhrase
         ? this.getPhraseMatches(part)
-        : this.getSimpleMatches(part);
+        : this.getSimpleMatches(part, isSimple);
 
       // no need to sum scores for negated matches
-      part.type === QueryPartType.Negated
+      isNegated
         ? Object.assign(result, matches)
         : this.assignScores(result, matches);
     }
@@ -250,7 +265,7 @@ export class InvertedSearch {
     // Required
     if (groupedParts.required.length) {
       return this.result(
-        this.getRequiredMatches(groupedParts.required),
+        this.getRequiredMatches(groupedParts.required, true),
         negatedMatches
       );
     }

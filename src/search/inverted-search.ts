@@ -98,14 +98,14 @@ export class InvertedSearch {
   /**
    * It returns only docs that are under every term's table.
    */
-  private getRequiredMatches(parts: QueryPart[], partialMatch = false) {
+  private getRequiredMatches(parts: QueryPart[]) {
     let result = {};
 
     for (let i = 0; i < parts.length; i++) {
       const part = parts[i];
       const matches = part.isPhrase
         ? this.getPhraseMatches(part)
-        : this.getSimpleMatches(part, partialMatch);
+        : this.getSimpleMatches(part);
 
       if (matches) {
         if (i === 0) {
@@ -265,7 +265,7 @@ export class InvertedSearch {
     // Required
     if (groupedParts.required.length) {
       return this.result(
-        this.getRequiredMatches(groupedParts.required, true),
+        this.getRequiredMatches(groupedParts.required),
         negatedMatches
       );
     }

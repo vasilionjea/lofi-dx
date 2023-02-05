@@ -16,9 +16,17 @@ import { tfidf } from '../utils/ranking';
 import { getPositionsCount, ParsedMetadata } from '../utils/encoding';
 import { InvertedIndex, Doc, TermTable } from './inverted-index';
 
+export interface SearchConfig {
+  partialMatch?: boolean;
+}
+
 export type ScoredMatches = {
   // doc uid: tfidf
   [key: string]: number;
+};
+
+const DEFAULT_CONFIG: SearchConfig = {
+  partialMatch: false,
 };
 
 /**
@@ -26,7 +34,11 @@ export type ScoredMatches = {
  * it computes each term doc's tfidf, and sorts them by the highest score.
  */
 export class InvertedSearch {
-  constructor(private readonly invertedIndex: InvertedIndex) {}
+  private readonly config: SearchConfig;
+
+  constructor(private readonly invertedIndex: InvertedIndex, opts = {}) {
+    this.config = { ...DEFAULT_CONFIG, ...opts };
+  }
 
   /**
    * For a set of matched docs, it computes each doc's tfidf value.
@@ -225,10 +237,11 @@ export class InvertedSearch {
     for (const part of parts) {
       const isNegated = part.type === QueryPartType.Negated;
       const isSimple = part.type === QueryPartType.Simple;
+      const partialMatch = isSimple && this.config.partialMatch;
 
       const matches = part.isPhrase
         ? this.getPhraseMatches(part)
-        : this.getSimpleMatches(part, isSimple);
+        : this.getSimpleMatches(part, partialMatch);
 
       // no need to sum scores for negated matches
       isNegated

@@ -8,7 +8,7 @@ const stopwords = {
   the: 'the',
 };
 
-function createInstance(docs: Array<{ [key: string]: unknown }> = []) {
+function createInstance(searchConfig = {}, docs: Array<{ [key: string]: unknown }> = []) {
   const invertedIndex = new InvertedIndex({
     uidKey: 'id',
     fields: ['title'],
@@ -16,50 +16,50 @@ function createInstance(docs: Array<{ [key: string]: unknown }> = []) {
     docs.length
       ? docs
       : [
-          {
-            id: 3,
-            name: 'Mike',
-            title: `${stopwords['the']} Chief Forward Impact Engineer 3 ${stopwords['is']} Foo ${stopwords['a']}`,
-          },
-          {
-            id: 7,
-            name: 'Joe Doe',
-            title: `${stopwords['a']} Chief Interactions Liason ${stopwords['it']}`,
-          },
-          {
-            id: 11,
-            name: 'Alice Smith',
-            title: `UX Designer Bar Baz ${stopwords['it']}`,
-          },
-          {
-            id: 21,
-            name: 'Jamie Black',
-            title: 'Foo What Graphic Designer Biz',
-          },
-          {
-            id: 32,
-            name: 'Joe Brown',
-            title: `Senior Software Engineer Barfoo ${stopwords['the']}`,
-          },
-          {
-            id: 49,
-            name: 'Helen Queen',
-            title: 'Staff Dynamic Resonance Orchestrator Foo',
-          },
-          {
-            id: 55,
-            name: 'Mary',
-            title: 'Queen Product Program Executive Manager Foo',
-          },
-          {
-            id: 101,
-            name: 'Alan Smith',
-            title: 'Bar Senior The Staff Software Engineer 3 Foobar',
-          },
-        ]
+        {
+          id: 3,
+          name: 'Mike',
+          title: `${stopwords['the']} Chief Forward Impact Engineer 3 ${stopwords['is']} Foo ${stopwords['a']}`,
+        },
+        {
+          id: 7,
+          name: 'Joe Doe',
+          title: `${stopwords['a']} Chief Interactions Liason ${stopwords['it']}`,
+        },
+        {
+          id: 11,
+          name: 'Alice Smith',
+          title: `UX Designer Bar Baz ${stopwords['it']}`,
+        },
+        {
+          id: 21,
+          name: 'Jamie Black',
+          title: 'Foo What Graphic Designer Biz',
+        },
+        {
+          id: 32,
+          name: 'Joe Brown',
+          title: `Senior Software Engineer Barfoo ${stopwords['the']}`,
+        },
+        {
+          id: 49,
+          name: 'Helen Queen',
+          title: 'Staff Dynamic Resonance Orchestrator Foo',
+        },
+        {
+          id: 55,
+          name: 'Mary',
+          title: 'Queen Product Program Executive Manager Foo',
+        },
+        {
+          id: 101,
+          name: 'Alan Smith',
+          title: 'Bar Senior The Staff Software Engineer 3 Foobar',
+        },
+      ]
   );
 
-  return new InvertedSearch(invertedIndex);
+  return new InvertedSearch(invertedIndex, searchConfig);
 }
 
 /**
@@ -72,6 +72,27 @@ describe('InvertedSearch - Basic search', () => {
     expect(results.length).toBe(2);
     expect(results[0]['id']).toBe(11);
     expect(results[1]['id']).toBe(21);
+  });
+
+  test('it should NOT perform partial search by default', () => {
+    const instance = createInstance();
+    const results = instance.search('graphic');
+    expect(results.length).toBe(1);
+    expect(results[0]['id']).toBe(21);
+
+    const results2 = instance.search('graph');
+    expect(results2.length).toBe(0);
+  });
+
+  test('it should perform partial search', () => {
+    const instance = createInstance({ partialMatch: true });
+    const results = instance.search('graphic');
+    expect(results.length).toBe(1);
+    expect(results[0]['id']).toBe(21);
+
+    const results2 = instance.search('graph');
+    expect(results2.length).toBe(1);
+    expect(results2[0]['id']).toBe(21);
   });
 
   test('it should search required fields', () => {
@@ -115,7 +136,7 @@ describe('InvertedSearch - Basic search', () => {
  */
 describe('InvertedSearch - Phrase search', () => {
   test('it should search simple phrases', () => {
-    const instance = createInstance([
+    const instance = createInstance({}, [
       {
         id: 0,
         name: 'Helen Queen',
@@ -134,7 +155,7 @@ describe('InvertedSearch - Phrase search', () => {
   });
 
   test('it should search simple phrases even if stopwords appear in between', () => {
-    const instance = createInstance([
+    const instance = createInstance({}, [
       {
         id: 0,
         name: 'Helen Queen',
@@ -156,7 +177,7 @@ describe('InvertedSearch - Phrase search', () => {
   });
 
   test('it should find phrase even when terms appear multiple times', () => {
-    const instance = createInstance([
+    const instance = createInstance({}, [
       {
         id: 0,
         name: 'Helen Queen',
@@ -175,7 +196,7 @@ describe('InvertedSearch - Phrase search', () => {
   });
 
   test('it should NOT find phrase even when terms appear multiple times', () => {
-    const instance = createInstance([
+    const instance = createInstance({}, [
       {
         id: 0,
         name: 'Helen Queen',
@@ -194,7 +215,7 @@ describe('InvertedSearch - Phrase search', () => {
   });
 
   test('it should return empty results when all the words appear in document but not as a phrase', () => {
-    const instance = createInstance([
+    const instance = createInstance({}, [
       {
         id: 0,
         name: 'Helen Queen',
@@ -214,7 +235,7 @@ describe('InvertedSearch - Phrase search', () => {
   });
 
   test('it should search simple phrases even with a single term', () => {
-    const instance = createInstance([
+    const instance = createInstance({}, [
       {
         id: 101,
         name: 'Alan Smith',
@@ -239,7 +260,7 @@ describe('InvertedSearch - Phrase search', () => {
   });
 
   test('it should search required phrases', () => {
-    const instance = createInstance([
+    const instance = createInstance({}, [
       {
         id: 0,
         name: 'Helen Queen',
@@ -263,7 +284,7 @@ describe('InvertedSearch - Phrase search', () => {
   });
 
   test('it should search required phrases even with a single term', () => {
-    const instance = createInstance([
+    const instance = createInstance({}, [
       {
         id: 0,
         name: 'Helen Queen',
@@ -287,7 +308,7 @@ describe('InvertedSearch - Phrase search', () => {
   });
 
   test('it should search negated phrases', () => {
-    const instance = createInstance([
+    const instance = createInstance({}, [
       {
         id: 0,
         name: 'Helen Queen',
@@ -317,7 +338,7 @@ describe('InvertedSearch - Phrase search', () => {
   });
 
   test('it should search negated phrases even with a single term', () => {
-    const instance = createInstance([
+    const instance = createInstance({}, [
       {
         id: 0,
         name: 'Helen Queen',

@@ -1,13 +1,13 @@
 export interface ParsedMetadata {
-  postings: number[];
+  positions: number[];
 }
 
-const POSTINGS_SEPARATOR = ',';
+const POSITIONS_SEPARATOR = ',';
 
 /**
- * Encodes term postings using delta and base36 encoding.
+ * Encodes term positions using delta and base36 encoding.
  */
-export function encodePostings(nums: number[]): string[] {
+export function encodePositions(nums: number[]): string[] {
   const result: string[] = [];
   if (!nums.length) return result;
 
@@ -27,9 +27,9 @@ export function encodePostings(nums: number[]): string[] {
 }
 
 /**
- * Decodes postings from base36, then delta-decodes them.
+ * Decodes positions from base36, then delta-decodes them.
  */
-export function decodePostings(arr: string[]): number[] {
+export function decodePositions(arr: string[]): number[] {
   const nums = arr.concat();
   const result: number[] = [];
 
@@ -48,27 +48,27 @@ export function decodePostings(arr: string[]): number[] {
 }
 
 /**
- * Encodes the meta for a doc using delta and base36 for postings,
+ * Encodes the meta for a doc using delta and base36 for positions,
  * and only base36 for everything else.
  */
 export function encodeMetadata(meta: ParsedMetadata): string {
-  const postings = encodePostings(meta.postings);
-  return `${postings.join(POSTINGS_SEPARATOR)}`;
+  const positions = encodePositions(meta.positions);
+  return `${positions.join(POSITIONS_SEPARATOR)}`;
 }
 
 /**
  * Parses the encoded meta for a doc back into a readable POJO.
  */
 export function parseMetadata(meta: string): ParsedMetadata {
-  if (!meta) return { postings: [] };
+  if (!meta) return { positions: [] };
   return {
-    postings: decodePostings(meta.split(POSTINGS_SEPARATOR)),
+    positions: decodePositions(meta.split(POSITIONS_SEPARATOR)),
   };
 }
 
 /**
- * Returns length of postings without decoding them.
+ * Returns length of positions without decoding them.
  */
-export function getPostingsLength(meta: string): number {
-  return meta.split(POSTINGS_SEPARATOR).length;
+export function getPositionsCount(meta: string): number {
+  return meta.split(POSITIONS_SEPARATOR).length;
 }

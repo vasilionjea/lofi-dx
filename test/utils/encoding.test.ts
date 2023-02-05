@@ -1,7 +1,7 @@
-import { encodePostings, decodePostings } from '../../src/utils/encoding';
+import { encodePositions, decodePositions } from '../../src/utils/encoding';
 
 describe('Encoding utils', () => {
-  test('[encodePostings] it should encode sorted numbers to their deltas', () => {
+  test('[encodePositions] it should encode sorted numbers to their deltas', () => {
     const original = [
       18, 41, 105, 444, 1048, 1087, 1285, 1290, 1319, 1396, 1886,
     ];
@@ -18,12 +18,12 @@ describe('Encoding utils', () => {
       '25',
       'dm',
     ];
-    expect(encodePostings(original)).toEqual(encoded);
+    expect(encodePositions(original)).toEqual(encoded);
     expect(original).toBe(original); // it didn't modify array
-    expect(encodePostings([])).toEqual([]); // empty input
+    expect(encodePositions([])).toEqual([]); // empty input
   });
 
-  test('[decodePostings] it should decode deltas to the original sorted numbers', () => {
+  test('[decodePositions] it should decode deltas to the original sorted numbers', () => {
     const encoded = [
       'i',
       'n',
@@ -40,8 +40,8 @@ describe('Encoding utils', () => {
     const original = [
       18, 41, 105, 444, 1048, 1087, 1285, 1290, 1319, 1396, 1886,
     ];
-    expect(decodePostings(encoded)).toEqual(original);
+    expect(decodePositions(encoded)).toEqual(original);
     expect(encoded).toBe(encoded); // it didn't modify array
-    expect(decodePostings([])).toEqual([]); // empty input
+    expect(decodePositions([])).toEqual([]); // empty input
   });
 });

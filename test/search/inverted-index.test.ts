@@ -95,15 +95,15 @@ describe('InvertedIndex', () => {
     expect(index[stopwords['the']]).not.toBeDefined();
   });
 
-  test('it should index documents with postings', () => {
+  test('it should index documents with positions', () => {
     const instance = new InvertedIndex({ uidKey: 'id', fields: ['name'] });
     instance.addDocuments(docs);
 
     const meta = instance.getDocumentEntry('joe', '7') as ParsedMetadata;
-    expect(meta.postings).toContain(0);
+    expect(meta.positions).toContain(0);
 
     const meta2 = instance.getDocumentEntry('doe', '7') as ParsedMetadata;
-    expect(meta2.postings).toContain(4);
+    expect(meta2.positions).toContain(4);
   });
 
   test('it should index additional fields', () => {

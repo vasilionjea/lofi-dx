@@ -13,7 +13,7 @@ import {
   groupQueryParts,
 } from '../query/index';
 import { tfidf } from '../utils/ranking';
-import { getPostingsLength, ParsedMetadata } from '../utils/encoding';
+import { getPositionsCount, ParsedMetadata } from '../utils/encoding';
 import { InvertedIndex, Doc, TermTable } from './inverted-index';
 
 export type ScoredMatches = {
@@ -39,7 +39,7 @@ export class InvertedSearch {
 
     for (const [uid, docEntry] of termDocs) {
       const totalTerms = this.invertedIndex.getDocumentTermCount(uid);
-      const frequency = getPostingsLength(docEntry);
+      const frequency = getPositionsCount(docEntry);
       result[uid] = tfidf(
         { frequency, totalTerms },
         { totalDocs, totalTermDocs }
@@ -136,7 +136,7 @@ export class InvertedSearch {
   }) {
     const matches: { [key: string]: number } = {}; // doc uid to term count (it's a phrase if count equals the total terms)
     const totalTerms = terms.length; // total terms being checked for a phrase
-    const postings: { [key: string]: number[] } = {}; // term to positions of term
+    const positions: { [key: string]: number[] } = {}; // term to positions of term
     const candidateUIDs = Object.keys(candidates);
 
     if (!candidateUIDs.length) return matches;
@@ -147,11 +147,11 @@ export class InvertedSearch {
           term,
           uid
         ) as ParsedMetadata;
-        postings[term] = meta.postings;
+        positions[term] = meta.positions;
       }
 
       let t = 0;
-      const stack = [postings[terms[0]].shift()];
+      const stack = [positions[terms[0]].shift()];
 
       while (stack.length) {
         if (isNone(terms[t + 1]) || matches[uid] === totalTerms) break;
@@ -159,7 +159,7 @@ export class InvertedSearch {
 
         const currentPos = stack[stack.length - 1] as number;
         const nextExpected = currentPos + terms[t].length + 1;
-        const nextPos = deleteArrayItem(postings[terms[t + 1]], nextExpected);
+        const nextPos = deleteArrayItem(positions[terms[t + 1]], nextExpected);
 
         if (!isNone(nextPos)) {
           stack.push(nextPos);
@@ -169,7 +169,7 @@ export class InvertedSearch {
           t = 0;
           stack.length = 0;
 
-          const firstNext = postings[terms[0]].shift();
+          const firstNext = positions[terms[0]].shift();
           if (!isNone(firstNext)) stack.push(firstNext);
         }
       }

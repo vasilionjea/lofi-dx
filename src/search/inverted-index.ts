@@ -64,14 +64,14 @@ export class InvertedIndex {
     return collapseWhitespace(text).toLocaleLowerCase().split(this.docSplitter);
   }
 
-  private tokensWithPostings(tokens: string[]) {
+  private tokensWithPositions(tokens: string[]) {
     const result = [];
     let start = 0;
 
     for (const term of tokens) {
       if (!isStopword(term)) {
         const stemmed = stemWord(term);
-        const token = { term: stemmed, posting: start };
+        const token = { term: stemmed, position: start };
         start += stemmed.length + 1;
         result.push(token);
       }
@@ -95,7 +95,7 @@ export class InvertedIndex {
     const uid = doc[this.uidKey] as string;
     if (isNone(uid) || isNone(doc[field])) return;
 
-    const tokens = this.tokensWithPostings(
+    const tokens = this.tokensWithPositions(
       this.tokenizeText(doc[field] as string)
     );
     this.docTermCounts[uid] += tokens.length;
@@ -105,7 +105,7 @@ export class InvertedIndex {
 
       // Update positions for this doc
       const meta = this.getDocumentEntry(token.term, uid) as ParsedMetadata;
-      meta.postings?.push(token.posting);
+      meta.positions?.push(token.position);
 
       // Add to term index
       this.indexTable[token.term][uid] = encodeMetadata(meta);

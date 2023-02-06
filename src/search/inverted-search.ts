@@ -93,6 +93,8 @@ export class InvertedSearch {
   private getSimpleMatches(part: QueryPart, partialMatch = false) {
     if (partialMatch) {
       const matches = {};
+
+      // Quick and dirty but fast enough (for now)
       this.invertedIndex.forEach((term) => {
         if (term.startsWith(part.term)) {
           const partial = this.matchesWithScores(
@@ -101,6 +103,7 @@ export class InvertedSearch {
           this.assignScores(matches, partial);
         }
       });
+
       return matches;
     }
 

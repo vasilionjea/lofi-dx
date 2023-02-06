@@ -17,7 +17,7 @@ import { getPositionsCount, ParsedMetadata } from '../utils/encoding';
 import { InvertedIndex, Doc, TermTable } from './inverted-index';
 
 export interface SearchConfig {
-  partialMatch?: boolean;
+  prefixMatch?: boolean;
 }
 
 export type ScoredMatches = {
@@ -26,7 +26,7 @@ export type ScoredMatches = {
 };
 
 const DEFAULT_CONFIG: SearchConfig = {
-  partialMatch: false,
+  prefixMatch: false,
 };
 
 /**
@@ -90,8 +90,8 @@ export class InvertedSearch {
   /**
    * A simple lookup into the index's term table.
    */
-  private getSimpleMatches(part: QueryPart, partialMatch = false) {
-    if (partialMatch) {
+  private getSimpleMatches(part: QueryPart, prefixMatch = false) {
+    if (prefixMatch) {
       const matches = {};
 
       // Quick and dirty but fast enough (for now)
@@ -240,11 +240,11 @@ export class InvertedSearch {
     for (const part of parts) {
       const isNegated = part.type === QueryPartType.Negated;
       const isSimple = part.type === QueryPartType.Simple;
-      const partialMatch = isSimple && this.config.partialMatch;
+      const prefixMatch = isSimple && this.config.prefixMatch;
 
       const matches = part.isPhrase
         ? this.getPhraseMatches(part)
-        : this.getSimpleMatches(part, partialMatch);
+        : this.getSimpleMatches(part, prefixMatch);
 
       // no need to sum scores for negated matches
       isNegated

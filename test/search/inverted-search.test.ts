@@ -77,7 +77,7 @@ describe('InvertedSearch - Basic search', () => {
     expect(results[1]['id']).toBe(21);
   });
 
-  test('it should NOT perform partial search by default', () => {
+  test('it should NOT perform prefix search by default', () => {
     const instance = createInstance();
     const results = instance.search('graphic');
     expect(results.length).toBe(1);
@@ -87,8 +87,8 @@ describe('InvertedSearch - Basic search', () => {
     expect(results2.length).toBe(0);
   });
 
-  test('it should perform partial search', () => {
-    const instance = createInstance({ partialMatch: true });
+  test('it should perform prefix search', () => {
+    const instance = createInstance({ prefixMatch: true });
     const results = instance.search('graphic');
     expect(results.length).toBe(1);
     expect(results[0]['id']).toBe(21);

@@ -26,7 +26,7 @@ const tokenizerRegex = new RegExp(
   'g'
 );
 
-const invalidCharsRegex = /(?:[\^*()_}\]\\[{>\\<|\\/`~}]+)/gi;
+const invalidCharsRegex = /(?:[\^*()_}\]\\[{>\\<|\\/…`~}^]+)/gi;
 export const stripQueryInvalidChars = (rawText: string): string =>
   rawText.replace(invalidCharsRegex, '');
 

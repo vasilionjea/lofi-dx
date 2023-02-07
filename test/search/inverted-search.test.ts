@@ -1,5 +1,5 @@
-import { InvertedIndex } from '../../src/search/index';
-import { InvertedSearch } from '../../src/search/index';
+import { InvertedIndex } from '../../src/search/inverted-index';
+import { InvertedSearch } from '../../src/search/inverted-search';
 
 const stopwords = {
   a: 'a',

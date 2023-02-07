@@ -1,4 +1,5 @@
 import * as lofi from '../../src/index';
+import * as types from '../../src/types';
 
 export interface AppService extends InterfaceOf<Service> { }
 
@@ -6,31 +7,33 @@ export interface AppService extends InterfaceOf<Service> { }
  * The AppService fetches documents and creates the index
  */
 class Service {
-  private readonly docIndex: lofi.Index;
-  private readonly docSearch: lofi.Search;
+  private readonly docsIndex: types.Index;
+  private readonly docsSearch: types.Search;
+  private readonly docsStorage: types.Storage;
 
   constructor() {
-    this.docIndex = new lofi.Index({
+    const index = this.docsIndex = lofi.createIndex({
       uidKey: 'id',
       fields: ['body'],
       splitter: /\W+|\d+/g, // non-words or digits
     });
 
-    this.docSearch = new lofi.Search(this.docIndex, { prefixMatch: true });
+    this.docsSearch = lofi.createSearch(index, { prefixMatch: true });
+    this.docsStorage = lofi.createStorage(index);
   }
 
   async fetch() {
     const start = performance.now();
     const response = await fetch('./data.json');
     const { data } = await response.json();
-    this.docIndex.addDocuments(data);
+    this.docsIndex.addDocuments(data);
     const end = performance.now();
     console.log(`Loaded (init): ${end - start}ms`);
   }
 
-  async loadStore() {
+  async loadStored() {
     const start = performance.now();
-    await this.docIndex.loadStore();
+    await this.docsStorage.load();
     const end = performance.now();
     console.log(`Loaded (cache): ${end - start}ms`);
   }
@@ -38,21 +41,21 @@ class Service {
   async loadDocuments() {
     const ONE_DAY = 1000 * 60 * 60 * 24;
 
-    if (this.docIndex.isStored) {
-      await this.loadStore();
+    if (this.docsStorage.isSaved()) {
+      await this.loadStored();
     } else {
       await this.fetch();
-      this.docIndex.saveStore({ ttl: ONE_DAY });
+      this.docsStorage.save({ ttl: ONE_DAY });
     }
 
-    console.log(this.docIndex.toJSON());
+    console.log(this.docsIndex.toJSON());
   }
 
   search(queryText = '') {
     if (queryText.length <= 1) return;
 
     const start = performance.now();
-    const results = this.docSearch.search(queryText);
+    const results = this.docsSearch.search(queryText);
     const end = performance.now();
 
     console.log(`Search took ${end - start}ms`);

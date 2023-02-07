@@ -40,7 +40,7 @@ The purpose of this is to allow making queries like `+jaguar speed "south americ
 ## Usage
 Add documents to an index:
 ```js
-const index = new lofi.Index({ uidKey: 'id', fields: ['title'] });
+const index = lofi.createIndex({ uidKey: 'id', fields: ['title'] });
 index.addDocuments([
   { id: 3, name: 'Mike', title: 'Chief Forward Impact Engineer 3 Foo' },
   { id: 7, name: 'Joe Doe', title: 'Chief Interactions Liason' },
@@ -54,7 +54,7 @@ index.addDocuments([
 ```
 Search the index:
 ```js
-const people = new lofi.Search(index);
+const people = lofi.createSearch(index);
 const results = people.search(`"software engineer" ux designer -"engineer 3"`);
 console.log(results);
 ```
@@ -98,27 +98,28 @@ The point of client side full-text search is to improve the user experience in o
 There are methods for writing the index to `localStorage` and later loading it but no other assumption is made for persistence. Perhaps `localStorage` (_limited to 5MB_) works for your usecase or you may need to reach for `IndexedDB`.
 
 ```js
-async load() {
-  // load from storage
-  if (index.isStored) {
-    await index.loadStore();
+// Create storage for index
+const storage = lofi.createStorage(index);
+
+async function loadDocs() {
+  // load index from storage
+  if (storage.isSaved()) {
+    await storage.load();
     return;
   }
   
-  // fetch docs
+  // fetch docs & add them to the index
   const response = await fetch('./data.json');
   const { data } = await response.json();
-
-  // add docs to index
   index.addDocuments(data);
 
   // save to storage
   const ONE_DAY = 1000 * 60 * 60 * 24;
-  index.saveStore({ ttl: ONE_DAY });
+  storage.save({ ttl: ONE_DAY });
 }
 
-// later... clear index from storage
-await index.clearStore();
+// Maybe later...
+// await storage.clear();
 ```
 
 ## Contributing

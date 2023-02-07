@@ -1,8 +1,6 @@
 import * as stopwords from './stopwords';
+import { createStorage } from './utils/storage';
 import { parseQuery } from './query/index';
-import {
-  InvertedIndex as Index,
-  InvertedSearch as Search,
-} from './search/index';
+import { createIndex, createSearch } from './search/index';
 
-export { stopwords, parseQuery, Index, Search };
+export { stopwords, parseQuery, createIndex, createSearch, createStorage };

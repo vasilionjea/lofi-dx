@@ -11,7 +11,6 @@ export interface IndexConfig {
   uidKey: string;
   fields?: string[];
   splitter?: RegExp;
-  storageKey?: string;
 }
 
 export type Doc = { [key: string]: unknown };
@@ -36,7 +35,6 @@ export interface Serializable {
 
 const DEFAULT_UID_KEY = 'id';
 const DEFAULT_DOCUMENT_SPLITTER = /\s+/g;
-const DEFAULT_STORAGE_KEY = 'lofi-dx:index';
 
 /**
  * InvertedIndex contains both the index table and the documents.
@@ -44,7 +42,6 @@ const DEFAULT_STORAGE_KEY = 'lofi-dx:index';
 export class InvertedIndex {
   private readonly uidKey: string;
   private readonly docSplitter: RegExp;
-  private readonly storageKey: string;
 
   private fields: Set<string>;
   private docTable: DocTable = {};
@@ -57,7 +54,6 @@ export class InvertedIndex {
     this.uidKey = opts.uidKey || DEFAULT_UID_KEY;
     this.fields = new Set(opts.fields || []);
     this.docSplitter = opts.splitter || DEFAULT_DOCUMENT_SPLITTER;
-    this.storageKey = opts.storageKey || DEFAULT_STORAGE_KEY;
   }
 
   private tokenizeText(text: string) {
@@ -132,8 +128,25 @@ export class InvertedIndex {
     return this;
   }
 
-  forEach(cb: (value: string) => void) {
-    Object.keys(this.indexTable).forEach(cb);
+  loadFromStorage({ fields, documents, index }: Serializable) {
+    const [totalDocs, docTable, docTermCounts] = documents;
+    this.fields = new Set(fields);
+    this.totalDocs = totalDocs;
+    this.docTable = docTable;
+    this.docTermCounts = docTermCounts;
+    this.indexTable = index;
+  }
+
+  toJSON(): Serializable {
+    return {
+      fields: [...this.fields],
+      documents: [
+        this.totalDocs,
+        deepClone(this.docTable),
+        deepClone(this.docTermCounts),
+      ],
+      index: deepClone(this.indexTable),
+    };
   }
 
   getDocument(uid: string): Doc {
@@ -166,86 +179,7 @@ export class InvertedIndex {
     return termEntry[uid];
   }
 
-  toJSON(): Serializable {
-    return {
-      fields: [...this.fields],
-      documents: [
-        this.totalDocs,
-        deepClone(this.docTable),
-        deepClone(this.docTermCounts),
-      ],
-      index: deepClone(this.indexTable),
-    };
-  }
-
-  private setLoaded({ fields, documents, index }: Serializable) {
-    const [totalDocs, docTable, docTermCounts] = documents;
-    this.fields = new Set(fields);
-    this.totalDocs = totalDocs;
-    this.docTable = docTable;
-    this.docTermCounts = docTermCounts;
-    this.indexTable = index;
-  }
-
-  get isStored(): boolean {
-    return Boolean(localStorage.getItem(this.storageKey));
-  }
-
-  /**
-   * Saves a snapshot of the index and its documents locally.
-   */
-  saveStore({ ttl = 0 } = {}): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      try {
-        const item = { expiry: Date.now() + ttl, value: this.toJSON() };
-        localStorage.setItem(this.storageKey, JSON.stringify(item));
-        resolve(true);
-      } catch (err) {
-        console.error(err);
-        reject(err);
-      }
-    });
-  }
-
-  /**
-   * Sets a previously stored index and its documents.
-   */
-  loadStore(): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      const itemStr = localStorage.getItem(this.storageKey);
-
-      if (!itemStr) {
-        resolve(false);
-        return;
-      }
-
-      try {
-        const item = JSON.parse(itemStr) as {
-          expiry: number;
-          value: Serializable;
-        };
-        this.setLoaded(item.value || item);
-
-        // Invalidate if it's non-expirable, or expired
-        if (isNone(item.expiry) || Date.now() > item.expiry) {
-          localStorage.removeItem(this.storageKey);
-        }
-
-        resolve(true);
-      } catch (err) {
-        console.error(err);
-        reject(err);
-      }
-    });
-  }
-
-  /**
-   * Clears stored index and its documents.
-   */
-  clearStore(): Promise<void> {
-    return new Promise((resolve) => {
-      localStorage.removeItem(this.storageKey);
-      resolve();
-    });
+  forEach(callback: (value: string) => void) {
+    Object.keys(this.indexTable).forEach(callback);
   }
 }

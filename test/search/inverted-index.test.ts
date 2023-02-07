@@ -1,4 +1,4 @@
-import { InvertedIndex } from '../../src/search/index';
+import { InvertedIndex } from '../../src/search/inverted-index';
 import { ParsedMetadata } from '../../src/utils/encoding';
 
 let docs: Array<{ [key: string]: unknown }>;
@@ -10,8 +10,6 @@ const stopwords = {
 };
 
 beforeEach(() => {
-  localStorage.clear();
-
   docs = [
     {
       id: 3,
@@ -136,11 +134,9 @@ describe('InvertedIndex', () => {
   });
 
   test('it should have working getters', async () => {
-    const storageKey = 'test-key';
     const instance = new InvertedIndex({
       uidKey: 'id',
       fields: ['title'],
-      storageKey,
     });
     instance.addDocuments(docs);
 
@@ -168,82 +164,5 @@ describe('InvertedIndex', () => {
 
     docEntry = instance.getDocumentEntry('engineer', '1000000', false);
     expect(docEntry).toBeUndefined();
-  });
-
-  test('it should save to localStorage', async () => {
-    const storageKey = 'test-key';
-    const instance = new InvertedIndex({
-      uidKey: 'id',
-      fields: ['title'],
-      storageKey,
-    });
-    instance.addDocuments(docs);
-
-    expect(instance.isStored).toBe(false);
-    expect(localStorage.getItem(storageKey)).toBeNull();
-
-    await instance.saveStore();
-
-    expect(instance.isStored).toBe(true);
-    expect(localStorage.getItem(storageKey)).not.toBeNull();
-  });
-
-  test('it should save to localStorage with TTL', async () => {
-    const storageKey = 'test-key';
-    const instance = new InvertedIndex({
-      uidKey: 'id',
-      fields: ['title'],
-      storageKey,
-    });
-    instance.addDocuments(docs);
-
-    expect(instance.isStored).toBe(false);
-    expect(localStorage.getItem(storageKey)).toBeNull();
-
-    const TEN_SECONDS = 1000 * 10;
-    await instance.saveStore({ ttl: TEN_SECONDS });
-
-    expect(localStorage.getItem(storageKey)).toBeTruthy();
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const item = JSON.parse(localStorage.getItem(storageKey)!);
-    expect(item.expiry > 0).toBe(true);
-  });
-
-  test('it should load from localStorage', async () => {
-    const storageKey = 'test-key';
-    const instance = new InvertedIndex({
-      uidKey: 'id',
-      fields: ['title'],
-      storageKey,
-    });
-    instance.addDocuments(docs);
-
-    expect(await instance.loadStore()).toBe(false);
-
-    await instance.saveStore();
-
-    expect(await instance.loadStore()).toBe(true);
-    expect(instance.getDocumentCount()).toBe(docs.length);
-  });
-
-  test('it should clear from localStorage', async () => {
-    const storageKey = 'test-key';
-    const instance = new InvertedIndex({
-      uidKey: 'id',
-      fields: ['title'],
-      storageKey,
-    });
-    instance.addDocuments(docs);
-
-    expect(instance.isStored).toBe(false);
-    await instance.saveStore();
-
-    expect(instance.isStored).toBe(true);
-    expect(localStorage.getItem(storageKey)).not.toBeNull();
-
-    await instance.clearStore();
-    expect(instance.isStored).toBe(false);
-    expect(localStorage.getItem(storageKey)).toBeNull();
   });
 });

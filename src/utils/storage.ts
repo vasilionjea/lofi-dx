@@ -1,11 +1,11 @@
 import { isNone } from './core';
 import { InvertedIndex, Serializable } from '../search/inverted-index';
 
-type StorageConfig = {
+export type StorageConfig = {
   storageKey?: string;
 };
 
-type SaveConfig = { ttl?: number };
+export type SaveConfig = { ttl?: number };
 
 export type Storage = {
   isSaved: () => boolean;

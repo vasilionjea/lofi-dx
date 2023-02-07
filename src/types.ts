@@ -7,4 +7,4 @@ export { IndexConfig, Serializable } from './search/inverted-index';
 export type Search = InvertedSearch;
 export { SearchConfig } from './search/inverted-search';
 
-export { Storage } from './utils/storage';
+export { Storage, StorageConfig, SaveConfig } from './utils/storage';

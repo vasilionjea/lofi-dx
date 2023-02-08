@@ -98,7 +98,7 @@ The point of client side full-text search is to improve the user experience in o
 There are methods for writing the index to `localStorage` and later loading it but no other assumptions are made. Perhaps `localStorage` (_limited to 5MB_) works for your usecase or you may need to reach for `IndexedDB`.
 
 ```js
-// Create storage for index
+// Create storage for an index
 const storage = lofi.createStorage(index);
 
 async function loadDocs() {

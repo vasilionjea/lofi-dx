@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "lofi-dx",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "types": "types/src/index.d.ts",
   "description": "A small, fast, local-first, searchable index for client side apps written in Typescript.",
   "exports": {

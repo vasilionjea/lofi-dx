@@ -1,7 +1,10 @@
 {
   "extends": "@tsconfig/recommended/tsconfig.json",
   "compilerOptions": {
+    "module": "es6",
+    "outDir": "dist/esm",
     "moduleResolution": "node",
+    "esModuleInterop": true,
     "rootDir": ".",
     "types": [
       "jest",
@@ -16,7 +19,7 @@
   "files": [],
   "references": [
     {
-      "path": "../tsconfig.json"
+      "path": "../tsconfig.json",
     }
   ]
 }

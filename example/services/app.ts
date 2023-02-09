@@ -1,5 +1,4 @@
 import * as lofi from '../../src/index';
-import * as types from '../../src/types';
 
 export interface AppService extends InterfaceOf<Service> { }
 
@@ -7,9 +6,9 @@ export interface AppService extends InterfaceOf<Service> { }
  * The AppService fetches documents and creates the index
  */
 class Service {
-  private readonly docsIndex: types.Index;
-  private readonly docsSearch: types.Search;
-  private readonly docsStorage: types.Storage;
+  private readonly docsIndex: lofi.Index;
+  private readonly docsSearch: lofi.Search;
+  private readonly docsStorage: lofi.Storage;
 
   constructor() {
     const index = this.docsIndex = lofi.createIndex({

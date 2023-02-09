@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "npm-run-all build-esm build-cjs",
-    "build-esm": "tsc --project tsconfig.esm.json",
+    "build-esm": "tsc --project tsconfig.json",
     "build-cjs": "tsc --project tsconfig.cjs.json",
     "clean": "rm -rf dist/",
     "preversion": "npm-run-all format lint",

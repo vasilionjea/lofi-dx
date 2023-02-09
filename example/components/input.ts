@@ -44,7 +44,6 @@ export default class SearchInput extends CoreComponent {
 
   reset() {
     this.setValue('');
-    this.dispatchClear();
     this.input?.focus();
   }
 

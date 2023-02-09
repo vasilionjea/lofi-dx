@@ -34,6 +34,7 @@ const STOPWORDS: { [key: string]: boolean } = {
   but: true,
   by: true,
   can: true,
+  cannot: true,
   couldn: true,
   "couldn't": true,
   d: true,

@@ -43,8 +43,12 @@
     "delta-encoding",
     "base36"
   ],
-  "author": "",
+  "author": "Vasili Onjea",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vasilionjea/lofi-dx.git"
+  },
   "devDependencies": {
     "@tsconfig/recommended": "^1.0.2",
     "@types/benchmark": "^2.1.2",

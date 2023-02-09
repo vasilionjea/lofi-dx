@@ -8,8 +8,8 @@ import {
 import { isStopword } from '../stopwords';
 
 export interface IndexConfig {
-  uidKey: string;
-  fields?: string[];
+  uidKey?: string;
+  fields: string[];
   splitter?: RegExp;
 }
 

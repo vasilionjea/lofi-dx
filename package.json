@@ -24,7 +24,19 @@
     "demo:gh-pages": "gh-pages -d public",
     "deploy": "npm-run-all demo:build demo:gh-pages"
   },
-  "keywords": [],
+  "keywords": [
+    "lofi-dx",
+    "search",
+    "fulltext-search",
+    "typescript",
+    "search-index",
+    "search-engine",
+    "search-algorithm",
+    "inverted-index",
+    "tf-idf",
+    "delta-encoding",
+    "base36"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {

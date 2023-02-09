@@ -135,5 +135,4 @@ You must have NodeJS already installed on your machine, then run `npm install` b
 * `npm run coverage` to display a code coverage report
 
 ### Deployment
-The `example/` directory contains a very simple frontend app with Vanilla TS (_no component frameworks_). Run `npm run deploy` to deploy to _gh-pages_
-
+The `example/` directory contains a simple demo app with vanilla TS. Run `npm run deploy` to deploy to _gh-pages_

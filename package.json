@@ -2,11 +2,17 @@
   "type": "module",
   "name": "lofi-dx",
   "version": "1.0.6",
-  "main": "src/index.js",
   "types": "types/src/index.d.ts",
   "description": "A small, fast, local-first, searchable index for client side apps written in Typescript.",
+  "exports": {
+    "import": "./esm/src/index.js",
+    "require": "./cjs/src/index.js",
+    "default": "./esm/src/index.js"
+  },
   "scripts": {
-    "build": "tsc -b src/",
+    "build": "npm-run-all build-esm build-cjs",
+    "build-esm": "tsc --project tsconfig.esm.json",
+    "build-cjs": "tsc --project tsconfig.cjs.json",
     "clean": "rm -rf dist/",
     "preversion": "npm-run-all format lint",
     "postversion": "git push && git push --tags",

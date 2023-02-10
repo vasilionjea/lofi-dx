@@ -38,9 +38,15 @@ The purpose of this is to allow making queries like `+jaguar speed "south americ
 [Demo app](https://vasilionjea.github.io/lofi-dx/)
 
 ## Usage
-Add documents to an index:
+First install the npm package using `npm i lofi-dx`, then import it in your project. Now create an index and add documents to it:
 ```js
-const index = lofi.createIndex({ uidKey: 'id', fields: ['title'] });
+import * as lofi from 'lofi-dx';
+
+const index = lofi.createIndex({
+  uidKey: 'id', // document unique identifier
+  fields: ['title'] // document fields to index
+});
+
 index.addDocuments([
   { id: 3, name: 'Mike', title: 'Chief Forward Impact Engineer 3 Foo' },
   { id: 7, name: 'Joe Doe', title: 'Chief Interactions Liason' },

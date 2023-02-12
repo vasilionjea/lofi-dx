@@ -20,12 +20,12 @@ describe('Core utils', () => {
   });
 
   test('[hasOwn] it returns true for own props otherwise false', () => {
-    const obj = { foo: 'foo' };
+    const obj = {foo: 'foo'};
     expect(hasOwn(obj, 'foo')).toBe(true);
     expect(hasOwn(obj, 'toString')).toBe(false);
   });
 
-  test(`[typeOf] it should return an object's JavaScript type`, () => {
+  test("[typeOf] it should return an object's JavaScript type", () => {
     expect(typeOf(null)).toBe('null');
     expect(typeOf(undefined)).toBe('undefined');
     expect(typeOf(false)).toBe('boolean');
@@ -52,25 +52,25 @@ describe('Core utils', () => {
   });
 
   test('[objectIntersection] it should return key-value pairs found in both objects', () => {
-    const first = { foo: 'foo', bar: 'bar' };
-    const second = { biz: 'biz', bar: 'bar' };
+    const first = {foo: 'foo', bar: 'bar'};
+    const second = {biz: 'biz', bar: 'bar'};
     const intersection = objectIntersection(first, second);
     const intersectionKeys = Object.keys(intersection);
 
     expect(intersectionKeys.length).toBe(1);
     expect(intersectionKeys[0]).toBe('bar');
-    expect(intersection).toMatchObject({ bar: 'bar' });
+    expect(intersection).toMatchObject({bar: 'bar'});
   });
 
   test('[objectDifference] it should return key-value pairs not present in the second object', () => {
-    const first = { foo: 'foo', bar: 'bar' };
-    const second = { biz: 'biz', bar: 'bar' };
+    const first = {foo: 'foo', bar: 'bar'};
+    const second = {biz: 'biz', bar: 'bar'};
     const diff = objectDifference(first, second);
     const diffKeys = Object.keys(diff);
 
     expect(diffKeys.length).toBe(1);
     expect(diffKeys[0]).toBe('foo');
-    expect(diff).toMatchObject({ foo: 'foo' });
+    expect(diff).toMatchObject({foo: 'foo'});
   });
 
   test('[binarySearch] it should find array item using binary search', () => {
@@ -98,7 +98,7 @@ describe('Core utils', () => {
       bool: true,
       num: 10,
       arr: [1, 2, 3],
-      obj: { title: 'foo bar' },
+      obj: {title: 'foo bar'},
     };
     const clone = deepClone(originial);
 

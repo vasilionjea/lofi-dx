@@ -1,22 +1,22 @@
-import { createStorage, Storage } from '../../src/utils/storage';
-import { InvertedIndex } from '../../src/search/inverted-index';
+import {createStorage, Storage} from '../../src/utils/storage';
+import {InvertedIndex} from '../../src/search/inverted-index';
 
 let storage: Storage;
 let index: InvertedIndex;
 
 const storageKey = 'test-key';
 const docs = [
-  { id: 3, name: 'Mike', title: 'Chief Forward Impact Engineer 3 Foo' },
-  { id: 7, name: 'Joe Doe', title: 'Chief Interactions Liason' },
-  { id: 11, name: 'Alice Smith', title: 'UX Designer Bar Baz' },
+  {id: 3, name: 'Mike', title: 'Chief Forward Impact Engineer 3 Foo'},
+  {id: 7, name: 'Joe Doe', title: 'Chief Interactions Liason'},
+  {id: 11, name: 'Alice Smith', title: 'UX Designer Bar Baz'},
 ];
 
 beforeEach(() => {
   localStorage.clear();
-  index = new InvertedIndex({ uidKey: 'id', fields: ['title'] }).addDocuments(
+  index = new InvertedIndex({uidKey: 'id', fields: ['title']}).addDocuments(
     docs
   );
-  storage = createStorage(index, { storageKey });
+  storage = createStorage(index, {storageKey});
 });
 
 describe('Storage', () => {
@@ -38,7 +38,7 @@ describe('Storage', () => {
     expect(localStorage.getItem(storageKey)).toBeNull();
 
     const TEN_SECONDS = 1000 * 10;
-    await storage.save({ ttl: TEN_SECONDS });
+    await storage.save({ttl: TEN_SECONDS});
 
     expect(localStorage.getItem(storageKey)).toBeTruthy();
 

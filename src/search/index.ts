@@ -1,5 +1,5 @@
-import { InvertedIndex, IndexConfig, Serializable } from './inverted-index';
-import { InvertedSearch, SearchConfig } from './inverted-search';
+import {InvertedIndex, IndexConfig, Serializable} from './inverted-index';
+import {InvertedSearch, SearchConfig} from './inverted-search';
 
 export {
   InvertedIndex as Index,

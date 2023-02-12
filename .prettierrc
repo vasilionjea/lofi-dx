@@ -1,4 +1,7 @@
 {
+  "parser": "typescript",
   "singleQuote": true,
-  "parser": "typescript"
+  "bracketSpacing": false,
+  "trailingComma": "es5",
+  "arrowParens": "avoid"
 }

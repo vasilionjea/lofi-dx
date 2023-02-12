@@ -12,9 +12,9 @@ import {
   parseQuery,
   groupQueryParts,
 } from '../query/index';
-import { tfidf } from '../utils/ranking';
-import { getPositionsCount, ParsedMetadata } from '../utils/encoding';
-import { InvertedIndex, Doc, TermTable } from './inverted-index';
+import {tfidf} from '../utils/ranking';
+import {getPositionsCount, ParsedMetadata} from '../utils/encoding';
+import {InvertedIndex, Doc, TermTable} from './inverted-index';
 
 export interface SearchConfig {
   prefixMatch?: boolean;
@@ -37,7 +37,7 @@ export class InvertedSearch {
   private readonly config: SearchConfig;
 
   constructor(private readonly invertedIndex: InvertedIndex, opts = {}) {
-    this.config = { ...DEFAULT_CONFIG, ...opts };
+    this.config = {...DEFAULT_CONFIG, ...opts};
   }
 
   /**
@@ -52,10 +52,7 @@ export class InvertedSearch {
     for (const [uid, docEntry] of termDocs) {
       const totalTerms = this.invertedIndex.getDocumentTermCount(uid);
       const frequency = getPositionsCount(docEntry);
-      result[uid] = tfidf(
-        { frequency, totalTerms },
-        { totalDocs, totalTermDocs }
-      );
+      result[uid] = tfidf({frequency, totalTerms}, {totalDocs, totalTermDocs});
     }
 
     return result;
@@ -95,7 +92,7 @@ export class InvertedSearch {
       const matches = {};
 
       // Quick and dirty but fast enough (for now)
-      this.invertedIndex.forEach((term) => {
+      this.invertedIndex.forEach(term => {
         if (term.startsWith(part.term)) {
           const partial = this.matchesWithScores(
             this.invertedIndex.getTermEntry(term)
@@ -161,9 +158,9 @@ export class InvertedSearch {
     candidates: TermTable;
     terms: string[];
   }) {
-    const matches: { [key: string]: number } = {}; // doc uid to term count (it's a phrase if count equals the total terms)
+    const matches: {[key: string]: number} = {}; // doc uid to term count (it's a phrase if count equals the total terms)
     const totalTerms = terms.length; // total terms being checked for a phrase
-    const positions: { [key: string]: number[] } = {}; // term to positions of term
+    const positions: {[key: string]: number[]} = {}; // term to positions of term
     const candidateUIDs = Object.keys(candidates);
 
     if (!candidateUIDs.length) return matches;
@@ -221,7 +218,7 @@ export class InvertedSearch {
 
     // Retrieve candidate docs that contain all terms (phrase or not)
     const candidates = this.getRequiredMatches(
-      subterms.map((term) => ({ term, isPhrase: false } as QueryPart))
+      subterms.map(term => ({term, isPhrase: false} as QueryPart))
     );
 
     // Perform search for the candidate docs
@@ -265,7 +262,7 @@ export class InvertedSearch {
       return (matches[b] as number) - (matches[a] as number);
     });
 
-    return sorted.map((uid) => this.invertedIndex.getDocument(uid));
+    return sorted.map(uid => this.invertedIndex.getDocument(uid));
   }
 
   /**

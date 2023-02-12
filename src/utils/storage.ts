@@ -1,11 +1,11 @@
-import { isNone } from './core';
-import { InvertedIndex, Serializable } from '../search/inverted-index';
+import {isNone} from './core';
+import {InvertedIndex, Serializable} from '../search/inverted-index';
 
 export type StorageConfig = {
   storageKey?: string;
 };
 
-export type SaveConfig = { ttl?: number };
+export type SaveConfig = {ttl?: number};
 
 export type Storage = {
   isSaved: () => boolean;
@@ -35,10 +35,10 @@ export function createStorage(
   }
 
   // Saves a snapshot of the index and its documents locally.
-  function save({ ttl = 0 } = {}): Promise<boolean> {
+  function save({ttl = 0} = {}): Promise<boolean> {
     return new Promise((resolve, reject) => {
       try {
-        const item = { expiry: Date.now() + ttl, value: index.toJSON() };
+        const item = {expiry: Date.now() + ttl, value: index.toJSON()};
         localStorage.setItem(storageKey, JSON.stringify(item));
         resolve(true);
       } catch (err) {
@@ -81,12 +81,12 @@ export function createStorage(
 
   // Clears stored index and its documents.
   function clear(): Promise<void> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       localStorage.removeItem(storageKey);
       resolve();
     });
   }
 
   // Public API
-  return { isSaved, getKey, save, load, clear };
+  return {isSaved, getKey, save, load, clear};
 }

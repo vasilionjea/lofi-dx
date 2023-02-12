@@ -4,8 +4,8 @@ import {
   stripModifiers,
   stemWord,
 } from '../utils/string';
-import { stripStopwords } from '../stopwords';
-import { QueryToken, QueryTokenType } from './tokenizer';
+import {stripStopwords} from '../stopwords';
+import {QueryToken, QueryTokenType} from './tokenizer';
 
 /**
  * A query is made of parts, each part being of a specific type.

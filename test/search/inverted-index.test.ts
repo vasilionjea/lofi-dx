@@ -1,7 +1,7 @@
-import { InvertedIndex } from '../../src/search/inverted-index';
-import { ParsedMetadata } from '../../src/utils/encoding';
+import {InvertedIndex} from '../../src/search/inverted-index';
+import {ParsedMetadata} from '../../src/utils/encoding';
 
-let docs: Array<{ [key: string]: unknown }>;
+let docs: Array<{[key: string]: unknown}>;
 const stopwords = {
   a: 'a',
   it: 'it',
@@ -26,7 +26,7 @@ beforeEach(() => {
       name: 'Alice Smith',
       title: `UX Designer Bar Baz ${stopwords['it']}`,
     },
-    { id: 21, name: 'Jamie Black', title: 'Foo What Graphic Designer Biz' },
+    {id: 21, name: 'Jamie Black', title: 'Foo What Graphic Designer Biz'},
     {
       id: 32,
       name: 'Joe Brown',
@@ -52,10 +52,10 @@ beforeEach(() => {
 
 describe('InvertedIndex', () => {
   test('it should add documents', () => {
-    const instance = new InvertedIndex({ uidKey: 'id', fields: ['title'] });
+    const instance = new InvertedIndex({uidKey: 'id', fields: ['title']});
     instance.addDocuments(docs);
 
-    const { documents } = instance.toJSON();
+    const {documents} = instance.toJSON();
     const [totalDocuments, documentsTable] = documents;
 
     expect(totalDocuments).toBe(docs.length);
@@ -67,10 +67,10 @@ describe('InvertedIndex', () => {
   });
 
   test('it should create the index from the document search fields', () => {
-    const instance = new InvertedIndex({ uidKey: 'id', fields: ['name'] });
+    const instance = new InvertedIndex({uidKey: 'id', fields: ['name']});
     instance.addDocuments(docs);
 
-    const { fields, index } = instance.toJSON();
+    const {fields, index} = instance.toJSON();
     expect(fields.length).toBe(1);
     expect(fields.includes('name')).toBe(true);
 
@@ -83,10 +83,10 @@ describe('InvertedIndex', () => {
   });
 
   test('it should not add stopwords to the index', () => {
-    const instance = new InvertedIndex({ uidKey: 'id', fields: ['title'] });
+    const instance = new InvertedIndex({uidKey: 'id', fields: ['title']});
     instance.addDocuments(docs);
 
-    const { index } = instance.toJSON();
+    const {index} = instance.toJSON();
     expect(index[stopwords['a']]).not.toBeDefined();
     expect(index[stopwords['it']]).not.toBeDefined();
     expect(index[stopwords['is']]).not.toBeDefined();
@@ -94,7 +94,7 @@ describe('InvertedIndex', () => {
   });
 
   test('it should index documents with positions', () => {
-    const instance = new InvertedIndex({ uidKey: 'id', fields: ['name'] });
+    const instance = new InvertedIndex({uidKey: 'id', fields: ['name']});
     instance.addDocuments(docs);
 
     const meta = instance.getDocumentEntry('joe', '7') as ParsedMetadata;
@@ -110,7 +110,7 @@ describe('InvertedIndex', () => {
       fields: ['name'],
     }).addDocuments(docs);
 
-    const { fields, index } = instance.toJSON();
+    const {fields, index} = instance.toJSON();
     expect(fields.length).toBe(1);
     expect(fields.includes('name')).toBe(true);
 
@@ -123,7 +123,7 @@ describe('InvertedIndex', () => {
 
     // Index additional field
     instance.index('title');
-    const { index: index2, fields: fields2 } = instance.toJSON();
+    const {index: index2, fields: fields2} = instance.toJSON();
 
     expect(fields2.length).toBe(2);
     expect(fields2.includes('name')).toBe(true);

@@ -1,5 +1,5 @@
-import { InvertedIndex } from '../../src/search/inverted-index';
-import { InvertedSearch } from '../../src/search/inverted-search';
+import {InvertedIndex} from '../../src/search/inverted-index';
+import {InvertedSearch} from '../../src/search/inverted-search';
 
 const stopwords = {
   a: 'a',
@@ -10,7 +10,7 @@ const stopwords = {
 
 function createInstance(
   searchConfig = {},
-  docs: Array<{ [key: string]: unknown }> = []
+  docs: Array<{[key: string]: unknown}> = []
 ) {
   const invertedIndex = new InvertedIndex({
     uidKey: 'id',
@@ -88,7 +88,7 @@ describe('InvertedSearch - Basic search', () => {
   });
 
   test('it should perform prefix search', () => {
-    const instance = createInstance({ prefixMatch: true });
+    const instance = createInstance({prefixMatch: true});
     const results = instance.search('graphic');
     expect(results.length).toBe(1);
     expect(results[0]['id']).toBe(21);
@@ -118,7 +118,7 @@ describe('InvertedSearch - Basic search', () => {
   test('it should search mixed queries', () => {
     const instance = createInstance();
     const results = instance.search(
-      `"software engineer" ux designer -"engineer 3" -graphic`
+      '"software engineer" ux designer -"engineer 3" -graphic'
     );
     expect(results.length).toBe(2);
     expect(results[0]['id']).toBe(11);
@@ -128,7 +128,7 @@ describe('InvertedSearch - Basic search', () => {
   test('it should return empty results', () => {
     const instance = createInstance();
     const results = instance.search(
-      `+"software engineer" +senior +staff -"engineer 3"`
+      '+"software engineer" +senior +staff -"engineer 3"'
     );
     expect(results.length).toBe(0);
   });
@@ -152,7 +152,7 @@ describe('InvertedSearch - Phrase search', () => {
       },
     ]);
 
-    const results = instance.search(`"staff software engineer"`);
+    const results = instance.search('"staff software engineer"');
     expect(results.length).toBe(1);
     expect(results[0]['id']).toBe(101);
   });
@@ -173,7 +173,7 @@ describe('InvertedSearch - Phrase search', () => {
     ]);
 
     const results = instance.search(
-      `"dummy text printing typesetting industry"`
+      '"dummy text printing typesetting industry"'
     );
     expect(results.length).toBe(1);
     expect(results[0]['id']).toBe(200);
@@ -194,7 +194,7 @@ describe('InvertedSearch - Phrase search', () => {
       },
     ]);
 
-    const results = instance.search(`"one two three"`);
+    const results = instance.search('"one two three"');
     expect(results.length).toBe(1);
   });
 
@@ -213,7 +213,7 @@ describe('InvertedSearch - Phrase search', () => {
       },
     ]);
 
-    const results = instance.search(`"one two three"`);
+    const results = instance.search('"one two three"');
     expect(results.length).toBe(0);
   });
 
@@ -233,7 +233,7 @@ describe('InvertedSearch - Phrase search', () => {
     ]);
 
     // document contains "southwestern" as last word in phrase
-    const results = instance.search(`"national park located southwest"`);
+    const results = instance.search('"national park located southwest"');
     expect(results.length).toBe(0);
   });
 
@@ -256,7 +256,7 @@ describe('InvertedSearch - Phrase search', () => {
       },
     ]);
 
-    const results = instance.search(`"engineer"`);
+    const results = instance.search('"engineer"');
     expect(results.length).toBe(2);
     expect(results[0]['id']).toBe(32);
     expect(results[1]['id']).toBe(101);
@@ -281,7 +281,7 @@ describe('InvertedSearch - Phrase search', () => {
       },
     ]);
 
-    const results = instance.search(`+"software engineer" -bafoon`);
+    const results = instance.search('+"software engineer" -bafoon');
     expect(results.length).toBe(1);
     expect(results[0]['id']).toBe(101);
   });
@@ -305,7 +305,7 @@ describe('InvertedSearch - Phrase search', () => {
       },
     ]);
 
-    const results = instance.search(`+"software" -bafoon`);
+    const results = instance.search('+"software" -bafoon');
     expect(results.length).toBe(1);
     expect(results[0]['id']).toBe(101);
   });
@@ -334,7 +334,7 @@ describe('InvertedSearch - Phrase search', () => {
       },
     ]);
 
-    const results = instance.search(`engineer -"senior staff"`);
+    const results = instance.search('engineer -"senior staff"');
     expect(results.length).toBe(2);
     expect(results[0]['id']).toBe(32); // doc 32 comes first because of tfidf (32 has less words)
     expect(results[1]['id']).toBe(3);
@@ -364,7 +364,7 @@ describe('InvertedSearch - Phrase search', () => {
       },
     ]);
 
-    const results = instance.search(`engineer -"staff"`);
+    const results = instance.search('engineer -"staff"');
     expect(results.length).toBe(2);
     expect(results[0]['id']).toBe(32); // doc 32 comes first because of tfidf (32 has less words)
     expect(results[1]['id']).toBe(3);

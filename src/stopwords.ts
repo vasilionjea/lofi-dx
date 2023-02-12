@@ -1,9 +1,9 @@
-import { typeOf } from './utils/core';
+import {typeOf} from './utils/core';
 
 /**
  * Stopwords that are stripped away from queries and the index.
  */
-const STOPWORDS: { [key: string]: boolean } = {
+const STOPWORDS: {[key: string]: boolean} = {
   a: true,
   able: true,
   about: true,

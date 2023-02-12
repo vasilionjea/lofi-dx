@@ -17,9 +17,9 @@ describe('String utils', () => {
 
   test('[collapseWhitespace] it collapses multiple whitespace chars', () => {
     expect(collapseWhitespace(' +modifier')).toEqual('+modifier');
-    expect(collapseWhitespace('  "thing" ')).toEqual(`"thing"`);
-    expect(collapseWhitespace(`  -"quoted   modifier" `)).toEqual(
-      `-"quoted modifier"`
+    expect(collapseWhitespace('  "thing" ')).toEqual('"thing"');
+    expect(collapseWhitespace('  -"quoted   modifier" ')).toEqual(
+      '-"quoted modifier"'
     );
     expect(collapseWhitespace('    ')).toEqual('');
     expect(collapseWhitespace('')).toEqual('');
@@ -27,9 +27,9 @@ describe('String utils', () => {
   });
 
   test('[unquote] it removes quotes from text', () => {
-    expect(unquote(`"ux engineer"`)).toEqual('ux engineer');
-    expect(unquote(`-"ux engineer"`)).toEqual('-ux engineer');
-    expect(unquote(`+"ux engineer"`)).toEqual('+ux engineer');
+    expect(unquote('"ux engineer"')).toEqual('ux engineer');
+    expect(unquote('-"ux engineer"')).toEqual('-ux engineer');
+    expect(unquote('+"ux engineer"')).toEqual('+ux engineer');
     expect(unquote('""')).toEqual('');
     expect(unquote('"')).toEqual('');
     expect(unquote()).toEqual('');

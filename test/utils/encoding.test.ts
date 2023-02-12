@@ -1,4 +1,4 @@
-import { encodePositions, decodePositions } from '../../src/utils/encoding';
+import {encodePositions, decodePositions} from '../../src/utils/encoding';
 
 describe('Encoding utils', () => {
   test('[encodePositions] it should encode sorted numbers to their deltas', () => {

@@ -60,7 +60,7 @@ export function encodeMetadata(meta: ParsedMetadata): string {
  * Parses the encoded meta for a doc back into a readable POJO.
  */
 export function parseMetadata(meta: string): ParsedMetadata {
-  if (!meta) return { positions: [] };
+  if (!meta) return {positions: []};
   return {
     positions: decodePositions(meta.split(POSITIONS_SEPARATOR)),
   };

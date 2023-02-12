@@ -12,6 +12,10 @@
     "esModuleInterop": true,
     "noImplicitAny": true,
     "removeComments": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
     "sourceMap": true
   },
   "include": [

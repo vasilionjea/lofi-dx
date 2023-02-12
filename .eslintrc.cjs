@@ -22,9 +22,14 @@ module.exports = {
 
   // Project-specific rules
   rules: {
-    // Example disabling a plugin rule
-    // 0 = off, 1 = warn, 2 = error
-    // '@typescript-eslint/no-unused-vars': 0,
+    "block-scoped-var": "error",
+    "eqeqeq": "error",
+    "no-var": "error",
+    "prefer-const": "error",
+    "eol-last": "error",
+    "prefer-arrow-callback": "error",
+    "no-trailing-spaces": "error",
+    "quotes": ["warn", "single", { "avoidEscape": true }],
   },
 
   overrides: [
@@ -36,8 +41,14 @@ module.exports = {
         sourceType: 'module',
       },
       extends: [
+        'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/recommended-requiring-type-checking'
       ],
+      rules: {
+        "@typescript-eslint/no-empty-function": "off",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+      },
     },
     {
       files: ['test/**/*.ts'],
@@ -45,6 +56,14 @@ module.exports = {
         tsconfigRootDir: __dirname,
         project: ['./test/tsconfig.json'],
         sourceType: 'module',
+      },
+      extends: [
+        'plugin:@typescript-eslint/recommended',
+      ],
+      rules: {
+        "@typescript-eslint/no-empty-function": "off",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
       },
     },
   ],

@@ -34,8 +34,8 @@ export function idf(totalDocs: number, totalTermDocs: number): number {
  * document but it's offset by the frequency of the word in the whole corpus.
  */
 export function tfidf(
-  { frequency, totalTerms }: TFValues,
-  { totalDocs, totalTermDocs }: IDFValues
+  {frequency, totalTerms}: TFValues,
+  {totalDocs, totalTermDocs}: IDFValues
 ): number {
   const tfValue = tf(frequency, totalTerms);
   const idfValue = idf(totalDocs, totalTermDocs);

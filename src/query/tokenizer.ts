@@ -1,4 +1,4 @@
-import { isStopword } from '../stopwords';
+import {isStopword} from '../stopwords';
 
 /**
  * The query token types that are supported.
@@ -11,7 +11,7 @@ export enum QueryTokenType {
 }
 
 // Test at: https://regex101.com
-const termRegexes: { [key: string]: RegExp } = {
+const termRegexes: {[key: string]: RegExp} = {
   [QueryTokenType.PresenceTerm]:
     /(?<PresenceTerm>(?:(\s+)?([-+]))((\w{2,})|"(?:[^"]+)"))/, // unquoted or quoted
   [QueryTokenType.ExactTerm]: /(?<ExactTerm>("(?:[^"]+)"))/, // quoted
@@ -42,7 +42,7 @@ export class QueryToken {
  */
 export class QueryTokenizer {
   private getTokenType(
-    matchGroup: { [key: string]: string } = {}
+    matchGroup: {[key: string]: string} = {}
   ): QueryTokenType {
     let type = QueryTokenType.Invalid;
 

@@ -1,11 +1,7 @@
-import { isNone, deepClone } from '../utils/core';
-import { collapseWhitespace, isBlank, stemWord } from '../utils/string';
-import {
-  encodeMetadata,
-  parseMetadata,
-  ParsedMetadata,
-} from '../utils/encoding';
-import { isStopword } from '../stopwords';
+import {isNone, deepClone} from '../utils/core';
+import {collapseWhitespace, isBlank, stemWord} from '../utils/string';
+import {encodeMetadata, parseMetadata, ParsedMetadata} from '../utils/encoding';
+import {isStopword} from '../stopwords';
 
 export interface IndexConfig {
   uidKey?: string;
@@ -13,13 +9,13 @@ export interface IndexConfig {
   splitter?: RegExp;
 }
 
-export type Doc = { [key: string]: unknown };
-export type DocTable = { [key: string]: Doc };
+export type Doc = {[key: string]: unknown};
+export type DocTable = {[key: string]: Doc};
 
-export type TermTable = { [key: string]: string };
-export type IndexTable = { [key: string]: TermTable };
+export type TermTable = {[key: string]: string};
+export type IndexTable = {[key: string]: TermTable};
 
-export type DocTermCounts = { [key: string]: number };
+export type DocTermCounts = {[key: string]: number};
 
 export type SerializableDocData = [
   number, // total docs
@@ -67,7 +63,7 @@ export class InvertedIndex {
     for (const term of tokens) {
       if (!isStopword(term)) {
         const stemmed = stemWord(term);
-        const token = { term: stemmed, position: start };
+        const token = {term: stemmed, position: start};
         start += stemmed.length + 1;
         result.push(token);
       }
@@ -122,13 +118,13 @@ export class InvertedIndex {
       this.docTermCounts[uid] = 0;
 
       // Index doc
-      this.fields.forEach((field) => this.indexDocument(field, doc));
+      this.fields.forEach(field => this.indexDocument(field, doc));
     }
 
     return this;
   }
 
-  loadFromStorage({ fields, documents, index }: Serializable) {
+  loadFromStorage({fields, documents, index}: Serializable) {
     const [totalDocs, docTable, docTermCounts] = documents;
     this.fields = new Set(fields);
     this.totalDocs = totalDocs;

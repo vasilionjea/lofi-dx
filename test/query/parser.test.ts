@@ -10,7 +10,7 @@ import {
 describe('QueryParser', () => {
   test('it should tokenize and parse a raw query text', () => {
     const query: ParsedQuery = parseQuery(
-      `+frontend engineer -backend  "ux  engineer "  -" full stack"`
+      '+frontend engineer -backend  "ux  engineer "  -" full stack"'
     );
     expect(query instanceof ParsedQuery).toBe(true);
     expect(query.parts.length).toBe(5);
@@ -42,13 +42,13 @@ describe('QueryParser', () => {
 
   test('it should parse tokens into a ParsedQuery object', () => {
     const tokens = [
-      { type: 'PresenceTerm', text: '+frontend' },
-      { type: 'Term', text: 'engineer' },
-      { type: 'PresenceTerm', text: '-backend' },
-      { type: 'ExactTerm', text: '"ux  engineer "' },
-      { type: 'PresenceTerm', text: '-"full stack"' },
-      { type: 'ExactTerm', text: '"the backend  engineer "' },
-      { type: 'PresenceTerm', text: '+"the mean stack is"' },
+      {type: 'PresenceTerm', text: '+frontend'},
+      {type: 'Term', text: 'engineer'},
+      {type: 'PresenceTerm', text: '-backend'},
+      {type: 'ExactTerm', text: '"ux  engineer "'},
+      {type: 'PresenceTerm', text: '-"full stack"'},
+      {type: 'ExactTerm', text: '"the backend  engineer "'},
+      {type: 'PresenceTerm', text: '+"the mean stack is"'},
     ];
     const parser = new QueryParser();
     const query: ParsedQuery = parser.parse(tokens as QueryToken[]);
@@ -86,10 +86,10 @@ describe('QueryParser', () => {
 
   test('it should group query parts by type', () => {
     const parts = [
-      { term: 'foo', type: QueryPartType.Negated, isPhrase: false },
-      { term: 'bar', type: QueryPartType.Required, isPhrase: false },
-      { term: 'cool beer', type: QueryPartType.Required, isPhrase: true },
-      { term: 'biz baz', type: QueryPartType.Simple, isPhrase: true },
+      {term: 'foo', type: QueryPartType.Negated, isPhrase: false},
+      {term: 'bar', type: QueryPartType.Required, isPhrase: false},
+      {term: 'cool beer', type: QueryPartType.Required, isPhrase: true},
+      {term: 'biz baz', type: QueryPartType.Simple, isPhrase: true},
     ];
 
     const groups = groupQueryParts(parts);

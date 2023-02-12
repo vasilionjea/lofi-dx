@@ -1,5 +1,5 @@
 # lofi-dx
-[![Build Status](https://github.com/vasilionjea/webpack-frontend-template/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/vasilionjea/webpack-frontend-template/actions/workflows/unit-tests.yml) 
+[![Build Status](https://github.com/vasilionjea/webpack-frontend-template/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/vasilionjea/webpack-frontend-template/actions/workflows/unit-tests.yml) [![Code Style: Google](https://img.shields.io/badge/code%20style-google-blueviolet.svg)](https://github.com/google/gts)
 
 A small, fast, local-first, searchable index for client side apps written in Typescript. Has support for required, negated, and phrase queries. A set of default stopwords that can be extended are filtered out from queries and the index. Search results are ranked using simple [TF-IDF](https://en.wikipedia.org/wiki/Tf%E2%80%93idf).
 

@@ -59,7 +59,7 @@ export default class SearchResults extends CoreComponent {
 
     const event = new CustomEvent('results:suggestion', {
       bubbles: true,
-      detail: { value: value },
+      detail: { value },
     });
 
     this.dispatchEvent(event);

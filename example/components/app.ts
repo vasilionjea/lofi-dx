@@ -31,9 +31,12 @@ export default class App extends State {
 
     try {
       await this.appService.loadDocuments();
+
       this.searchInput.addEventListener('input:value', this);
       this.searchInput.addEventListener('input:clear', this);
       this.searchInput.setValue(EXAMPLE_QUERY);
+
+      this.searchResults.addEventListener('results:suggestion', this);
     } catch (err) {
       console.error(err);
     }
@@ -47,12 +50,23 @@ export default class App extends State {
   handleEvent(event: CustomEvent) {
     const { type, detail } = event;
 
-    if (type === 'input:value') {
-      this.debouncedSearch(detail.value);
-    }
+    switch (type) {
+      case 'input:value':
+        this.debouncedSearch(detail.value);
+        break;
 
-    if (type === 'input:clear') this.setState({ results: null });
-    if (type === 'statechange') this.renderResults();
+      case 'input:clear':
+        this.setState({ results: null });
+        break;
+
+      case 'statechange':
+        this.renderResults();
+        break;
+
+      case 'results:suggestion':
+        this.searchInput.setValue(detail.value);
+        break;
+    }
   }
 
   renderResults() {

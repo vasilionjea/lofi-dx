@@ -22,21 +22,23 @@ export default class SearchResults extends CoreComponent {
   }
 
   private querySuggestions() {
-    let str = '<div class="query-suggestions">';
-    str += '<p>Suggestions</p>';
-    str += '<ul>';
-    str += `<li class="pill pill--outlined">camping waterfalls -Teton</li>`;
-    str += `<li class="pill pill--outlined">"sierra nevada" +mojave</li>`;
-    str += `<li class="pill pill--outlined">southwestern Utah</li>`;
-    str += '</ul>';
-    return str + '</div>';
+    return `
+      <div class="query-suggestions">
+        <p>Suggestions</p>
+        <button class="btn pill pill--outlined suggestion">camping waterfalls -Teton</button>
+        <button class="btn pill pill--outlined suggestion">"sierra nevada" +mojave</button>
+        <button class="btn pill pill--outlined suggestion">southwestern Utah</button>
+      </div>
+    `;
   }
 
   private noResultsTemplate() {
-    let str = '<div class="no-results">';
-    str += '<p>No results found :(</p>';
-    str += this.querySuggestions();
-    return str + '</div>';
+    return `
+      <div class="no-results">
+        <p>No results found :(</p>
+        ${this.querySuggestions()}
+      </div>
+    `;
   }
 
   private toggle(trigger: Element, article: Element) {
@@ -52,11 +54,24 @@ export default class SearchResults extends CoreComponent {
     }
   }
 
+  private dispatchSuggestion(value: string) {
+    if (!value) return;
+
+    const event = new CustomEvent('results:suggestion', {
+      bubbles: true,
+      detail: { value: value },
+    });
+
+    this.dispatchEvent(event);
+  }
+
   handleEvent(e: Event) {
     const target = e.target as Element;
 
     if (target.classList.contains('see-more')) {
       this.toggle(target, target.parentElement!);
+    } else if (target.classList.contains('suggestion')) {
+      this.dispatchSuggestion(target.textContent!);
     }
   }
 

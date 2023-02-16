@@ -81,7 +81,7 @@ The index's internal word map is represented space efficiently as follows:
 ```js
 {
   // word
-  "plateau": { 
+  "yosemite": { 
     // document UID: metadata
     "2":"ae",
     "3":"5o,nb,2a,2c,n,31",

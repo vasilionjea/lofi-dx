@@ -1,4 +1,4 @@
-import {isNone, deepClone} from '../utils/core';
+import {isNone, isNumber, isString, deepClone} from '../utils/core';
 import {collapseWhitespace, isBlank, stemWord} from '../utils/string';
 import {encodeMetadata, parseMetadata, ParsedMetadata} from '../utils/encoding';
 import {isStopword} from '../stopwords';
@@ -72,6 +72,15 @@ export class InvertedIndex {
     return result;
   }
 
+  private normalizeUid(val: string) {
+    let uid = val;
+
+    if (isNumber(uid)) uid = uid.toString();
+    if (isString(uid)) uid = uid.trim();
+
+    return uid;
+  }
+
   index(field: string) {
     if (isNone(field) || isBlank(field)) return this;
     this.fields.add(field);
@@ -84,12 +93,13 @@ export class InvertedIndex {
   }
 
   private indexDocument(field: string, doc: Doc) {
-    const uid = doc[this.uidKey] as string;
-    if (isNone(uid) || isNone(doc[field])) return;
+    const uid = this.normalizeUid(doc[this.uidKey] as string);
+    if (!isString(uid) || isBlank(uid)) return;
 
-    const tokens = this.tokensWithPositions(
-      this.tokenizeText(doc[field] as string)
-    );
+    const fieldValue = doc[field] as string;
+    if (!isString(fieldValue) || isBlank(fieldValue)) return;
+
+    const tokens = this.tokensWithPositions(this.tokenizeText(fieldValue));
     this.docTermCounts[uid] += tokens.length;
 
     for (const token of tokens) {
@@ -108,7 +118,8 @@ export class InvertedIndex {
     if (!Array.isArray(docs) || !docs.length) return this;
 
     for (const doc of docs) {
-      const uid = doc[this.uidKey] as string;
+      const uid = this.normalizeUid(doc[this.uidKey] as string);
+      if (!isString(uid) || isBlank(uid)) continue;
 
       // Count unique docs
       if (!this.docTable[uid]) this.totalDocs += 1;

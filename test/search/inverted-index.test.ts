@@ -66,6 +66,21 @@ describe('InvertedIndex', () => {
     );
   });
 
+  test('it should ingore documents with invalid UIDs', () => {
+    const instance = new InvertedIndex({uidKey: 'id', fields: ['title']});
+    const ignoredDocs = [
+      {name: 'without uid', title: 'doc without a UID'},
+      {id: NaN, name: 'invalid uid 1', title: 'doc with an invalid UID 1'},
+      {id: true, name: 'invalid uid 2', title: 'doc with an invalid UID 2'},
+    ];
+    instance.addDocuments([...docs, ...ignoredDocs]);
+
+    const {documents} = instance.toJSON();
+    const [totalDocuments] = documents;
+
+    expect(totalDocuments).toBe(docs.length);
+  });
+
   test('it should create the index from the document search fields', () => {
     const instance = new InvertedIndex({uidKey: 'id', fields: ['name']});
     instance.addDocuments(docs);

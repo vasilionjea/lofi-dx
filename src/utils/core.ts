@@ -22,6 +22,14 @@ export function isNone(obj: unknown): boolean {
   return obj === null || obj === undefined;
 }
 
+export function isNumber(obj: unknown): boolean {
+  return !isNaN(obj as number) && typeOf(obj) === 'number';
+}
+
+export function isString(obj: unknown): boolean {
+  return typeOf(obj) === 'string';
+}
+
 export function hasOwn(obj: object, key: string): boolean {
   return Object.prototype.hasOwnProperty.call(obj, key);
 }

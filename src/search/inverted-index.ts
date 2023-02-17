@@ -105,7 +105,7 @@ export class InvertedIndex {
   }
 
   addDocuments(docs: Doc[]) {
-    if (isNone(docs) || !Array.isArray(docs)) return this;
+    if (!Array.isArray(docs) || !docs.length) return this;
 
     for (const doc of docs) {
       const uid = doc[this.uidKey] as string;

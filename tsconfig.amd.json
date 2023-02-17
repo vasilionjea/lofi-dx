@@ -2,7 +2,7 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "module": "AMD",
-    "outFile": "dist/amd",
+    "outFile": "dist/index.amd.js",
     "declarationDir": null
   }
 }

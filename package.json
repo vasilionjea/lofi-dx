@@ -10,9 +10,10 @@
     "default": "./esm/src/index.js"
   },
   "scripts": {
-    "build": "npm-run-all build-esm build-cjs",
+    "build": "npm-run-all build-esm build-cjs build-amd",
     "build-esm": "tsc --project tsconfig.json",
     "build-cjs": "tsc --project tsconfig.cjs.json",
+    "build-amd": "tsc --project tsconfig.amd.json",
     "clean": "rm -rf dist/",
     "preversion": "npm-run-all format lint",
     "postversion": "git push && git push --tags",

@@ -3,7 +3,7 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 
-npm version patch
+npm version ${1:-patch} # defaults to "patch"
 
 npm run clean
 npm run build

@@ -1,4 +1,4 @@
-import {isNone, isNumber, isString, deepClone} from '../utils/core';
+import {hasOwn, isNone, isNumber, isString, deepClone} from '../utils/core';
 import {collapseWhitespace, isBlank, stemWord} from '../utils/string';
 import {encodeMetadata, parseMetadata, ParsedMetadata} from '../utils/encoding';
 import {isStopword} from '../stopwords';
@@ -103,7 +103,9 @@ export class InvertedIndex {
     this.docTermCounts[uid] += tokens.length;
 
     for (const token of tokens) {
-      if (!this.indexTable[token.term]) this.indexTable[token.term] = {};
+      if (!hasOwn(this.indexTable, token.term)) {
+        this.indexTable[token.term] = {};
+      }
 
       // Update positions for this doc
       const meta = this.getDocumentEntry(token.term, uid) as ParsedMetadata;
@@ -122,7 +124,7 @@ export class InvertedIndex {
       if (!isString(uid) || isBlank(uid)) continue;
 
       // Count unique docs
-      if (!this.docTable[uid]) this.totalDocs += 1;
+      if (!hasOwn(this.docTable, uid)) this.totalDocs += 1;
 
       // Add doc
       this.docTable[uid] = doc;
@@ -173,7 +175,7 @@ export class InvertedIndex {
   }
 
   hasTermEntry(term: string): boolean {
-    return term in this.indexTable;
+    return hasOwn(this.indexTable, term);
   }
 
   getDocumentEntry(

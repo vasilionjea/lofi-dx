@@ -5,6 +5,9 @@ import {
   ParsedQuery,
   parseQuery,
   groupQueryParts,
+  isSimple,
+  isNegated,
+  isRequired,
 } from '../../src/query/index';
 
 describe('QueryParser', () => {
@@ -97,5 +100,30 @@ describe('QueryParser', () => {
     expect(groups.negated.length).toBe(1);
     expect(groups.required.length).toBe(2);
     expect(groups.simple.length).toBe(1);
+  });
+
+  test('it should have query type helpers', () => {
+    const parts = [
+      {term: 'foo', type: QueryPartType.Negated, isPhrase: false},
+      {term: 'bar', type: QueryPartType.Required, isPhrase: false},
+      {term: 'cool beer', type: QueryPartType.Required, isPhrase: true},
+      {term: 'biz baz', type: QueryPartType.Simple, isPhrase: true},
+    ];
+
+    // isSimple
+    expect(isSimple(parts[0].type)).toBe(false);
+    expect(isSimple(parts[1].type)).toBe(false);
+    expect(isSimple(parts[3].type)).toBe(true);
+
+    // isNegated
+    expect(isNegated(parts[0].type)).toBe(true);
+    expect(isNegated(parts[1].type)).toBe(false);
+    expect(isNegated(parts[3].type)).toBe(false);
+
+    // isRequired
+    expect(isRequired(parts[0].type)).toBe(false);
+    expect(isRequired(parts[1].type)).toBe(true);
+    expect(isRequired(parts[2].type)).toBe(true);
+    expect(isRequired(parts[3].type)).toBe(false);
   });
 });

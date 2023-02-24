@@ -26,6 +26,15 @@ export interface QueryPart {
 }
 
 /**
+ * Query type helpers.
+ */
+export const isSimple = (type: QueryPartType) => type === QueryPartType.Simple;
+export const isNegated = (type: QueryPartType) =>
+  type === QueryPartType.Negated;
+export const isRequired = (type: QueryPartType) =>
+  type === QueryPartType.Required;
+
+/**
  * An instance of ParsedQuery is used to search the index.
  */
 export class ParsedQuery {

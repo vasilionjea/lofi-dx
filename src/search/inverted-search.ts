@@ -7,10 +7,11 @@ import {
 } from '../utils/core';
 import {
   QueryPart,
-  QueryPartType,
   ParsedQuery,
   parseQuery,
   groupQueryParts,
+  isSimple,
+  isNegated,
 } from '../query/index';
 import {tfidf} from '../utils/ranking';
 import {getPositionsCount, ParsedMetadata} from '../utils/encoding';
@@ -235,16 +236,14 @@ export class InvertedSearch {
     const result = {};
 
     for (const part of parts) {
-      const isNegated = part.type === QueryPartType.Negated;
-      const isSimple = part.type === QueryPartType.Simple;
-      const prefixMatch = isSimple && this.config.prefixMatch;
+      const prefixMatch = isSimple(part.type) && this.config.prefixMatch;
 
       const matches = part.isPhrase
         ? this.getPhraseMatches(part)
         : this.getSimpleMatches(part, prefixMatch);
 
       // no need to sum scores for negated matches
-      isNegated
+      isNegated(part.type)
         ? Object.assign(result, matches)
         : this.assignScores(result, matches);
     }

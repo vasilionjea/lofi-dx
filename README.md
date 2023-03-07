@@ -98,7 +98,7 @@ The index's internal word map is represented space efficiently as follows:
 ## Memory
 Given that this is a client-side solution to full-text search, the documents and the index are loaded in memory. Although the index is represented space efficiently, keep in mind that a client side full-text search implementation is likely not practical for large enough datasets. 
 
-The point of client side full-text search is to improve the user experience in offline mode, or when Internet connection is flakey, or when such client side feature is more performant than querying a server. However, if your app runs into memory issues and crashes the Browser tab because you're trying to load many megabytes worth of documents, then that will actually derail the user experience. Have a cap on the total bytes you're storing client-side and loading into memory.
+The point of client side full-text search is to improve the user experience in offline mode, or when Internet connection is flakey, or when such client side feature is desirable over querying a server. However, if your app runs into memory issues and crashes the Browser tab because you're trying to load many megabytes worth of documents, then that will actually derail the user experience. Have a cap on the total bytes you're storing client-side and loading into memory.
 
 ## Persistence
 There are methods for writing the index to `localStorage` and later loading it but no other assumptions are made. Perhaps `localStorage` (_limited to 5MB_) works for your usecase or you may need to reach for `IndexedDB`.

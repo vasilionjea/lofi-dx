@@ -23,7 +23,7 @@ const DEFAULT_STORAGE_KEY = 'lofi-dx:index';
 export function createStorage(
   index: InvertedIndex,
   config: StorageConfig = {}
-) {
+): Storage {
   const storageKey = config.storageKey || DEFAULT_STORAGE_KEY;
 
   function getKey() {

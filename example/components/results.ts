@@ -14,7 +14,6 @@ const CLASS_EXPANDED = 'expanded';
  * SearchResults component
  */
 export default class SearchResults extends Component {
-
   private handleClick!: EventListener;
 
   protected init() {
@@ -51,7 +50,6 @@ export default class SearchResults extends Component {
 
   template(): string {
     const { resultList } = this.props;
-
     if (!resultList) return '';
 
     return resultList.length ?
@@ -60,8 +58,9 @@ export default class SearchResults extends Component {
   }
 
   private resultsHtml(): string {
-    const { resultList } = this.props;
-    return resultList.reduce((str: string, obj: Article) => str + `<article>${obj.title}${obj.body}</article>`, '');
+    return this.props.resultList?.reduce((html: string, article: Article) => {
+      return html + `<article>${article.title}${article.body}</article>`;
+    }, '');
   }
 
   private noResultsHtml() {

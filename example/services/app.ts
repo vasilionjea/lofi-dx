@@ -46,8 +46,6 @@ class Service {
       await this.fetch();
       this.docsStorage.save({ ttl: ONE_DAY });
     }
-
-    console.log(this.docsIndex.toJSON());
   }
 
   search(queryText = '') {

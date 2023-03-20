@@ -1,6 +1,6 @@
 import './styles/style.scss';
 import appService from './services/app';
-import AppComponent from './components/app';
+import App from './app';
 
-const app = new AppComponent(appService);
+const app = new App(appService);
 app.start();

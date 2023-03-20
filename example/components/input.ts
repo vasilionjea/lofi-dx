@@ -1,43 +1,39 @@
-import CoreComponent from './core';
-
-const TEXT_PLACEHOLDER = 'Search for something...';
+import Component from '../core/component';
 
 /**
- * Search Input
+ * SearchInput component
  */
-export default class SearchInput extends CoreComponent {
-  input!: HTMLInputElement;
-  clearButton!: HTMLButtonElement;
+export default class SearchInput extends Component {
+  private input!: HTMLInputElement;
+  private clearButton!: HTMLButtonElement;
+  private handleInput!: EventListener;
+  private handleReset!: EventListener;
 
-  get classNames() {
-    return ['search-input'];
+  protected init() {
+    this.handleInput = this.onInputChange.bind(this);
+    this.handleReset = this.reset.bind(this);
+  }
+
+  protected didMount() {
+    this.input = this.element.querySelector('input')!;
+    this.clearButton = this.element.querySelector('.btn-clear')!;
+
+    this.input.addEventListener('input', this.handleInput);
+    this.clearButton.addEventListener('click', this.handleReset);
   }
 
   private onInputChange() {
-    if (this.input!.value) {
-      this.dispatchInput();
+    const { value } = this.input;
+    const { onInputValue, onInputClear } = this.props;
+
+    if (value) {
+      onInputValue?.(value);
     } else {
-      this.dispatchClear();
+      onInputClear?.();
     }
   }
 
-  private dispatchInput() {
-    const event = new CustomEvent('input:value', {
-      bubbles: true,
-      detail: { value: this.input!.value },
-    });
-
-    this.dispatchEvent(event);
-  }
-
-  private dispatchClear() {
-    const event = new CustomEvent('input:clear', { bubbles: true });
-    this.dispatchEvent(event);
-  }
-
   setValue(value: string) {
-    if (!this.input) return;
-
     this.input.value = value;
     this.onInputChange();
   }
@@ -47,7 +43,16 @@ export default class SearchInput extends CoreComponent {
     this.input?.focus();
   }
 
-  private clearIconTemplate() {
+  template(): string {
+    const labelId = 'prompt', inputId = 'searchInput';
+    return `
+      <label id="${labelId}" for="${inputId}" class="visuallyhidden">Search national parks</label>
+      <input type="search" id="${inputId}" placeholder="Search for something..." aria-labelledby="${labelId}" autocorrect="off" spellcheck="false" autocapitalize="off">
+      <button class="btn btn-icon btn-clear" aria-label="Clear search">${this.clearIcon()}</button>
+    `;
+  }
+
+  clearIcon() {
     return `
       <svg
         aria-hidden="true"
@@ -61,25 +66,10 @@ export default class SearchInput extends CoreComponent {
     `;
   }
 
-  private template() {
-    const labelId = 'prompt';
-    const inputId = 'searchInput';
-    return `
-      <label id="${labelId}" for="${inputId}" class="visuallyhidden">Search national parks</label>
-      <input type="search" id="${inputId}" placeholder="${TEXT_PLACEHOLDER}" aria-labelledby="${labelId}" autocorrect="off" spellcheck="false" autocapitalize="off">
-      <button class="btn btn-icon btn-clear" aria-label="Clear search">${this.clearIconTemplate()}</button>
-    `;
-  }
-
-  render() {
-    this.element.insertAdjacentHTML('beforeend', this.template());
-
-    this.input = this.element.querySelector('input')!;
-    this.input.addEventListener('input', () => this.onInputChange());
-
-    this.clearButton = this.element.querySelector('.btn-clear')!;
-    this.clearButton.addEventListener('click', (e) => this.reset());
-
-    return this;
+  destroy(): void {
+    this.input?.removeEventListener('input', this.handleInput);
+    this.clearButton?.removeEventListener('click', this.handleReset);
+    this.input = this.clearButton = null!;
+    super.destroy();
   }
 }

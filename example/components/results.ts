@@ -1,47 +1,42 @@
-import CoreComponent from './core';
+import Component from '../core/component';
+
+type Article = {
+  id: number;
+  title: string;
+  body: string;
+};
 
 const TEXT_MORE = 'read more';
 const TEXT_LESS = 'read less';
 const CLASS_EXPANDED = 'expanded';
 
 /**
- * Search Results
+ * SearchResults component
  */
-export default class SearchResults extends CoreComponent {
-  get classNames() {
-    return ['search-results'];
+export default class SearchResults extends Component {
+
+  private handleClick!: EventListener;
+
+  protected init() {
+    this.handleClick = this.onClick.bind(this);
   }
 
-  constructor() {
-    super();
-    this.element.addEventListener('click', this)
+  protected didMount() {
+    this.element.addEventListener('click', this.handleClick);
   }
 
-  private resultsTemplate(data: any[]): string {
-    return data.reduce((str, o) => str + `<article>${o.title}${o.body}</article>`, '');
+  private onClick(e: Event) {
+    const target = e.target as Element;
+
+    if (target.classList.contains('see-more')) {
+      this.toggleArticle(target, target.parentElement!);
+    } else if (target.classList.contains('suggestion')) {
+      const value = target.textContent;
+      value && this.props.onSuggestionClick(value);
+    }
   }
 
-  private querySuggestions() {
-    return `
-      <div class="query-suggestions">
-        <p>Suggestions</p>
-        <button class="btn pill pill--outlined suggestion">camping waterfalls -Teton</button>
-        <button class="btn pill pill--outlined suggestion">"sierra nevada" +mojave</button>
-        <button class="btn pill pill--outlined suggestion">southwestern Utah</button>
-      </div>
-    `;
-  }
-
-  private noResultsTemplate() {
-    return `
-      <div class="no-results">
-        <p>No results found :(</p>
-        ${this.querySuggestions()}
-      </div>
-    `;
-  }
-
-  private toggle(trigger: Element, article: Element) {
+  private toggleArticle(trigger: Element, article: Element) {
     const isExpanded = article.classList.contains(CLASS_EXPANDED);
 
     if (isExpanded) {
@@ -54,38 +49,37 @@ export default class SearchResults extends CoreComponent {
     }
   }
 
-  private dispatchSuggestion(value: string) {
-    if (!value) return;
+  template(): string {
+    const { resultList } = this.props;
 
-    const event = new CustomEvent('results:suggestion', {
-      bubbles: true,
-      detail: { value },
-    });
+    if (!resultList) return '';
 
-    this.dispatchEvent(event);
+    return resultList.length ?
+      this.resultsHtml() :
+      this.noResultsHtml();
   }
 
-  handleEvent(e: Event) {
-    const target = e.target as Element;
-
-    if (target.classList.contains('see-more')) {
-      this.toggle(target, target.parentElement!);
-    } else if (target.classList.contains('suggestion')) {
-      this.dispatchSuggestion(target.textContent!);
-    }
+  private resultsHtml(): string {
+    const { resultList } = this.props;
+    return resultList.reduce((str: string, obj: Article) => str + `<article>${obj.title}${obj.body}</article>`, '');
   }
 
-  render(data: POJO[] | null = []) {
-    if (!data) {
-      this.element.innerHTML = '';
-    } else {
-      this.element.innerHTML = (
-        data.length ?
-          this.resultsTemplate(data) :
-          this.noResultsTemplate()
-      );
-    }
+  private noResultsHtml() {
+    return `
+      <div class="no-results">
+        <p>No results found.</p>
+        <div class="query-suggestions">
+          <p>Suggestions</p>
+          <button class="btn pill pill--outlined suggestion">camping waterfalls -Teton</button>
+          <button class="btn pill pill--outlined suggestion">"sierra nevada" +mojave</button>
+          <button class="btn pill pill--outlined suggestion">southwestern Utah</button>
+        </div>
+      </div>
+    `;
+  }
 
-    return this;
+  destroy(): void {
+    this.element.removeEventListener('click', this.handleClick)
+    super.destroy();
   }
 }

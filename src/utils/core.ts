@@ -23,7 +23,7 @@ export function isNone(obj: unknown): boolean {
 }
 
 export function isNumber(obj: unknown): boolean {
-  return !isNaN(obj as number) && typeOf(obj) === 'number';
+  return !Number.isNaN(obj as number) && typeOf(obj) === 'number';
 }
 
 export function isString(obj: unknown): boolean {

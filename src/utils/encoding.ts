@@ -35,11 +35,11 @@ export function decodePositions(arr: string[]): number[] {
 
   if (!nums.length) return result;
 
-  let prev = parseInt(nums.shift() as string, 36);
+  let prev = Number.parseInt(nums.shift() as string, 36);
   result.push(prev);
 
   for (const current of nums) {
-    const n = prev + parseInt(current, 36);
+    const n = prev + Number.parseInt(current, 36);
     result.push(n);
     prev = n;
   }

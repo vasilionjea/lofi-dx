@@ -1,7 +1,8 @@
 import {hasOwn, isNone, isNumber, isString, deepClone} from '../utils/core';
 import {collapseWhitespace, isBlank, stemWord} from '../utils/string';
-import {encodeMetadata, parseMetadata, ParsedMetadata} from '../utils/encoding';
+import {encodeMetadata, parseMetadata} from '../utils/encoding';
 import {isStopword} from '../stopwords';
+import type {ParsedMetadata} from '../utils/encoding';
 
 export interface IndexConfig {
   uidKey?: string;

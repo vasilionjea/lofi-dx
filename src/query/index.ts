@@ -1,5 +1,6 @@
 import {QueryToken, QueryTokenizer} from './tokenizer';
-import {QueryParser, QueryPart, QueryPartType, ParsedQuery} from './parser';
+import {QueryParser, QueryPartType, ParsedQuery} from './parser';
+import type {QueryPart} from './parser';
 
 export interface PartGroups {
   required: QueryPart[];

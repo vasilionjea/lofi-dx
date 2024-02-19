@@ -1,14 +1,12 @@
-import Benchmark from 'benchmark';
-import { InvertedIndex, InvertedSearch } from '../src/index';
+import {runPhraseSearchSuite} from './search';
 
-const suite = new Benchmark.Suite();
+const allSuites = [runPhraseSearchSuite];
 
-suite.add('RegExp#test', () => {
-  /o/.test('TODO');
-});
+async function runAll() {
+  console.log('Running all suites...');
+  for (const suite of allSuites) {
+    await suite();
+  }
+}
 
-suite.on('complete', () => {
-  console.log('Fastest is ' + suite.filter('fastest').map('name'));
-});
-
-suite.run({ async: true });
+runAll();

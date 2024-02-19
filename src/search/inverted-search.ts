@@ -6,7 +6,6 @@ import {
   deleteArrayItem,
 } from '../utils/core';
 import {
-  QueryPart,
   ParsedQuery,
   parseQuery,
   groupQueryParts,
@@ -14,8 +13,11 @@ import {
   isNegated,
 } from '../query/index';
 import {tfidf} from '../utils/ranking';
-import {getPositionsCount, ParsedMetadata} from '../utils/encoding';
-import {InvertedIndex, Doc, TermTable} from './inverted-index';
+import {getPositionsCount} from '../utils/encoding';
+import {InvertedIndex} from './inverted-index';
+import type {QueryPart} from '../query/index';
+import type {ParsedMetadata} from '../utils/encoding';
+import type {Doc, TermTable} from './inverted-index';
 
 export interface SearchConfig {
   prefixMatch?: boolean;

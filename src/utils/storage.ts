@@ -1,5 +1,6 @@
 import {isNone} from './core';
-import {InvertedIndex, Serializable} from '../search/inverted-index';
+import {InvertedIndex} from '../search/inverted-index';
+import type {Serializable} from '../search/inverted-index';
 
 export type StorageConfig = {
   storageKey?: string;

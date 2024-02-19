@@ -1,13 +1,10 @@
-import {InvertedIndex, IndexConfig, Serializable} from './inverted-index';
-import {InvertedSearch, SearchConfig} from './inverted-search';
+import {InvertedIndex} from './inverted-index';
+import {InvertedSearch} from './inverted-search';
+import type {IndexConfig, Serializable} from './inverted-index';
+import type {SearchConfig} from './inverted-search';
 
-export {
-  InvertedIndex as Index,
-  IndexConfig,
-  Serializable,
-  SearchConfig,
-  InvertedSearch as Search,
-};
+export {InvertedIndex as Index, InvertedSearch as Search};
+export type {IndexConfig, Serializable, SearchConfig};
 
 export function createIndex(config: IndexConfig) {
   return new InvertedIndex(config);

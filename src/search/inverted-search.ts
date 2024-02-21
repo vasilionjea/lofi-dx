@@ -1,9 +1,8 @@
 import {
-  isNone,
   hasOwn,
+  bsIncludes,
   objectIntersection,
   objectDifference,
-  deleteArrayItem,
 } from '../utils/core';
 import {
   ParsedQuery,
@@ -147,9 +146,7 @@ export class InvertedSearch {
    * to find terms next to each other. It either exits early when it finds all the terms as a
    * phrase, or when the first term's positions are completely drained.
    *
-   * The positions that are being looked up through iteration are progressively getting shorter
-   * at each loop to avoid unnecessary work. A term-to-positions map is being reused for each
-   * doc being looked up.
+   * A term-to-positions map is being reused for each doc being looked up.
    *
    * @param candidates Docs that definitely have all the terms that we'll check
    * @param terms Terms being checked for a phrase in each doc candidate
@@ -177,28 +174,27 @@ export class InvertedSearch {
         positions[term] = meta.positions;
       }
 
-      let t = 0;
-      const stack = [positions[terms[0]].shift()];
+      const stack: number[] = [];
 
-      while (stack.length) {
-        if (isNone(terms[t + 1]) || matches[uid] === totalTerms) break;
-        if (t === 0) matches[uid] = 1;
+      for (const startPos of positions[terms[0]]) {
+        stack.push(startPos);
+        matches[uid] = 1;
 
-        const currentPos = stack[stack.length - 1] as number;
-        const nextExpected = currentPos + terms[t].length + 1;
-        const nextPos = deleteArrayItem(positions[terms[t + 1]], nextExpected);
+        for (let i = 1; i < totalTerms; i++) {
+          const nextTerm = terms[i];
+          const currentPos = stack[stack.length - 1];
+          const nextExpectedPos = currentPos + terms[i - 1].length + 1;
 
-        if (!isNone(nextPos)) {
-          stack.push(nextPos);
-          matches[uid] += 1;
-          t++;
-        } else {
-          t = 0;
-          stack.length = 0;
-
-          const firstNext = positions[terms[0]].shift();
-          if (!isNone(firstNext)) stack.push(firstNext);
+          if (bsIncludes(positions[nextTerm], nextExpectedPos)) {
+            stack.push(nextExpectedPos);
+            matches[uid] += 1;
+          } else {
+            stack.length = 0;
+            break;
+          }
         }
+
+        if (matches[uid] === totalTerms) break;
       }
 
       if (matches[uid] !== totalTerms) delete matches[uid];

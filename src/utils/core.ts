@@ -80,32 +80,41 @@ export function deepClone<T>(obj: T): T {
 export function binarySearch<T>(arr: T[], item: T): number {
   let start = 0;
   let end = arr.length - 1;
-  let mid = Math.floor(end / 2);
 
-  while (arr[mid] !== item && start < end) {
-    if (item < arr[mid]) {
-      end = mid - 1;
-    } else {
+  while (start <= end) {
+    const mid = Math.floor((start + end) / 2);
+
+    if (item === arr[mid]) {
+      return mid;
+    } else if (item > arr[mid]) {
       start = mid + 1;
+    } else {
+      end = mid - 1;
     }
-
-    mid = Math.floor((start + end) / 2);
-  }
-
-  if (item === arr[mid]) {
-    return mid;
   }
 
   return -1;
 }
 
 /**
- * Deletes and returns array item (mutates array).
+ * Deletes and returns the array item using binary search (mutates array).
  */
-export function deleteArrayItem<T>(arr: T[], item: T): T | undefined {
+export function bsDelete<T>(arr: T[], item: T): T | undefined {
   const foundIndex = binarySearch(arr, item);
 
   if (foundIndex !== -1) {
     return arr.splice(foundIndex, 1)[0];
   }
+}
+
+/**
+ * Checks if array includes the item using binary search.
+ */
+export function bsIncludes<T>(arr: T[], item: T): boolean {
+  if (isNone(arr) || isNone(item)) return false;
+
+  const foundIndex = binarySearch(arr, item);
+  if (foundIndex > -1) return true;
+
+  return false;
 }

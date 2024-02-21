@@ -5,7 +5,8 @@ import {
   objectIntersection,
   objectDifference,
   binarySearch,
-  deleteArrayItem,
+  bsDelete,
+  bsIncludes,
   deepClone,
 } from '../../src/utils/core';
 
@@ -85,12 +86,19 @@ describe('Core utils', () => {
     expect(binarySearch(arr, 100)).toBe(-1);
   });
 
-  test('[deleteArrayItem] it should delete and return array item mutating the array', () => {
+  test('[bsDelete] it should delete and return array item mutating the array', () => {
     const arr = [1, 2, 3, 4, 5];
-    const item = deleteArrayItem(arr, 4);
+    const item = bsDelete(arr, 4);
     expect(item).toBe(4);
     expect(arr.length).toBe(4);
     expect(arr.indexOf(4)).toBe(-1);
+  });
+
+  test('[bsIncludes] it should return true if item is included in the array', () => {
+    const arr = [1, 2, 3, 4, 5];
+    expect(bsIncludes(arr, 4)).toBe(true);
+    expect(bsIncludes(arr, 0)).toBe(false);
+    expect(bsIncludes(arr, 6)).toBe(false);
   });
 
   test('[deepClone] it should deep clone object', () => {

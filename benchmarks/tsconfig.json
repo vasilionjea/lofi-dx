@@ -8,14 +8,8 @@
     "composite": true,
     "rootDir": ".",
     "strict": false,
-
     // ensure that nobody can accidentally use this config for a build
     "noEmit": true,
-
-    "paths": {
-      "@/*": ["./*"],
-      "@lofi/*": ["../src/*"]
-    },
   },
   "include": [
     "*.ts",

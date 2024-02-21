@@ -34,7 +34,10 @@ export const stripQueryInvalidChars = (rawText: string): string =>
  * A query token has a type and text.
  */
 export class QueryToken {
-  constructor(public type: QueryTokenType, public text: string) {}
+  constructor(
+    public type: QueryTokenType,
+    public text: string
+  ) {}
 }
 
 /**

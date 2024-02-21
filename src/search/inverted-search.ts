@@ -38,7 +38,10 @@ const DEFAULT_CONFIG: SearchConfig = {
 export class InvertedSearch {
   private readonly config: SearchConfig;
 
-  constructor(private readonly invertedIndex: InvertedIndex, opts = {}) {
+  constructor(
+    private readonly invertedIndex: InvertedIndex,
+    opts = {}
+  ) {
     this.config = {...DEFAULT_CONFIG, ...opts};
   }
 
@@ -217,7 +220,7 @@ export class InvertedSearch {
 
     // Retrieve candidate docs that contain all terms (phrase or not)
     const candidates = this.getRequiredMatches(
-      subterms.map(term => ({term, isPhrase: false} as QueryPart))
+      subterms.map(term => ({term, isPhrase: false}) as QueryPart)
     );
 
     // Perform search for the candidate docs

@@ -69,7 +69,7 @@
     "pretty-bytes": "^6.1.1",
     "sass": "^1.74.1",
     "sass-loader": "^14.2.0",
-    "style-loader": "^3.3.4",
+    "style-loader": "^4.0.0",
     "ts-jest": "^29.1.2",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",

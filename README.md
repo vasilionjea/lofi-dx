@@ -74,32 +74,6 @@ console.log(results);
 
 See [example](https://github.com/vasilionjea/lofi-dx/tree/main/example) directory for UI integration.
 
-## Inverted Index
-An [inverted index](https://en.wikipedia.org/wiki/Inverted_index) is an index of words and which documents those words occur in. Instead of linearly scanning every document looking for words, the inverted index reverses the logic by using the words to find the documents. Positions of every term occurrence are included in the index to support phrase queries and are [delta encoded](https://en.wikipedia.org/wiki/Delta_encoding) and [base36 encoded](https://en.wikipedia.org/wiki/Base36) before entering the index. 
-
-The index's internal word map is represented space efficiently as follows:
-```js
-{
-  // word
-  "yosemite": { 
-    // document UID: metadata
-    "2":"ae",
-    "3":"5o,nb,2a,2c,n,31",
-    "7":"j5",
-    "15":"39,1jn"
-  },
-
-  "other": {...}
-}
-```
-
-**Note:** This has been tested only in English and likely won't work with other alphabets.
-
-## Memory
-Given that this is a client-side solution to full-text search, the documents and the index are loaded in memory. Although the index is represented space efficiently, keep in mind that a client side full-text search implementation is likely not practical for large enough datasets. 
-
-The point of client side full-text search is to improve the user experience in offline mode, or when Internet connection is flakey, or when such client side feature is desirable over querying a server. However, if your app runs into memory issues and crashes the Browser tab because you're trying to load many megabytes worth of documents, then that will actually derail the UX. Have a cap on the total bytes you're storing client-side and loading into memory.
-
 ## Persistence
 There are methods for writing the index to `localStorage` using a TTL and later loading it but no other assumptions are made. Perhaps `localStorage` (_limited to 5MB_) works for your usecase or you may need to reach for `IndexedDB`.
 
@@ -127,3 +101,29 @@ async function loadDocs() {
 // Maybe later...
 // await storage.clear();
 ```
+
+## Inverted Index
+An [inverted index](https://en.wikipedia.org/wiki/Inverted_index) is an index of words and which documents those words occur in. Instead of linearly scanning every document looking for words, the inverted index reverses the logic by using the words to find the documents. Positions of every term occurrence are included in the index to support phrase queries and are [delta encoded](https://en.wikipedia.org/wiki/Delta_encoding) and [base36 encoded](https://en.wikipedia.org/wiki/Base36) before entering the index. 
+
+The index's internal word map is represented space efficiently as follows:
+```js
+{
+  // word
+  "yosemite": { 
+    // document UID: metadata
+    "2":"ae",
+    "3":"5o,nb,2a,2c,n,31",
+    "7":"j5",
+    "15":"39,1jn"
+  },
+
+  "other": {...}
+}
+```
+
+**Note:** This has been tested only in English and likely won't work with other alphabets.
+
+## Memory
+Given that this is a client-side solution to full-text search, the documents and the index are loaded in memory. Although the index is represented space efficiently, keep in mind that a client side full-text search implementation is likely not practical for large enough datasets. 
+
+The point of client side full-text search is to improve the user experience in offline mode, or when Internet connection is flakey, or when such client side feature is desirable over querying a server. However, if your app runs into memory issues and crashes the Browser tab because you're trying to load many megabytes worth of documents, then that will actually derail the UX. Have a cap on the total bytes you're storing client-side and loading into memory. 
